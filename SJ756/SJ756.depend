@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1656570392 source:c:\수강생\황태훈\sj756\main.cpp
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<windows.h>
+

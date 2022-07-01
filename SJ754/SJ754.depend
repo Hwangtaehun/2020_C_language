@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1656565664 source:c:\수강생\황태훈\sj754\main.cpp
+	<stdio.h>
+	"SJ754-2.h"
+	"SJ754-3.h"
+
+1656565783 c:\수강생\황태훈\sj754\sj754-2.h
+
+1656565822 c:\수강생\황태훈\sj754\sj754-3.h
+
+1656565735 source:c:\수강생\황태훈\sj754\sj754-3.cpp
+	<stdio.h>
+
