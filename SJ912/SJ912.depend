@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1657090688 source:c:\수강생\황태훈\sj912\main.c
+	<stdio.h>
+	<stdlib.h>
+	<io.h>
+	<fcntl.h>
+	<sys/stat.h>
+

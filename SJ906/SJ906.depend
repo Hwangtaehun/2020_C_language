@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1657084295 source:c:\수강생\황태훈\sj906\main.c
+	"my.h"
+
+1657084013 c:\수강생\황태훈\sj906\my.h
+	<stdio.h>
+	<windows.h>
+	<stdlib.h>
+	<string.h>
+
+1657084013 source:c:\수강생\황태훈\sj906\my.c
+	<stdio.h>
+	<windows.h>
+
