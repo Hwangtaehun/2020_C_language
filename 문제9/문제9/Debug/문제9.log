@@ -1,0 +1,8 @@
+﻿  test9-2.cpp
+C:\Users\r283\Desktop\Github\C언어\문제9\문제9\test9-2.cpp(89,33): error C2065: 'mode': 선언되지 않은 식별자입니다.
+C:\Users\r283\Desktop\Github\C언어\문제9\문제9\test9-2.cpp(194,9): warning C4778: 'printf' : 서식 문자열 '%33\n'이(가) 종결되지 않았습니다.
+C:\Users\r283\Desktop\Github\C언어\문제9\문제9\test9-2.cpp(194,34): warning C4474: 'printf' : 서식 문자열에 전달된 인수가 너무 많습니다.
+C:\Users\r283\Desktop\Github\C언어\문제9\문제9\test9-2.cpp(194,34): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
+C:\Users\r283\Desktop\Github\C언어\문제9\문제9\test9-2.cpp(195,9): warning C4778: 'printf' : 서식 문자열 '%33\n'이(가) 종결되지 않았습니다.
+C:\Users\r283\Desktop\Github\C언어\문제9\문제9\test9-2.cpp(195,34): warning C4474: 'printf' : 서식 문자열에 전달된 인수가 너무 많습니다.
+C:\Users\r283\Desktop\Github\C언어\문제9\문제9\test9-2.cpp(195,34): message : 자리 표시자 및 해당 매개 변수에는 variadic 인수가 0개 필요하지만 1개가 제공되었습니다.
