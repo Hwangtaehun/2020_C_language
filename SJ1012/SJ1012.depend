@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1657173317 source:c:\수강생\황태훈\sj1012\main.cpp
+	<cmath>
+	<cstdlib>
+	<iostream>
+
