@@ -45,4 +45,11 @@ protected:
 	// 검색 처리기에 대한 검색 콘텐츠를 설정하는 도우미 함수
 	void SetSearchContent(const CString& value);
 #endif // SHARED_HANDLERS
+public:
+	int m_nCnt;
+	CPoint m_Data[10];
+	afx_msg void OnUp();
+	afx_msg void OnDown();
+	afx_msg void OnLeft();
+	afx_msg void OnRight();
 };

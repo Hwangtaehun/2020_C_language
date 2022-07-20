@@ -23,6 +23,10 @@
 IMPLEMENT_DYNCREATE(CSjTest1Doc, CDocument)
 
 BEGIN_MESSAGE_MAP(CSjTest1Doc, CDocument)
+	ON_COMMAND(IDM_UP, &CSjTest1Doc::OnUp)
+	ON_COMMAND(IDM_DOWN, &CSjTest1Doc::OnDown)
+	ON_COMMAND(IDM_LEFT, &CSjTest1Doc::OnLeft)
+	ON_COMMAND(IDM_RIGHT, &CSjTest1Doc::OnRight)
 END_MESSAGE_MAP()
 
 
@@ -32,6 +36,7 @@ CSjTest1Doc::CSjTest1Doc() noexcept
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
 
+	m_nCnt = 0;
 }
 
 CSjTest1Doc::~CSjTest1Doc()
@@ -56,13 +61,24 @@ BOOL CSjTest1Doc::OnNewDocument()
 
 void CSjTest1Doc::Serialize(CArchive& ar)
 {
+	int i;
 	if (ar.IsStoring())
 	{
 		// TODO: 여기에 저장 코드를 추가합니다.
+		ar << m_nCnt;
+		for (i = 0; i < m_nCnt; i++)
+		{
+			ar << m_Data[i];
+		}
 	}
 	else
 	{
 		// TODO: 여기에 로딩 코드를 추가합니다.
+		ar >> m_nCnt;
+		for (i = 0; i < m_nCnt; i++)
+		{
+			ar >> m_Data[i];
+		}
 	}
 }
 
@@ -136,3 +152,47 @@ void CSjTest1Doc::Dump(CDumpContext& dc) const
 
 
 // CSjTest1Doc 명령
+
+
+void CSjTest1Doc::OnUp()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	for (int i = 0; i < m_nCnt; i++)
+	{
+		m_Data[i].y -= 5;
+	}
+	UpdateAllViews(NULL);
+}
+
+
+void CSjTest1Doc::OnDown()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	for (int i = 0; i < m_nCnt; i++)
+	{
+		m_Data[i].y += 5;
+	}
+	UpdateAllViews(NULL);
+}
+
+
+void CSjTest1Doc::OnLeft()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	for (int i = 0; i < m_nCnt; i++)
+	{
+		m_Data[i].x -= 5;
+	}
+	UpdateAllViews(NULL);
+}
+
+
+void CSjTest1Doc::OnRight()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	for (int i = 0; i < m_nCnt; i++)
+	{
+		m_Data[i].x += 5;
+	}
+	UpdateAllViews(NULL);
+}

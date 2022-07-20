@@ -29,6 +29,9 @@ BEGIN_MESSAGE_MAP(CSjTest1View, CView)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_RBUTTONDOWN()
+	ON_COMMAND(IDM_ONE, &CSjTest1View::OnOne)
+ON_COMMAND(IDM_TWO, &CSjTest1View::OnTwo)
+ON_COMMAND(IDM_THREE, &CSjTest1View::OnThree)
 END_MESSAGE_MAP()
 
 // CSjTest1View 생성/소멸
@@ -61,9 +64,9 @@ void CSjTest1View::OnDraw(CDC* pDC)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
-	for (int i = 0; i < m_nCnt; i++)
+	for (int i = 0; i < pDoc->m_nCnt; i++)
 	{
-		DrawRect(pDC, m_Data[i]);
+		DrawRect(pDC, pDoc->m_Data[i]);
 	}
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 }
@@ -117,10 +120,13 @@ void CSjTest1View::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	CDC* pDC = GetDC();
 	DrawRect(pDC, point);
-	if (m_nCnt < 10)
+
+	CSjTest1Doc* pDoc = GetDocument();
+
+	if (pDoc->m_nCnt < 10)
 	{
-		m_Data[m_nCnt] = point;
-		m_nCnt++;
+		pDoc->m_Data[pDoc->m_nCnt] = point;
+		pDoc->m_nCnt++;
 	}
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -138,4 +144,27 @@ void CSjTest1View::DrawRect(CDC* pDC, CPoint point)
 {
 	// TODO: 여기에 구현 코드 추가.
 	pDC->Rectangle(point.x - m_nSize, point.y - m_nSize, point.x + m_nSize, point.y + m_nSize);
+}
+
+
+void CSjTest1View::OnOne()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nSize = 10;
+	Invalidate();
+}
+
+void CSjTest1View::OnTwo()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nSize = 20;
+	Invalidate();
+}
+
+
+void CSjTest1View::OnThree()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nSize = 30;
+	Invalidate();
 }

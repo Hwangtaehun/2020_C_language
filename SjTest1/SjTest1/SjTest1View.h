@@ -47,6 +47,9 @@ public:
 	int m_nCnt;
 	void DrawRect(CDC* pDC, CPoint point);
 	int m_nSize;
+	afx_msg void OnOne();
+	afx_msg void OnTwo();
+	afx_msg void OnThree();
 };
 
 #ifndef _DEBUG  // SjTest1View.cpp의 디버그 버전
