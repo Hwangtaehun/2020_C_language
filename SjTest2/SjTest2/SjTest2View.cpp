@@ -109,36 +109,36 @@ CSjTest2Doc* CSjTest2View::GetDocument() const // 디버그되지 않은 버전�
 void CSjTest2View::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	CClientDC dc(this);
-	CFont font, * pFont;
-	LOGFONT LogFont;
-	LogFont.lfHeight = 100;
-	LogFont.lfEscapement = 200;
-	LogFont.lfItalic = TRUE;
-	LogFont.lfUnderline = 0;
-	LogFont.lfStrikeOut = 0;
-
-	font.CreateFontIndirect(&LogFont);
-	pFont = dc.SelectObject(&font);
-	dc.TextOut(point.x, point.y, _T("Sejong세종"), 8);
-	dc.SelectObject(pFont);
-	font.DeleteObject();
-
 	//CClientDC dc(this);
-	//int a, b;
-	//CString buf;
 	//CFont font, * pFont;
-	////font.CreatePointFont(120, _T("굴림체"), &dc);
-	//font.CreatePointFont(120, _T("굴림"), &dc);
-	//pFont = (CFont*)dc.SelectObject(&font);
-	//a = 5;
-	//for (b = 0; b <= 9; b++)
-	//{
-	//	buf.Format(_T(" % d * %d = %2d"), a, b, a * b);
-	//	dc.TextOut(point.x, point.y + (b - 1) * 20, buf);
-	//}
+	//LOGFONT LogFont;
+	//LogFont.lfHeight = 100;
+	//LogFont.lfEscapement = 200;
+	//LogFont.lfItalic = TRUE;
+	//LogFont.lfUnderline = 0;
+	//LogFont.lfStrikeOut = 0;
+
+	//font.CreateFontIndirect(&LogFont);
+	//pFont = dc.SelectObject(&font);
+	//dc.TextOut(point.x, point.y, _T("Sejong세종"), 8);
 	//dc.SelectObject(pFont);
 	//font.DeleteObject();
 
-	//CView::OnLButtonDown(nFlags, point);
+	CClientDC dc(this);
+	int a, b;
+	CString buf;
+	CFont font, * pFont;
+	font.CreatePointFont(120, _T("굴림체"), &dc);
+	//font.CreatePointFont(120, _T("굴림"), &dc);
+	pFont = (CFont*)dc.SelectObject(&font);
+	a = 5;
+	for (b = 0; b <= 9; b++)
+	{
+		buf.Format(_T(" % d * %d = %2d"), a, b, a * b);
+		dc.TextOut(point.x, point.y + (b - 1) * 20, buf);
+	}
+	dc.SelectObject(pFont);
+	font.DeleteObject();
+
+	CView::OnLButtonDown(nFlags, point);
 }
