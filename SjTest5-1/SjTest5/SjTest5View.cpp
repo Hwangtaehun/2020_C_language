@@ -47,8 +47,7 @@ CSjTest5View::CSjTest5View()
 	m_nHeight = 0;
 	m_nWidth = 0;
 	m_nRx = 0;
-	//  m_nRx2 = 0;
-	//  m_nRy2 = 0;
+	m_nRy = 0;
 }
 
 CSjTest5View::~CSjTest5View()
@@ -65,7 +64,7 @@ BOOL CSjTest5View::PreCreateWindow(CREATESTRUCT& cs)
 
 // CSjTest5View 그리기
 
-void CSjTest5View::OnDraw(CDC* /*pDC*/)
+void CSjTest5View::OnDraw(CDC* pDC)
 {
 	CSjTest5Doc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -76,6 +75,7 @@ void CSjTest5View::OnDraw(CDC* /*pDC*/)
 	m_nWidth = m_Rect.Width();
 	m_nHeight = m_Rect.Height();
 	DrawRacket(TRUE);
+	DrawRacketOther(TRUE);
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 }
 
@@ -130,7 +130,8 @@ void CSjTest5View::OnInitialUpdate()
 	GetClientRect(&m_Rect);
 	m_nWidth = m_Rect.Width();
 	m_nHeight = m_Rect.Height();
-	m_nRx = m_nWidth / 2 - 50;
+	m_nRx = m_nHeight / 2 - 50;
+	m_nRy = m_nHeight / 2 - 50;
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 }
 
@@ -165,17 +166,9 @@ void CSjTest5View::OnTimer(UINT_PTR nIDEvent)
 		dc.Ellipse(nX - RADIUS, nY - RADIUS, nX + RADIUS, nY + RADIUS);
 
 	if (nX < RADIUS)
-		nCX = STEP;
-	else if (nX > m_nWidth - RADIUS)
-		nCX = -STEP;
-	nX += nCX;
-
-	if (nY < RADIUS)
-		nCY = STEP;
-	else if (nY > m_nHeight - RADIUS - 20)
 	{
-		if (nX > m_nRx - RADIUS && nX < m_nRx + RADIUS + 100)
-			nCY = -STEP;
+		if(nY > m_nRx - RADIUS && nY < m_nRx + RADIUS + 100)
+			nCX = STEP;
 		else
 		{
 			MessageBeep(1);
@@ -185,6 +178,26 @@ void CSjTest5View::OnTimer(UINT_PTR nIDEvent)
 			nCY = STEP;
 		}
 	}
+		
+	else if (nX > m_nWidth - RADIUS)
+	{
+		if(nY > m_nRy - RADIUS && nY < m_nRy + RADIUS + 100)
+			nCX = -STEP;
+		else
+		{
+			MessageBeep(1);
+			nX = RADIUS;
+			nY = RADIUS;
+			nCX = STEP;
+			nCY = STEP;
+		}
+	}	
+	nX += nCX;
+	
+	if (nY < RADIUS)
+		nCY = STEP;
+	else if (nY > m_nHeight - RADIUS)
+		nCY = -STEP;
 	nY += nCY;
 
 	dc.Ellipse(nX - RADIUS, nY - RADIUS, nX + RADIUS, nY + RADIUS);
@@ -215,12 +228,19 @@ BOOL CSjTest5View::PreTranslateMessage(MSG* pMsg)
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	switch (pMsg->wParam)
 	{
-	case VK_LEFT:
+	case 'W':
 		MoveLeft();
 		return TRUE;
 
-	case VK_RIGHT:
+	case 'S':
 		MoveRight();
+		return TRUE;
+
+	case VK_UP:
+		MoveUp();
+		return TRUE;
+	case VK_DOWN:
+		MoveDown();
 		return TRUE;
 	}
 	return CView::PreTranslateMessage(pMsg);
@@ -250,5 +270,38 @@ void CSjTest5View::DrawRacket(bool bFlag)
 	else
 		dc.SelectStockObject(WHITE_BRUSH);
 
-	dc.Rectangle(m_nRx, m_nHeight - 20, m_nRx + 100, m_nHeight);
+	dc.Rectangle(0, m_nRx + 100, 20, m_nRx);
+}
+
+
+void CSjTest5View::MoveUp()
+{
+	// TODO: 여기에 구현 코드 추가.
+	DrawRacketOther(false);
+	m_nRy -= 10;
+	DrawRacketOther(TRUE);
+}
+
+
+void CSjTest5View::MoveDown()
+{
+	// TODO: 여기에 구현 코드 추가.
+	DrawRacketOther(false);
+	m_nRy += 10;
+	DrawRacketOther(TRUE);
+}
+
+
+void CSjTest5View::DrawRacketOther(bool bFlag)
+{
+	// TODO: 여기에 구현 코드 추가.
+	CClientDC dc(this);
+	dc.SelectStockObject(WHITE_PEN);
+
+	if (bFlag)
+		dc.SelectStockObject(LTGRAY_BRUSH);
+	else
+		dc.SelectStockObject(WHITE_BRUSH);
+
+	dc.Rectangle(m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
 }

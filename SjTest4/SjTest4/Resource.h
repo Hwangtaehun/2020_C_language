@@ -1,11 +1,11 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by SjTest5.rc
+// Used by SjTest4.rc
 //
 #define IDD_ABOUTBOX				100
 #define IDP_OLE_INIT_FAILED			100
 #define IDR_MAINFRAME				128
-#define IDR_SjTest5TYPE				130
+#define IDR_SjTest4TYPE				130
 
 // 다음은 새 개체에 사용할 기본값입니다.
 //

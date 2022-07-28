@@ -1,19 +1,19 @@
 
-// SjTest5View.h : CSjTest5View 클래스의 인터페이스
+// SjTest4View.h : CSjTest4View 클래스의 인터페이스
 //
 
 #pragma once
 
 
-class CSjTest5View : public CView
+class CSjTest4View : public CView
 {
 protected: // serialization에서만 만들어집니다.
-	CSjTest5View();
-	DECLARE_DYNCREATE(CSjTest5View)
+	CSjTest4View();
+	DECLARE_DYNCREATE(CSjTest4View)
 
 // 특성입니다.
 public:
-	CSjTest5Doc* GetDocument() const;
+	CSjTest4Doc* GetDocument() const;
 
 // 작업입니다.
 public:
@@ -29,7 +29,7 @@ protected:
 
 // 구현입니다.
 public:
-	virtual ~CSjTest5View();
+	virtual ~CSjTest4View();
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -41,29 +41,15 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	virtual void OnInitialUpdate();
 	afx_msg void OnDestroy();
-	afx_msg void OnTimer(UINT_PTR nIDEvent);
-	int m_sw;
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-	int nX;
-	int nY;
-	int nCX;
-	int nCY;
-	CRect m_Rect;
-	int m_nHeight;
-	int m_nWidth;
-	int m_nRx;
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	void DrawRacket(bool bFlag);
-	void MoveLeft();
-	void MoveRight();
-//	int m_nRx2;
-//	int m_nRy2;
 };
 
-#ifndef _DEBUG  // SjTest5View.cpp의 디버그 버전
-inline CSjTest5Doc* CSjTest5View::GetDocument() const
-   { return reinterpret_cast<CSjTest5Doc*>(m_pDocument); }
+#ifndef _DEBUG  // SjTest4View.cpp의 디버그 버전
+inline CSjTest4Doc* CSjTest4View::GetDocument() const
+   { return reinterpret_cast<CSjTest4Doc*>(m_pDocument); }
 #endif
 

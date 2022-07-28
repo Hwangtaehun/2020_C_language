@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C70067BA-70A1-4F7C-81F5-DE1710653E02}</ProjectGuid>
-    <RootNamespace>SjTest5</RootNamespace>
+    <ProjectGuid>{9DD0D407-F6CC-4477-8CE8-60034A41840B}</ProjectGuid>
+    <RootNamespace>SjTest7</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -103,39 +103,34 @@
   <ItemGroup>
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SjTest5.h" />
-    <ClInclude Include="SjTest5Doc.h" />
-    <ClInclude Include="SjTest5View.h" />
+    <ClInclude Include="SjTest7.h" />
+    <ClInclude Include="SjTest7Doc.h" />
+    <ClInclude Include="SjTest7View.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MainFrm.cpp" />
-    <ClCompile Include="SjTest5.cpp" />
-    <ClCompile Include="SjTest5Doc.cpp" />
-    <ClCompile Include="SjTest5View.cpp" />
+    <ClCompile Include="SjTest7.cpp" />
+    <ClCompile Include="SjTest7Doc.cpp" />
+    <ClCompile Include="SjTest7View.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SjTest5.rc" />
+    <ResourceCompile Include="SjTest7.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\SjTest5.rc2" />
+    <None Include="res\SjTest7.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\SjTest5.ico" />
-    <Image Include="res\SjTest5Doc.ico" />
+    <Image Include="res\SjTest7.ico" />
+    <Image Include="res\SjTest7Doc.ico" />
     <Image Include="res\Toolbar.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-  <ProjectExtensions>
-    <VisualStudio>
-      <UserProperties RESOURCE_FILE="SjTest5.rc" />
-    </VisualStudio>
-  </ProjectExtensions>
 </Project>

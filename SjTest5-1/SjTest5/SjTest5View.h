@@ -58,8 +58,10 @@ public:
 	void DrawRacket(bool bFlag);
 	void MoveLeft();
 	void MoveRight();
-//	int m_nRx2;
-//	int m_nRy2;
+	void MoveUp();
+	void MoveDown();
+	void DrawRacketOther(bool bFlag);
+	int m_nRy;
 };
 
 #ifndef _DEBUG  // SjTest5View.cpp의 디버그 버전
