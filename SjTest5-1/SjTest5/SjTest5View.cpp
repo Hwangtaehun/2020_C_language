@@ -74,8 +74,8 @@ void CSjTest5View::OnDraw(CDC* pDC)
 	GetClientRect(&m_Rect);
 	m_nWidth = m_Rect.Width();
 	m_nHeight = m_Rect.Height();
-	DrawRacket(TRUE);
-	DrawRacketOther(TRUE);
+	DrawRacket(TRUE, 0, m_nRx + 100, 20, m_nRx);
+	DrawRacket(TRUE, m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
 }
 
@@ -248,19 +248,19 @@ BOOL CSjTest5View::PreTranslateMessage(MSG* pMsg)
 
 void CSjTest5View::MoveLeft()
 {
-	DrawRacket(false);
+	DrawRacket(false, 0, m_nRx + 100, 20, m_nRx);
 	m_nRx -= 10;
-	DrawRacket(TRUE);
+	DrawRacket(TRUE, 0, m_nRx + 100, 20, m_nRx);
 }
 
 void CSjTest5View::MoveRight()
 {
-	DrawRacket(false);
+	DrawRacket(false, 0, m_nRx + 100, 20, m_nRx);
 	m_nRx += 10;
-	DrawRacket(TRUE);
+	DrawRacket(TRUE, 0, m_nRx + 100, 20, m_nRx);
 }
 
-void CSjTest5View::DrawRacket(bool bFlag)
+void CSjTest5View::DrawRacket(bool bFlag, int a, int b, int c, int d)
 {
 	CClientDC dc(this);
 	dc.SelectStockObject(WHITE_PEN);
@@ -270,38 +270,38 @@ void CSjTest5View::DrawRacket(bool bFlag)
 	else
 		dc.SelectStockObject(WHITE_BRUSH);
 
-	dc.Rectangle(0, m_nRx + 100, 20, m_nRx);
+	dc.Rectangle(a, b, c, d);
 }
 
 
 void CSjTest5View::MoveUp()
 {
 	// TODO: 여기에 구현 코드 추가.
-	DrawRacketOther(false);
+	DrawRacket(false, m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
 	m_nRy -= 10;
-	DrawRacketOther(TRUE);
+	DrawRacket(TRUE, m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
 }
 
 
 void CSjTest5View::MoveDown()
 {
 	// TODO: 여기에 구현 코드 추가.
-	DrawRacketOther(false);
+	DrawRacket(false, m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
 	m_nRy += 10;
-	DrawRacketOther(TRUE);
+	DrawRacket(TRUE, m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
 }
 
 
-void CSjTest5View::DrawRacketOther(bool bFlag)
-{
-	// TODO: 여기에 구현 코드 추가.
-	CClientDC dc(this);
-	dc.SelectStockObject(WHITE_PEN);
-
-	if (bFlag)
-		dc.SelectStockObject(LTGRAY_BRUSH);
-	else
-		dc.SelectStockObject(WHITE_BRUSH);
-
-	dc.Rectangle(m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
-}
+//void CSjTest5View::DrawRacketOther(bool bFlag)
+//{
+//	// TODO: 여기에 구현 코드 추가.
+//	CClientDC dc(this);
+//	dc.SelectStockObject(WHITE_PEN);
+//
+//	if (bFlag)
+//		dc.SelectStockObject(LTGRAY_BRUSH);
+//	else
+//		dc.SelectStockObject(WHITE_BRUSH);
+//
+//	dc.Rectangle(m_nWidth, m_nRy + 100, m_nWidth - 20, m_nRy);
+//}

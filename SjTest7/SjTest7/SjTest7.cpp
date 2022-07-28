@@ -153,6 +153,16 @@ protected:
 // 구현입니다.
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+//	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+//	afx_msg void OnDlg1();
+//	afx_msg void OnDlg2();
+//	afx_msg void OnConvert();
+//	afx_msg void OnList();
+//	afx_msg void OnCalculator1();
+//	afx_msg void OnCalculator2();
+//	afx_msg void OnControl();
+//	afx_msg void OnInput();
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -165,6 +175,15 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
+//	ON_WM_LBUTTONDOWN()
+//ON_COMMAND(IDM_DLG1, &CAboutDlg::OnDlg1)
+//ON_COMMAND(IDM_DLG2, &CAboutDlg::OnDlg2)
+//ON_COMMAND(IDM_CONVERT, &CAboutDlg::OnConvert)
+//ON_COMMAND(IDM_LIST, &CAboutDlg::OnList)
+//ON_COMMAND(IDM_CALCULATOR1, &CAboutDlg::OnCalculator1)
+//ON_COMMAND(IDM_CALCULATOR2, &CAboutDlg::OnCalculator2)
+//ON_COMMAND(IDM_CONTROL, &CAboutDlg::OnControl)
+//ON_COMMAND(IDM_INPUT, &CAboutDlg::OnInput)
 END_MESSAGE_MAP()
 
 // 대화 상자를 실행하기 위한 응용 프로그램 명령입니다.
@@ -175,6 +194,3 @@ void CSjTest7App::OnAppAbout()
 }
 
 // CSjTest7App 메시지 처리기
-
-
-

@@ -19,14 +19,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
@@ -101,6 +101,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="calculator1dlg.h" />
+    <ClInclude Include="calculator2dlg.h" />
+    <ClInclude Include="converdlg.h" />
+    <ClInclude Include="inputdlg.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SjTest7.h" />
@@ -108,8 +112,16 @@
     <ClInclude Include="SjTest7View.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="testDig1.h" />
+    <ClInclude Include="testDlg2.h" />
+    <ClInclude Include="testDlg3.h" />
+    <ClInclude Include="testDlg4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="calculator1dlg.cpp" />
+    <ClCompile Include="calculator2dlg.cpp" />
+    <ClCompile Include="converdlg.cpp" />
+    <ClCompile Include="inputdlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="SjTest7.cpp" />
     <ClCompile Include="SjTest7Doc.cpp" />
@@ -118,6 +130,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="testDig1.cpp" />
+    <ClCompile Include="testDlg2.cpp" />
+    <ClCompile Include="testDlg3.cpp" />
+    <ClCompile Include="testDlg4.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SjTest7.rc" />

@@ -16,7 +16,14 @@
 #define new DEBUG_NEW
 #endif
 
-
+#include "testDig1.h"
+#include "testDlg2.h"
+#include "testDlg3.h"
+#include "testDlg4.h"
+#include "calculator1dlg.h"
+#include "calculator2dlg.h"
+#include "converdlg.h"
+#include "inputdlg.h"
 // CSjTest7View
 
 IMPLEMENT_DYNCREATE(CSjTest7View, CView)
@@ -26,6 +33,15 @@ BEGIN_MESSAGE_MAP(CSjTest7View, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
+	ON_WM_LBUTTONDOWN()
+	ON_COMMAND(IDM_DLG1, &CSjTest7View::OnDlg1)
+	ON_COMMAND(IDM_DLG2, &CSjTest7View::OnDlg2)
+	ON_COMMAND(IDM_CONTROL, &CSjTest7View::OnControl)
+	ON_COMMAND(IDM_LIST, &CSjTest7View::OnList)
+	ON_COMMAND(IDM_CALCULATOR1, &CSjTest7View::OnCalculator1)
+	ON_COMMAND(IDM_CALCULATOR2, &CSjTest7View::OnCalculator2)
+	ON_COMMAND(IDM_CONVERT, &CSjTest7View::OnConvert)
+	ON_COMMAND(IDM_INPUT, &CSjTest7View::OnInput)
 END_MESSAGE_MAP()
 
 // CSjTest7View 생성/소멸
@@ -102,3 +118,77 @@ CSjTest7Doc* CSjTest7View::GetDocument() const // 디버그되지 않은 버전은 인라인�
 
 
 // CSjTest7View 메시지 처리기
+
+
+void CSjTest7View::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	/*testDig1 dlg;
+	dlg.DoModal();*/
+
+	CView::OnLButtonDown(nFlags, point);
+}
+
+
+void CSjTest7View::OnDlg1()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	testDig1 dlg;
+	dlg.DoModal();
+}
+
+
+void CSjTest7View::OnDlg2()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	testDlg2 dlg;
+	dlg.DoModal();
+}
+
+
+void CSjTest7View::OnControl()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	testDlg3 dlg;
+	dlg.DoModal();
+}
+
+
+void CSjTest7View::OnList()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	testDlg4 dlg;
+	dlg.DoModal();
+}
+
+
+void CSjTest7View::OnCalculator1()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	calculator1dlg dlg;
+	dlg.DoModal();
+}
+
+
+void CSjTest7View::OnCalculator2()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	calculator2dlg dlg;
+	dlg.DoModal();
+}
+
+
+void CSjTest7View::OnConvert()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	converdlg dlg;
+	dlg.DoModal();
+}
+
+
+void CSjTest7View::OnInput()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	inputdlg dlg;
+	dlg.DoModal();
+}

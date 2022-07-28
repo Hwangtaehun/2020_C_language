@@ -40,6 +40,16 @@ protected:
 // 생성된 메시지 맵 함수
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnDlg1();
+	afx_msg void OnDlg2();
+	afx_msg void OnControl();
+	afx_msg void OnList();
+	afx_msg void OnCalculator1();
+	afx_msg void OnCalculator2();
+	afx_msg void OnConvert();
+	afx_msg void OnInput();
 };
 
 #ifndef _DEBUG  // SjTest7View.cpp의 디버그 버전

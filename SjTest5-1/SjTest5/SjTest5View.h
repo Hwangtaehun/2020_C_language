@@ -55,7 +55,7 @@ public:
 	int m_nWidth;
 	int m_nRx;
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	void DrawRacket(bool bFlag);
+	void DrawRacket(bool bFlag, int a, int b, int c, int d);
 	void MoveLeft();
 	void MoveRight();
 	void MoveUp();
