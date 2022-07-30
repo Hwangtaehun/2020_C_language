@@ -40,4 +40,9 @@ public:
 	afx_msg void OnClickedCalcEight();
 	afx_msg void OnClickedCalcNine();
 	afx_msg void OnClickedCalcZero();
+	int cnt;
+	int m_nSize[10];
+	void PEN(int a);
+	int Total(int n);
+	CString m_nNum;
 };
