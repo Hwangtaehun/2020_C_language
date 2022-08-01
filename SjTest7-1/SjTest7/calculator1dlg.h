@@ -44,5 +44,4 @@ public:
 	int m_nSize[10];
 	void PEN(int a);
 	int Total(int n);
-	CString m_nNum;
 };

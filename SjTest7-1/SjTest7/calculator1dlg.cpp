@@ -22,7 +22,6 @@ CCalculator1Dlg::CCalculator1Dlg(CWnd* pParent /*=NULL*/)
 	m_nSign = 0;
 	m_nResult = 0;
 	cnt = 0;
-	m_nNum = _T("");
 }
 
 CCalculator1Dlg::~CCalculator1Dlg()
@@ -135,8 +134,7 @@ void CCalculator1Dlg::OnClickedCalcResult()
 		m_nResult = m_nInput1 / m_nInput2;
 		break;
 	}
-	m_nNum.Format(_T("%d"), m_nResult);
-	m_nView = m_nNum;
+	m_nView.Format(_T("%d"), m_nResult);
 	UpdateData(FALSE);
 }
 
@@ -214,7 +212,7 @@ void CCalculator1Dlg::OnClickedCalcZero()
 void CCalculator1Dlg::PEN(int a)
 {
 	// TODO: 여기에 구현 코드 추가.
-	int i;
+	UpdateData(TRUE);
 	if (cnt>9)
 	{
 		m_nView = _T("숫자를 초과했습니다.");
@@ -222,13 +220,10 @@ void CCalculator1Dlg::PEN(int a)
 	else
 	{
 		m_nSize[cnt] = a;
-		for ( i = cnt; i >= 0; i--)
-		{
-			m_nNum.Format(_T("%d"), m_nSize[i]);
-			m_nView = m_nNum;
-		}
+		m_nView.Format(_T("%d"), a);
 		cnt++;
 	}
+	UpdateData(FALSE);
 }
 
 
