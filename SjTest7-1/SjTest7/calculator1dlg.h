@@ -29,7 +29,6 @@ public:
 	afx_msg void OnClickedCalcMultiply();
 	afx_msg void OnClickedCalcDivide();
 	afx_msg void OnClickedCalcResult();
-	int m_nResult;
 	afx_msg void OnClickedCalcOne();
 	afx_msg void OnClickedCalcTwo();
 	afx_msg void OnClickedCalcThree();

@@ -12,15 +12,13 @@
 
 IMPLEMENT_DYNAMIC(CCalculator1Dlg, CDialogEx)
 
-CCalculator1Dlg::CCalculator1Dlg(CWnd* pParent /*=NULL*/)
+CCalculator1Dlg::CCalculator1Dlg(CWnd* pParent /*= NULL*/)
 	: CDialogEx(CCalculator1Dlg::IDD, pParent)
 	, m_nView(_T(""))
 {
-
 	m_nInput1 = 0;
 	m_nInput2 = 0;
 	m_nSign = 0;
-	m_nResult = 0;
 	cnt = 0;
 }
 
@@ -117,24 +115,27 @@ void CCalculator1Dlg::OnClickedCalcDivide()
 void CCalculator1Dlg::OnClickedCalcResult()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int Result = 0;
 	UpdateData(TRUE);
 	Total(m_nInput2);
 	switch (m_nSign)
 	{
 	case 0:
-		m_nResult = m_nInput1 + m_nInput2;
+		Result = m_nInput1 + m_nInput2;
 		break;
 	case 1:
-		m_nResult = m_nInput1 - m_nInput2;
+		Result = m_nInput1 - m_nInput2;
 		break;
 	case 2:
-		m_nResult = m_nInput1 * m_nInput2;
+		Result = m_nInput1 * m_nInput2;
 		break;
 	case 3:
-		m_nResult = m_nInput1 / m_nInput2;
+		Result = m_nInput1 / m_nInput2;
 		break;
 	}
-	m_nView.Format(_T("%d"), m_nResult);
+	m_nView.Format(_T("%d"), Result);
+	m_nInput1 = Result;
+	m_nInput2 = 0;
 	UpdateData(FALSE);
 }
 
@@ -212,6 +213,7 @@ void CCalculator1Dlg::OnClickedCalcZero()
 void CCalculator1Dlg::PEN(int a)
 {
 	// TODO: 여기에 구현 코드 추가.
+	int n = 0, i, tmep;
 	UpdateData(TRUE);
 	if (cnt>9)
 	{
@@ -220,7 +222,14 @@ void CCalculator1Dlg::PEN(int a)
 	else
 	{
 		m_nSize[cnt] = a;
+		Total(n);
 		m_nView.Format(_T("%d"), a);
+		for (i = 0; i < cnt / 2; i++)
+		{
+			tmep = m_nSize[i];
+			m_nSize[i] = m_nSize[cnt - i];
+			m_nSize[cnt - i] = m_nSize[i];
+		}
 		cnt++;
 	}
 	UpdateData(FALSE);
@@ -230,22 +239,25 @@ void CCalculator1Dlg::PEN(int a)
 int CCalculator1Dlg::Total(int n)
 {
 	// TODO: 여기에 구현 코드 추가.
-	int i, tmep;
-	for (i = 0; i < cnt / 2; i++)
+	if (n == 0)
 	{
-		tmep = m_nSize[i];
-		m_nSize[i] = m_nSize[cnt - i];
-		m_nSize[cnt - i] = m_nSize[i];
+		int i, tmep;
+		for (i = 0; i < cnt / 2; i++)
+		{
+			tmep = m_nSize[i];
+			m_nSize[i] = m_nSize[cnt - i];
+			m_nSize[cnt - i] = m_nSize[i];
+		}
+		n = m_nSize[0];
+		n += m_nSize[1] * 10;
+		n += m_nSize[2] * 100;
+		n += m_nSize[3] * 1000;
+		n += m_nSize[4] * 10000;
+		n += m_nSize[5] * 100000;
+		n += m_nSize[6] * 1000000;
+		n += m_nSize[7] * 10000000;
+		n += m_nSize[8] * 100000000;
+		n += m_nSize[9] * 1000000000;
 	}
-	n = m_nSize[0];
-	n += m_nSize[1] * 10;
-	n += m_nSize[2] * 100;
-	n += m_nSize[3] * 1000;
-	n += m_nSize[4] * 10000;
-	n += m_nSize[5] * 100000;
-	n += m_nSize[6] * 1000000;
-	n += m_nSize[7] * 10000000;
-	n += m_nSize[8] * 100000000;
-	n += m_nSize[9] * 1000000000;
 	return n;
 }
