@@ -1,35 +1,230 @@
-Ôªø// calculator1dlg.cpp: Íµ¨ÌòÑ ÌååÏùº
+// calculator1dlg.cpp : ±∏«ˆ ∆ƒ¿œ¿‘¥œ¥Ÿ.
 //
 
 #include "stdafx.h"
-//#include "pch.h"
 #include "SjTest7.h"
 #include "calculator1dlg.h"
 #include "afxdialogex.h"
+#include <cmath>
 
 
-// calculator1dlg ÎåÄÌôî ÏÉÅÏûê
+// CCalculator1Dlg ¥Î»≠ ªÛ¿⁄¿‘¥œ¥Ÿ.
 
-IMPLEMENT_DYNAMIC(calculator1dlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CCalculator1Dlg, CDialogEx)
 
-calculator1dlg::calculator1dlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_CCALCULATOR1DLG, pParent)
+CCalculator1Dlg::CCalculator1Dlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CCalculator1Dlg::IDD, pParent)
+	, m_nEdit(0)
 {
-
+	m_nTot = 0;
+	m_cOp = '+';
 }
 
-calculator1dlg::~calculator1dlg()
+CCalculator1Dlg::~CCalculator1Dlg()
 {
 }
 
-void calculator1dlg::DoDataExchange(CDataExchange* pDX)
+void CCalculator1Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	//  DDX_Text(pDX, IDC_VIEW, m_nView);
+	DDX_Text(pDX, IDC_VIEW, m_nEdit);
 }
 
 
-BEGIN_MESSAGE_MAP(calculator1dlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CCalculator1Dlg, CDialogEx)
+	ON_BN_CLICKED(IDC_CALC_CLEAR, &CCalculator1Dlg::OnClickedCalcClear)
+	ON_BN_CLICKED(IDC_CALC_PLUS, &CCalculator1Dlg::OnClickedCalcPlus)
+	ON_BN_CLICKED(IDC_CALC_MINUS, &CCalculator1Dlg::OnClickedCalcMinus)
+	ON_BN_CLICKED(IDC_CALC_MULTIPLY, &CCalculator1Dlg::OnClickedCalcMultiply)
+	ON_BN_CLICKED(IDC_CALC_DIVIDE, &CCalculator1Dlg::OnClickedCalcDivide)
+	ON_BN_CLICKED(IDC_CALC_RESULT, &CCalculator1Dlg::OnClickedCalcResult)
+	ON_BN_CLICKED(IDC_CALC_ONE, &CCalculator1Dlg::OnClickedCalcOne)
+	ON_BN_CLICKED(IDC_CALC_TWO, &CCalculator1Dlg::OnClickedCalcTwo)
+	ON_BN_CLICKED(IDC_CALC_THREE, &CCalculator1Dlg::OnClickedCalcThree)
+	ON_BN_CLICKED(IDC_CALC_FOUR, &CCalculator1Dlg::OnClickedCalcFour)
+	ON_BN_CLICKED(IDC_CALC_FIVE, &CCalculator1Dlg::OnClickedCalcFive)
+	ON_BN_CLICKED(IDC_CALC_SIX, &CCalculator1Dlg::OnClickedCalcSix)
+	ON_BN_CLICKED(IDC_CALC_SEVEN, &CCalculator1Dlg::OnClickedCalcSeven)
+	ON_BN_CLICKED(IDC_CALC_EIGHT, &CCalculator1Dlg::OnClickedCalcEight)
+	ON_BN_CLICKED(IDC_CALC_NINE, &CCalculator1Dlg::OnClickedCalcNine)
+	ON_BN_CLICKED(IDC_CALC_ZERO, &CCalculator1Dlg::OnClickedCalcZero)
 END_MESSAGE_MAP()
 
 
-// calculator1dlg Î©îÏãúÏßÄ Ï≤òÎ¶¨Í∏∞
+// CCalculator1Dlg ∏ﬁΩ√¡ˆ √≥∏Æ±‚¿‘¥œ¥Ÿ.
+
+
+void CCalculator1Dlg::OnClickedCalcClear()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	m_nTot = 0;
+	m_nEdit = 0;
+	m_cOp = '+';
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcPlus()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	Calculate();
+	m_cOp = '+';
+}
+
+
+void CCalculator1Dlg::OnClickedCalcMinus()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	Calculate();
+	m_cOp = '-';
+}
+
+
+void CCalculator1Dlg::OnClickedCalcMultiply()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	Calculate();
+	m_cOp = '*';
+}
+
+
+void CCalculator1Dlg::OnClickedCalcDivide()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ. 
+	Calculate();
+	m_cOp = '/';
+}
+
+
+void CCalculator1Dlg::OnClickedCalcResult()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	Calculate();
+	m_nEdit = m_nTot;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcOne()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 1;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcTwo()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 2;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcThree()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 3;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcFour()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 4;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcFive()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 5;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcSix()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 6;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcSeven()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 7;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcEight()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 8;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcNine()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + 9;
+	UpdateData(FALSE);
+}
+
+
+void CCalculator1Dlg::OnClickedCalcZero()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10;
+	UpdateData(FALSE);
+}
+
+
+
+bool CCalculator1Dlg::ValueRange(int value)
+{
+	if (value <= 2147483647 / 10)
+		return true;
+	MessageBox(_T("º˝¿⁄∞° ≥ π´ ≈Æ¥œ¥Ÿ !!"));
+	return false;
+}
+
+
+void CCalculator1Dlg::Calculate()
+{
+	switch (m_cOp)
+	{
+	case '+':
+		m_nTot += m_nEdit;
+		break;
+	case '-':
+		m_nTot -= m_nEdit;
+		break;
+	case '*':
+		m_nTot *= m_nEdit;
+		break;
+	case '/':
+		if (m_nEdit == 0)
+			MessageBox(_T("0¿∏∑Œ¥¬ ≥™¥≠ ºˆ æ¯æÓø‰."));
+		else
+			m_nTot /= m_nEdit;
+		break;
+	}
+	m_nEdit = 0;
+}

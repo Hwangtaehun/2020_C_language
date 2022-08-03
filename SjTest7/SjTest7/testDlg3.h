@@ -1,23 +1,29 @@
-ï»¿#pragma once
+#pragma once
+#include "afxwin.h"
 
 
-// testDlg3 ëŒ€í™” ìƒì
+// CTestDlg3 ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-class testDlg3 : public CDialogEx
+class CTestDlg3 : public CDialogEx
 {
-	DECLARE_DYNAMIC(testDlg3)
+	DECLARE_DYNAMIC(CTestDlg3)
 
 public:
-	testDlg3(CWnd* pParent = nullptr);   // í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
-	virtual ~testDlg3();
+	CTestDlg3(CWnd* pParent = NULL);   // Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
+	virtual ~CTestDlg3();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_CTESTDLG3 };
-#endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	CEdit m_ctrlEdit1;
+	CEdit m_ctrlEdit2;
+	BOOL m_bShow;
+	BOOL m_bEnable;
+	afx_msg void OnClickedCheckUse();
+	afx_msg void OnClickedCheckShow();
 };

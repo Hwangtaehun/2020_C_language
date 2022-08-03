@@ -1,23 +1,44 @@
-ï»¿#pragma once
+#pragma once
 
 
-// calculator1dlg ëŒ€í™” ìƒì
+// CCalculator1Dlg ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-class calculator1dlg : public CDialogEx
+class CCalculator1Dlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(calculator1dlg)
+	DECLARE_DYNAMIC(CCalculator1Dlg)
 
 public:
-	calculator1dlg(CWnd* pParent = nullptr);   // í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
-	virtual ~calculator1dlg();
+	CCalculator1Dlg(CWnd* pParent = NULL);   // Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
+	virtual ~CCalculator1Dlg();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_CCALCULATOR1DLG };
-#endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	
+	afx_msg void OnClickedCalcClear();
+	afx_msg void OnClickedCalcPlus();
+	afx_msg void OnClickedCalcMinus();
+	afx_msg void OnClickedCalcMultiply();
+	afx_msg void OnClickedCalcDivide();
+	afx_msg void OnClickedCalcResult();
+	afx_msg void OnClickedCalcOne();
+	afx_msg void OnClickedCalcTwo();
+	afx_msg void OnClickedCalcThree();
+	afx_msg void OnClickedCalcFour();
+	afx_msg void OnClickedCalcFive();
+	afx_msg void OnClickedCalcSix();
+	afx_msg void OnClickedCalcSeven();
+	afx_msg void OnClickedCalcEight();
+	afx_msg void OnClickedCalcNine();
+	afx_msg void OnClickedCalcZero();
+	int m_nTot;
+	char m_cOp;
+	int m_nEdit;
+	bool ValueRange(int value);
+	void Calculate();
 };

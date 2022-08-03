@@ -1,23 +1,21 @@
-ï»¿#pragma once
+#pragma once
 
 
-// inputdlg ëŒ€í™” ìƒì
+// CInputDlg ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-class inputdlg : public CDialogEx
+class CInputDlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(inputdlg)
+	DECLARE_DYNAMIC(CInputDlg)
 
 public:
-	inputdlg(CWnd* pParent = nullptr);   // í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
-	virtual ~inputdlg();
+	CInputDlg(CWnd* pParent = NULL);   // Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
+	virtual ~CInputDlg();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_CINPUTDLG };
-#endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 	DECLARE_MESSAGE_MAP()
 };

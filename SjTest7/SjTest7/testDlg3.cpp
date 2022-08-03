@@ -1,35 +1,68 @@
-Ôªø// testDlg3.cpp: Íµ¨ÌòÑ ÌååÏùº
+// testDlg3.cpp : ±∏«ˆ ∆ƒ¿œ¿‘¥œ¥Ÿ.
 //
 
 #include "stdafx.h"
-//#include "pch.h"
 #include "SjTest7.h"
 #include "testDlg3.h"
 #include "afxdialogex.h"
 
 
-// testDlg3 ÎåÄÌôî ÏÉÅÏûê
+// CTestDlg3 ¥Î»≠ ªÛ¿⁄¿‘¥œ¥Ÿ.
 
-IMPLEMENT_DYNAMIC(testDlg3, CDialogEx)
+IMPLEMENT_DYNAMIC(CTestDlg3, CDialogEx)
 
-testDlg3::testDlg3(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_CTESTDLG3, pParent)
+CTestDlg3::CTestDlg3(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CTestDlg3::IDD, pParent)
+	, m_bShow(TRUE)
+	, m_bEnable(TRUE)
 {
 
 }
 
-testDlg3::~testDlg3()
+CTestDlg3::~CTestDlg3()
 {
 }
 
-void testDlg3::DoDataExchange(CDataExchange* pDX)
+void CTestDlg3::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_EDIT1, m_ctrlEdit1);
+	DDX_Control(pDX, IDC_EDIT2, m_ctrlEdit2);
+	DDX_Check(pDX, IDC_CHECK_SHOW, m_bShow);
+	DDX_Check(pDX, IDC_CHECK_USE, m_bEnable);
 }
 
 
-BEGIN_MESSAGE_MAP(testDlg3, CDialogEx)
+BEGIN_MESSAGE_MAP(CTestDlg3, CDialogEx)
+	ON_BN_CLICKED(IDC_CHECK_USE, &CTestDlg3::OnClickedCheckUse)
+	ON_BN_CLICKED(IDC_CHECK_SHOW, &CTestDlg3::OnClickedCheckShow)
 END_MESSAGE_MAP()
 
 
-// testDlg3 Î©îÏãúÏßÄ Ï≤òÎ¶¨Í∏∞
+// CTestDlg3 ∏ﬁΩ√¡ˆ √≥∏Æ±‚¿‘¥œ¥Ÿ.
+
+
+void CTestDlg3::OnClickedCheckUse()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	UpdateData(TRUE);
+	m_ctrlEdit1.EnableWindow(m_bEnable);
+	m_ctrlEdit2.EnableWindow(m_bEnable);
+}
+
+
+void CTestDlg3::OnClickedCheckShow()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	UpdateData(TRUE);
+	if (m_bShow)
+	{
+		m_ctrlEdit2.ShowWindow(SW_SHOW);
+		m_ctrlEdit1.ShowWindow(SW_SHOW);
+	}	
+	else
+	{
+		m_ctrlEdit2.ShowWindow(SW_HIDE);
+		m_ctrlEdit1.ShowWindow(SW_HIDE);
+	}
+}

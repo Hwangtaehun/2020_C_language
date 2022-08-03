@@ -1,35 +1,155 @@
-Ôªø// calculator2dlg.cpp: Íµ¨ÌòÑ ÌååÏùº
+// calculator2dlg.cpp : ±∏«ˆ ∆ƒ¿œ¿‘¥œ¥Ÿ.
 //
 
 #include "stdafx.h"
-//#include "pch.h"
 #include "SjTest7.h"
 #include "calculator2dlg.h"
 #include "afxdialogex.h"
 
 
-// calculator2dlg ÎåÄÌôî ÏÉÅÏûê
+// CCalculator2Dlg ¥Î»≠ ªÛ¿⁄¿‘¥œ¥Ÿ.
 
-IMPLEMENT_DYNAMIC(calculator2dlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CCalculator2Dlg, CDialogEx)
 
-calculator2dlg::calculator2dlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_CCALCULATOR2DLG, pParent)
+CCalculator2Dlg::CCalculator2Dlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CCalculator2Dlg::IDD, pParent)
+	, m_strInFix(_T(""))
+	, m_strPostFix(_T(""))
+	, m_nResult(0)
 {
 
+	OpTop = 0;
+	PostTop = 0;
+	CompTop = 0;
 }
 
-calculator2dlg::~calculator2dlg()
+CCalculator2Dlg::~CCalculator2Dlg()
 {
 }
 
-void calculator2dlg::DoDataExchange(CDataExchange* pDX)
+void CCalculator2Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDC_INFIX, m_strInFix);
+	DDX_Text(pDX, IDC_POSTFIX, m_strPostFix);
+	DDX_Text(pDX, IDC_RESULT, m_nResult);
 }
 
 
-BEGIN_MESSAGE_MAP(calculator2dlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CCalculator2Dlg, CDialogEx)
+	ON_BN_CLICKED(IDC_BT0, &CCalculator2Dlg::OnClickedBt0)
+	ON_BN_CLICKED(IDC_BT1, &CCalculator2Dlg::OnClickedBt1)
+	ON_BN_CLICKED(IDC_BT2, &CCalculator2Dlg::OnClickedBt2)
+	ON_BN_CLICKED(IDC_BT3, &CCalculator2Dlg::OnClickedBt3)
+	ON_BN_CLICKED(IDC_BT4, &CCalculator2Dlg::OnClickedBt4)
+	ON_BN_CLICKED(IDC_BT5, &CCalculator2Dlg::OnClickedBt5)
+	ON_BN_CLICKED(IDC_BT6, &CCalculator2Dlg::OnClickedBt6)
+	ON_BN_CLICKED(IDC_BT7, &CCalculator2Dlg::OnClickedBt7)
+	ON_BN_CLICKED(IDC_BT8, &CCalculator2Dlg::OnClickedBt8)
+	ON_BN_CLICKED(IDC_BT9, &CCalculator2Dlg::OnClickedBt9)
+	ON_BN_CLICKED(IDC_COMPUTE, &CCalculator2Dlg::OnClickedCompute)
+	ON_BN_CLICKED(IDC_BT_SQUARE, &CCalculator2Dlg::OnClickedBtSquare)
+	ON_BN_CLICKED(IDC_BT_PLUS, &CCalculator2Dlg::OnClickedBtPlus)
+	ON_BN_CLICKED(IDC_BT_MINUS, &CCalculator2Dlg::OnClickedBtMinus)
+	ON_BN_CLICKED(IDC_BT_MULTIPLY, &CCalculator2Dlg::OnClickedBtMultiply)
+	ON_BN_CLICKED(IDC_BT_DIVIDE, &CCalculator2Dlg::OnClickedBtDivide)
 END_MESSAGE_MAP()
 
 
-// calculator2dlg Î©îÏãúÏßÄ Ï≤òÎ¶¨Í∏∞
+// CCalculator2Dlg ∏ﬁΩ√¡ˆ √≥∏Æ±‚¿‘¥œ¥Ÿ.
+
+
+void CCalculator2Dlg::OnClickedBt0()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt1()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt2()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt3()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt4()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt5()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt6()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt7()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt8()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBt9()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedCompute()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBtSquare()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBtPlus()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBtMinus()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBtMultiply()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}
+
+
+void CCalculator2Dlg::OnClickedBtDivide()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+}

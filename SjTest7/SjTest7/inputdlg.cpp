@@ -1,35 +1,34 @@
-ï»¿// inputdlg.cpp: êµ¬í˜„ íŒŒì¼
+// inputdlg.cpp : ±¸Çö ÆÄÀÏÀÔ´Ï´Ù.
 //
 
 #include "stdafx.h"
-//#include "pch.h"
 #include "SjTest7.h"
 #include "inputdlg.h"
 #include "afxdialogex.h"
 
 
-// inputdlg ëŒ€í™” ìƒì
+// CInputDlg ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-IMPLEMENT_DYNAMIC(inputdlg, CDialogEx)
+IMPLEMENT_DYNAMIC(CInputDlg, CDialogEx)
 
-inputdlg::inputdlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_CINPUTDLG, pParent)
+CInputDlg::CInputDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CInputDlg::IDD, pParent)
 {
 
 }
 
-inputdlg::~inputdlg()
+CInputDlg::~CInputDlg()
 {
 }
 
-void inputdlg::DoDataExchange(CDataExchange* pDX)
+void CInputDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
 
 
-BEGIN_MESSAGE_MAP(inputdlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CInputDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// inputdlg ë©”ì‹œì§€ ì²˜ë¦¬ê¸°
+// CInputDlg ¸Ş½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.

@@ -1,35 +1,94 @@
-ï»¿// testDlg4.cpp: êµ¬í˜„ íŒŒì¼
+// testDlg4.cpp : ±¸Çö ÆÄÀÏÀÔ´Ï´Ù.
 //
 
 #include "stdafx.h"
-//#include "pch.h"
 #include "SjTest7.h"
 #include "testDlg4.h"
 #include "afxdialogex.h"
 
 
-// testDlg4 ëŒ€í™” ìƒì
+// CTestDlg4 ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-IMPLEMENT_DYNAMIC(testDlg4, CDialogEx)
+IMPLEMENT_DYNAMIC(CTestDlg4, CDialogEx)
 
-testDlg4::testDlg4(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_CTESTDLG4, pParent)
+CTestDlg4::CTestDlg4(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CTestDlg4::IDD, pParent)
+	, m_strList(_T(""))
+	, m_strSelected(_T(""))
 {
 
 }
 
-testDlg4::~testDlg4()
+CTestDlg4::~CTestDlg4()
 {
 }
 
-void testDlg4::DoDataExchange(CDataExchange* pDX)
+void CTestDlg4::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST1, m_ctrlList);
+	DDX_LBString(pDX, IDC_LIST1, m_strList);
+	DDX_Control(pDX, IDC_COMBO1, m_ctrlCombo);
+	DDX_Text(pDX, IDC_SELECTED, m_strSelected);
 }
 
 
-BEGIN_MESSAGE_MAP(testDlg4, CDialogEx)
+BEGIN_MESSAGE_MAP(CTestDlg4, CDialogEx)
+	ON_LBN_SELCHANGE(IDC_LIST1, &CTestDlg4::OnSelchangeList1)
+	ON_CBN_SELCHANGE(IDC_COMBO1, &CTestDlg4::OnCbnSelchangeCombo1)
 END_MESSAGE_MAP()
 
 
-// testDlg4 ë©”ì‹œì§€ ì²˜ë¦¬ê¸°
+// CTestDlg4 ¸Ş½ÃÁö Ã³¸®±âÀÔ´Ï´Ù.
+
+
+BOOL CTestDlg4::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// TODO:  ¿©±â¿¡ Ãß°¡ ÃÊ±âÈ­ ÀÛ¾÷À» Ãß°¡ÇÕ´Ï´Ù.
+	m_ctrlList.AddString(_T("Çö´ëÀÚµ¿Â÷"));
+	m_ctrlList.AddString(_T("´ë¿ìÀÚµ¿Â÷"));
+	m_ctrlList.AddString(_T("½Ö¿ëÀÚµ¿Â÷"));
+	m_ctrlList.AddString(_T("»ï¼ºÀÚµ¿Â÷"));
+	m_ctrlList.AddString(_T("¿ì¸®ÀÚµ¿Â÷"));
+	m_ctrlList.AddString(_T("ÇÑ¼ºÀÚµ¿Â÷"));
+	m_ctrlList.AddString(_T("¼¼Á¾ÀÚµ¿Â÷"));
+
+	m_ctrlCombo.AddString(_T("Çö´ëÀÚµ¿Â÷"));
+	m_ctrlCombo.AddString(_T("´ë¿ìÀÚµ¿Â÷"));
+	m_ctrlCombo.AddString(_T("½Ö¿ëÀÚµ¿Â÷"));
+	m_ctrlCombo.AddString(_T("»ï¼ºÀÚµ¿Â÷"));
+	m_ctrlCombo.AddString(_T("¿ì¸®ÀÚµ¿Â÷"));
+	m_ctrlCombo.AddString(_T("ÇÑ¼ºÀÚµ¿Â÷"));
+	m_ctrlCombo.AddString(_T("¼¼Á¾ÀÚµ¿Â÷"));
+
+	m_ctrlList.SetCurSel(0);
+	m_ctrlCombo.SetCurSel(0);
+
+	UpdateData(TRUE);
+	m_strSelected = m_strList;
+	UpdateData(FALSE);
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// ¿¹¿Ü: OCX ¼Ó¼º ÆäÀÌÁö´Â FALSE¸¦ ¹İÈ¯ÇØ¾ß ÇÕ´Ï´Ù.
+}
+
+
+void CTestDlg4::OnSelchangeList1()
+{
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	m_ctrlCombo.SetCurSel(m_ctrlList.GetCurSel());
+	UpdateData(TRUE);
+	m_strSelected = m_strList;
+	UpdateData(FALSE);
+}
+
+
+void CTestDlg4::OnCbnSelchangeCombo1()
+{
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	m_ctrlList.SetCurSel(m_ctrlCombo.GetCurSel());
+	UpdateData(TRUE);
+	m_strSelected = m_strList;
+	UpdateData(FALSE);
+}

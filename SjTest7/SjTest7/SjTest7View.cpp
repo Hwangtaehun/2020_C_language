@@ -11,19 +11,20 @@
 
 #include "SjTest7Doc.h"
 #include "SjTest7View.h"
-
-#ifdef _DEBUG
-#define new DEBUG_NEW
-#endif
-
-#include "testDig1.h"
+#include "testDlg1.h"
 #include "testDlg2.h"
 #include "testDlg3.h"
 #include "testDlg4.h"
 #include "calculator1dlg.h"
 #include "calculator2dlg.h"
-#include "converdlg.h"
+#include "covertdlg.h"
 #include "inputdlg.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+
 // CSjTest7View
 
 IMPLEMENT_DYNCREATE(CSjTest7View, CView)
@@ -33,7 +34,6 @@ BEGIN_MESSAGE_MAP(CSjTest7View, CView)
 	ON_COMMAND(ID_FILE_PRINT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_DIRECT, &CView::OnFilePrint)
 	ON_COMMAND(ID_FILE_PRINT_PREVIEW, &CView::OnFilePrintPreview)
-	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(IDM_DLG1, &CSjTest7View::OnDlg1)
 	ON_COMMAND(IDM_DLG2, &CSjTest7View::OnDlg2)
 	ON_COMMAND(IDM_CONTROL, &CSjTest7View::OnControl)
@@ -120,28 +120,23 @@ CSjTest7Doc* CSjTest7View::GetDocument() const // 디버그되지 않은 버전은 인라인�
 // CSjTest7View 메시지 처리기
 
 
-void CSjTest7View::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	/*testDig1 dlg;
-	dlg.DoModal();*/
-
-	CView::OnLButtonDown(nFlags, point);
-}
-
-
 void CSjTest7View::OnDlg1()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	testDig1 dlg;
+	CTestDlg1 dlg;
 	dlg.DoModal();
+
+	CClientDC dc(this);
+	CString Buf;
+	Buf.Format(_T("이름 = %s. 나이 = %d, 점수 = %d"), dlg.m_strName, dlg.m_nAge, dlg.m_nScore);
+	dc.TextOut(10, 10, Buf);
 }
 
 
 void CSjTest7View::OnDlg2()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	testDlg2 dlg;
+	CTestDlg2 dlg;
 	dlg.DoModal();
 }
 
@@ -149,7 +144,7 @@ void CSjTest7View::OnDlg2()
 void CSjTest7View::OnControl()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	testDlg3 dlg;
+	CTestDlg3 dlg;
 	dlg.DoModal();
 }
 
@@ -157,7 +152,7 @@ void CSjTest7View::OnControl()
 void CSjTest7View::OnList()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	testDlg4 dlg;
+	CTestDlg4 dlg;
 	dlg.DoModal();
 }
 
@@ -165,7 +160,7 @@ void CSjTest7View::OnList()
 void CSjTest7View::OnCalculator1()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	calculator1dlg dlg;
+	CCalculator1Dlg dlg;
 	dlg.DoModal();
 }
 
@@ -173,7 +168,7 @@ void CSjTest7View::OnCalculator1()
 void CSjTest7View::OnCalculator2()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	calculator2dlg dlg;
+	CCalculator2Dlg dlg;
 	dlg.DoModal();
 }
 
@@ -181,7 +176,7 @@ void CSjTest7View::OnCalculator2()
 void CSjTest7View::OnConvert()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	converdlg dlg;
+	CCovertDlg dlg;
 	dlg.DoModal();
 }
 
@@ -189,6 +184,6 @@ void CSjTest7View::OnConvert()
 void CSjTest7View::OnInput()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	inputdlg dlg;
+	CInputDlg dlg;
 	dlg.DoModal();
 }

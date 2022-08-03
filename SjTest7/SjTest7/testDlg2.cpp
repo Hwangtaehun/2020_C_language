@@ -1,35 +1,110 @@
-Ôªø// testDlg2.cpp: Íµ¨ÌòÑ ÌååÏùº
+// testDlg2.cpp : ±∏«ˆ ∆ƒ¿œ¿‘¥œ¥Ÿ.
 //
 
 #include "stdafx.h"
-//#include "pch.h"
 #include "SjTest7.h"
 #include "testDlg2.h"
 #include "afxdialogex.h"
 
 
-// testDlg2 ÎåÄÌôî ÏÉÅÏûê
+// CTestDlg2 ¥Î»≠ ªÛ¿⁄¿‘¥œ¥Ÿ.
 
-IMPLEMENT_DYNAMIC(testDlg2, CDialogEx)
+IMPLEMENT_DYNAMIC(CTestDlg2, CDialogEx)
 
-testDlg2::testDlg2(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_CTESTDLG2, pParent)
+CTestDlg2::CTestDlg2(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CTestDlg2::IDD, pParent)
+	, m_nInput1(0)
+	, m_nInput2(0)
+	, m_nResult(0)
+	, m_nRadio(0)
 {
 
 }
 
-testDlg2::~testDlg2()
+CTestDlg2::~CTestDlg2()
 {
 }
 
-void testDlg2::DoDataExchange(CDataExchange* pDX)
+void CTestDlg2::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Text(pDX, IDM_INPUT1, m_nInput1);
+	DDX_Text(pDX, IDC_INPUT2, m_nInput2);
+	DDX_Text(pDX, IDC_RESULT, m_nResult);
+	//  DDX_Radio(pDX, IDC_MINUS, m_nRadio);
+	DDX_Radio(pDX, IDC_PLUS, m_nRadio);
 }
 
 
-BEGIN_MESSAGE_MAP(testDlg2, CDialogEx)
+BEGIN_MESSAGE_MAP(CTestDlg2, CDialogEx)
+	ON_COMMAND(IDC_PLUS, &CTestDlg2::OnPlus)
+	ON_COMMAND(IDC_MINUS, &CTestDlg2::OnMinus)
+	ON_COMMAND(IDC_MULTIPLY, &CTestDlg2::OnMultiply)
+	ON_COMMAND(IDC_DIVIDE, &CTestDlg2::OnDivide)
+	ON_BN_CLICKED(IDC_BUTTON2, &CTestDlg2::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
-// testDlg2 Î©îÏãúÏßÄ Ï≤òÎ¶¨Í∏∞
+// CTestDlg2 ∏ﬁΩ√¡ˆ √≥∏Æ±‚¿‘¥œ¥Ÿ.
+
+
+void CTestDlg2::OnPlus()
+{
+	// TODO: ø©±‚ø° ∏Ì∑… √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	/*UpdateData(TRUE);
+	m_nResult = m_nInput1 + m_nInput2;
+	UpdateData(FALSE);*/
+}
+
+
+void CTestDlg2::OnMinus()
+{
+	// TODO: ø©±‚ø° ∏Ì∑… √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	/*UpdateData(TRUE);
+	m_nResult = m_nInput1 - m_nInput2;
+	UpdateData(FALSE);*/
+}
+
+
+void CTestDlg2::OnMultiply()
+{
+	// TODO: ø©±‚ø° ∏Ì∑… √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	/*UpdateData(TRUE);
+	m_nResult = m_nInput1 * m_nInput2;
+	UpdateData(FALSE);*/
+}
+
+
+void CTestDlg2::OnDivide()
+{
+	// TODO: ø©±‚ø° ∏Ì∑… √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	/*UpdateData(TRUE);
+	m_nResult = m_nInput1 / m_nInput2;
+	UpdateData(FALSE);*/
+}
+
+
+void CTestDlg2::OnBnClickedButton2()
+{
+	// TODO: ø©±‚ø° ƒ¡∆Æ∑— æÀ∏≤ √≥∏Æ±‚ ƒ⁄µÂ∏¶ √ﬂ∞°«’¥œ¥Ÿ.
+	UpdateData(TRUE);
+	switch (m_nRadio)
+	{
+	case 0:
+		m_nResult = m_nInput1 + m_nInput2;
+		break;
+	case 1:
+		m_nResult = m_nInput1 - m_nInput2;
+		break;
+	case 2:
+		m_nResult = m_nInput1 * m_nInput2;
+		break;
+	case 3:
+		if (m_nInput2 == 0)
+			MessageBox(_T("0¿∏∑Œ¥¬ ≥™¥≠ ºˆ æ¯æÓø‰."));
+		else
+			m_nResult = m_nInput1 / m_nInput2;
+		break;
+	}
+	UpdateData(FALSE);
+}

@@ -1,23 +1,31 @@
-ï»¿#pragma once
+#pragma once
 
 
-// testDlg2 ëŒ€í™” ìƒì
+// CTestDlg2 ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-class testDlg2 : public CDialogEx
+class CTestDlg2 : public CDialogEx
 {
-	DECLARE_DYNAMIC(testDlg2)
+	DECLARE_DYNAMIC(CTestDlg2)
 
 public:
-	testDlg2(CWnd* pParent = nullptr);   // í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
-	virtual ~testDlg2();
+	CTestDlg2(CWnd* pParent = NULL);   // Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
+	virtual ~CTestDlg2();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_CTESTDLG2 };
-#endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	int m_nInput1;
+	int m_nInput2;
+	int m_nResult;
+	afx_msg void OnPlus();
+	afx_msg void OnMinus();
+	afx_msg void OnMultiply();
+	afx_msg void OnDivide();
+	int m_nRadio;
+	afx_msg void OnBnClickedButton2();
 };

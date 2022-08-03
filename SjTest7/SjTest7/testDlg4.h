@@ -1,23 +1,30 @@
-ï»¿#pragma once
+#pragma once
+#include "afxwin.h"
 
 
-// testDlg4 ëŒ€í™” ìƒì
+// CTestDlg4 ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-class testDlg4 : public CDialogEx
+class CTestDlg4 : public CDialogEx
 {
-	DECLARE_DYNAMIC(testDlg4)
+	DECLARE_DYNAMIC(CTestDlg4)
 
 public:
-	testDlg4(CWnd* pParent = nullptr);   // í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
-	virtual ~testDlg4();
+	CTestDlg4(CWnd* pParent = NULL);   // Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
+	virtual ~CTestDlg4();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_CTESTDLG4 };
-#endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	CListBox m_ctrlList;
+	CString m_strList;
+	CComboBox m_ctrlCombo;
+	CString m_strSelected;
+	virtual BOOL OnInitDialog();
+	afx_msg void OnSelchangeList1();
+	afx_msg void OnCbnSelchangeCombo1();
 };

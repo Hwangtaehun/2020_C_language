@@ -39,7 +39,7 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="testDig1.h">
+    <ClInclude Include="testDlg1.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="testDlg2.h">
@@ -57,7 +57,7 @@
     <ClInclude Include="calculator2dlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="converdlg.h">
+    <ClInclude Include="covertdlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="inputdlg.h">
@@ -80,7 +80,7 @@
     <ClCompile Include="SjTest7View.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="testDig1.cpp">
+    <ClCompile Include="testDlg1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="testDlg2.cpp">
@@ -98,7 +98,7 @@
     <ClCompile Include="calculator2dlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="converdlg.cpp">
+    <ClCompile Include="covertdlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="inputdlg.cpp">

@@ -1,23 +1,53 @@
-ï»¿#pragma once
+#pragma once
 
+#define STACK_SIZE 30
+#define BOTTOM 0
+// CCalculator2Dlg ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
-// calculator2dlg ëŒ€í™” ìƒì
+struct STACK {
+	int num;
+	char ch;
+};
 
-class calculator2dlg : public CDialogEx
+class CCalculator2Dlg : public CDialogEx
 {
-	DECLARE_DYNAMIC(calculator2dlg)
+	DECLARE_DYNAMIC(CCalculator2Dlg)
 
 public:
-	calculator2dlg(CWnd* pParent = nullptr);   // í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
-	virtual ~calculator2dlg();
+	CCalculator2Dlg(CWnd* pParent = NULL);   // Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
+	virtual ~CCalculator2Dlg();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_CCALCULATOR2DLG };
-#endif
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 	DECLARE_MESSAGE_MAP()
+public:
+	CString m_strInFix;
+	CString m_strPostFix;
+	int m_nResult;
+	STACK PostStack [STACK_SIZE];
+	char OpStack [STACK_SIZE];
+	int CompStack[STACK_SIZE];
+	afx_msg void OnClickedBt0();
+	afx_msg void OnClickedBt1();
+	afx_msg void OnClickedBt2();
+	afx_msg void OnClickedBt3();
+	afx_msg void OnClickedBt4();
+	afx_msg void OnClickedBt5();
+	afx_msg void OnClickedBt6();
+	afx_msg void OnClickedBt7();
+	afx_msg void OnClickedBt8();
+	afx_msg void OnClickedBt9();
+	afx_msg void OnClickedCompute();
+	afx_msg void OnClickedBtSquare();
+	afx_msg void OnClickedBtPlus();
+	afx_msg void OnClickedBtMinus();
+	afx_msg void OnClickedBtMultiply();
+	afx_msg void OnClickedBtDivide();
+	int OpTop;
+	int PostTop;
+	int CompTop;
 };

@@ -41,7 +41,6 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnDlg1();
 	afx_msg void OnDlg2();
 	afx_msg void OnControl();
