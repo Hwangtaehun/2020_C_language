@@ -20,10 +20,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnHex();
+	/*afx_msg void OnHex();
 	afx_msg void OnDec();
 	afx_msg void OnOct();
-	afx_msg void OnBin();
+	afx_msg void OnBin();*/
 //	CString m_nResult;
 	afx_msg void OnClickedBtBack();
 	afx_msg void OnClickedBtClear();
@@ -62,4 +62,9 @@ public:
 	CButton m_ctrlBf;
 	CString m_strDisplay;
 	int m_nRadix;
+	virtual BOOL OnInitDialog();
+	void Display();
+	bool ValueRange(int value);
+	void IntToString(int value, char* buf, int radix);
+	afx_msg void OnConvert(UINT value);
 };

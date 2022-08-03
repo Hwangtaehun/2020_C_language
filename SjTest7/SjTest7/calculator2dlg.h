@@ -41,6 +41,7 @@ public:
 	afx_msg void OnClickedBt7();
 	afx_msg void OnClickedBt8();
 	afx_msg void OnClickedBt9();
+	afx_msg void OnClickedBtClear();
 	afx_msg void OnClickedCompute();
 	afx_msg void OnClickedBtSquare();
 	afx_msg void OnClickedBtPlus();
@@ -50,4 +51,13 @@ public:
 	int OpTop;
 	int PostTop;
 	int CompTop;
+	void InToPost(CString s);
+	int Priority(char ch);
+	int PriCompare(char ch1, char ch2);
+	int PostPush(char* p, char ch);
+	int OpPush(char ch);
+	char OpPop();
+	int Compute();
+	int CompPush(int num);
+	int CompPop();
 };
