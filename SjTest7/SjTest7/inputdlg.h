@@ -1,6 +1,6 @@
 #pragma once
 #include "afxwin.h"
-#include "CEditNumber.h"
+#include "EditNumber.h"
 #include "afxcmn.h"
 
 
