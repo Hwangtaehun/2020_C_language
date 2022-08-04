@@ -109,90 +109,70 @@ void CCalculator1Dlg::OnClickedCalcResult()
 void CCalculator1Dlg::OnClickedCalcOne()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 1;
-	UpdateData(FALSE);
+	Number(1);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcTwo()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 2;
-	UpdateData(FALSE);
+	Number(2);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcThree()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 3;
-	UpdateData(FALSE);
+	Number(3);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcFour()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 4;
-	UpdateData(FALSE);
+	Number(4);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcFive()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 5;
-	UpdateData(FALSE);
+	Number(5);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcSix()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 6;
-	UpdateData(FALSE);
+	Number(6);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcSeven()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 7;
-	UpdateData(FALSE);
+	Number(7);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcEight()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 8;
-	UpdateData(FALSE);
+	Number(8);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcNine()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10 + 9;
-	UpdateData(FALSE);
+	Number(9);
 }
 
 
 void CCalculator1Dlg::OnClickedCalcZero()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (ValueRange(m_nEdit))
-		m_nEdit = m_nEdit * 10;
-	UpdateData(FALSE);
+	Number(0);
 }
 
 
@@ -227,4 +207,13 @@ void CCalculator1Dlg::Calculate()
 		break;
 	}
 	m_nEdit = 0;
+}
+
+
+void CCalculator1Dlg::Number(int n)
+{
+	// TODO: 여기에 구현 코드 추가.
+	if (ValueRange(m_nEdit))
+		m_nEdit = m_nEdit * 10 + n;
+	UpdateData(FALSE);
 }

@@ -41,4 +41,5 @@ public:
 	int m_nEdit;
 	bool ValueRange(int value);
 	void Calculate();
+	void Number(int n);
 };

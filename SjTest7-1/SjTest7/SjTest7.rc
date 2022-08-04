@@ -70,7 +70,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\SjTest7.ico"
+
 IDR_SjTest7TYPE         ICON                    "res\\SjTest7Doc.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -78,6 +80,7 @@ IDR_SjTest7TYPE         ICON                    "res\\SjTest7Doc.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -274,7 +277,7 @@ BEGIN
     PUSHBUTTON      "+",IDC_CALC_PLUS,82,30,19,19
     PUSHBUTTON      "-",IDC_CALC_MINUS,82,54,19,19
     PUSHBUTTON      "*",IDC_CALC_MULTIPLY,82,78,19,19
-    EDITTEXT        IDC_VIEW,11,12,91,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_VIEW,11,12,91,14,ES_AUTOHSCROLL,WS_EX_RIGHT
     PUSHBUTTON      "/",IDC_CALC_DIVIDE,82,103,19,19
 END
 
@@ -513,44 +516,44 @@ END
 // AFX_DIALOG_LAYOUT
 //
 
-IDD_CTESTDLG1 AFX_DIALOG_LAYOUT 
+IDD_CTESTDLG1 AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
-IDD_CTESTDLG2 AFX_DIALOG_LAYOUT 
+IDD_CTESTDLG2 AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
-IDD_CTESTDLG3 AFX_DIALOG_LAYOUT 
+IDD_CTESTDLG3 AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
-IDD_CTESTDLG4 AFX_DIALOG_LAYOUT 
+IDD_CTESTDLG4 AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
-IDD_CCALCULATOR1DLG AFX_DIALOG_LAYOUT 
+IDD_CCALCULATOR1DLG AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
-IDD_CCALCULATOR2DLG AFX_DIALOG_LAYOUT 
+IDD_CCALCULATOR2DLG AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
-IDD_CCONVERTDIG AFX_DIALOG_LAYOUT 
+IDD_CCONVERTDIG AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
-IDD_CINPUTDLG AFX_DIALOG_LAYOUT 
+IDD_CINPUTDLG AFX_DIALOG_LAYOUT
 BEGIN
-    0x0000
+    0
 END
 
 

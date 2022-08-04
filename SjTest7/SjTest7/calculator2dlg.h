@@ -60,4 +60,7 @@ public:
 	int Compute();
 	int CompPush(int num);
 	int CompPop();
+	CEdit m_ctrlPostfix;
+	CEdit m_ctrlResult;
+	virtual BOOL OnInitDialog();
 };
