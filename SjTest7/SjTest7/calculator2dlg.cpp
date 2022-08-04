@@ -33,8 +33,6 @@ void CCalculator2Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_INFIX, m_strInFix);
 	DDX_Text(pDX, IDC_POSTFIX, m_strPostFix);
 	DDX_Text(pDX, IDC_RESULT, m_nResult);
-	DDX_Control(pDX, IDC_POSTFIX, m_ctrlPostfix);
-	DDX_Control(pDX, IDC_RESULT, m_ctrlResult);
 }
 
 
@@ -408,16 +406,4 @@ int CCalculator2Dlg::CompPop()
 	data = CompStack[CompTop];
 	CompTop--;
 	return data;
-}
-
-BOOL CCalculator2Dlg::OnInitDialog()
-{
-	CDialogEx::OnInitDialog();
-
-	// TODO:  여기에 추가 초기화 작업을 추가합니다.
-	m_ctrlPostfix.EnableWindow(FALSE);
-	m_ctrlResult.EnableWindow(FALSE);
-
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // 예외: OCX 속성 페이지는 FALSE를 반환해야 합니다.
 }
