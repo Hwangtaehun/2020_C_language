@@ -103,8 +103,8 @@
   <ItemGroup>
     <ClInclude Include="calculator1dlg.h" />
     <ClInclude Include="calculator2dlg.h" />
+    <ClInclude Include="CEditNumber.h" />
     <ClInclude Include="covertdlg.h" />
-    <ClInclude Include="EditNumber.h" />
     <ClInclude Include="inputdlg.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
@@ -121,8 +121,8 @@
   <ItemGroup>
     <ClCompile Include="calculator1dlg.cpp" />
     <ClCompile Include="calculator2dlg.cpp" />
+    <ClCompile Include="CEditNumber.cpp" />
     <ClCompile Include="covertdlg.cpp" />
-    <ClCompile Include="EditNumber.cpp" />
     <ClCompile Include="inputdlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="SjTest7.cpp" />

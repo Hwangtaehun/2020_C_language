@@ -63,7 +63,7 @@
     <ClInclude Include="inputdlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="EditNumber.h">
+    <ClInclude Include="CEditNumber.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -107,7 +107,7 @@
     <ClCompile Include="inputdlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="EditNumber.cpp">
+    <ClCompile Include="CEditNumber.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
