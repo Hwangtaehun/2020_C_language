@@ -38,6 +38,10 @@ BEGIN_MESSAGE_MAP(CSjData1View, CView)
 	ON_COMMAND(IDM_BRUSH_BLUE, &CSjData1View::OnBrushBlue)
 	ON_COMMAND(IDM_PEN_CUSTOM, &CSjData1View::OnPenCustom)
 	ON_COMMAND(IDM_BRUSH_CUSTOM, &CSjData1View::OnBrushCustom)
+	ON_WM_RBUTTONDOWN()
+	ON_COMMAND(IDM_ONE, &CSjData1View::OnOne)
+	ON_COMMAND(IDM_TWO, &CSjData1View::OnTwo)
+	ON_COMMAND(IDM_THREE, &CSjData1View::OnThree)
 END_MESSAGE_MAP()
 
 // CSjData1View 생성/소멸
@@ -47,6 +51,9 @@ CSjData1View::CSjData1View()
 	// TODO: 여기에 생성 코드를 추가합니다.
 
 	m_nSize = 10;
+	m_nWidth = 3;
+	m_penColor = RGB(0, 0, 0);
+	m_brushColor = RGB(255, 255, 255);
 }
 
 CSjData1View::~CSjData1View()
@@ -72,7 +79,7 @@ void CSjData1View::OnDraw(CDC* pDC)
 
 	for (int i = 0; i < pDoc->m_nCnt; i++)
 	{
-		DrawRect(pDC, pDoc->m_aPoint[i], pDoc->m_aSize[i]);
+		DrawRect(pDC, pDoc->m_aPoint[i], pDoc->m_aSize[i], pDoc->m_aWidth[i], pDoc->m_aPenColor[i], pDoc->m_aBurshColor[i]);
 	}
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
@@ -131,11 +138,23 @@ void CSjData1View::OnLButtonDown(UINT nFlags, CPoint point)
 	{
 		pDoc->m_aPoint[pDoc->m_nCnt] = point;
 		pDoc->m_aSize[pDoc->m_nCnt] = m_nSize;
-		DrawRect(&dc, pDoc->m_aPoint[pDoc->m_nCnt], pDoc->m_aSize[pDoc->m_nCnt]);
+		pDoc->m_aWidth[pDoc->m_nCnt] = m_nWidth;
+		pDoc->m_aPenColor[pDoc->m_nCnt] = m_penColor;
+		pDoc->m_aBurshColor[pDoc->m_nCnt] = m_brushColor;
+		DrawRect(&dc, pDoc->m_aPoint[pDoc->m_nCnt], pDoc->m_aSize[pDoc->m_nCnt], pDoc->m_aWidth[pDoc->m_nCnt], pDoc->m_aPenColor[pDoc->m_nCnt], pDoc->m_aBurshColor[pDoc->m_nCnt]);
 		pDoc->m_nCnt++;
 	}
 	CView::OnLButtonDown(nFlags, point);
 }
+
+
+void CSjData1View::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	m_nSize += 5;
+	CView::OnRButtonDown(nFlags, point);
+}
+
 
 
 void CSjData1View::DrawRect(CDC * pDC, CPoint point)
@@ -150,68 +169,126 @@ void CSjData1View::DrawRect(CDC * pDC, CPoint point, int nSize)
 }
 
 
+void CSjData1View::DrawRect(CDC* pDC, CPoint point, int nSize, int nWidth, COLORREF penColor, COLORREF brushColor)
+{
+	// TODO: 여기에 구현 코드 추가.
+	CPen pen, * pPen;
+	pen.CreatePen(PS_SOLID, nWidth, penColor);
+	pPen = (CPen*)pDC->SelectObject(&pen);
+
+	CBrush brush, * pBrush;
+	brush.CreateSolidBrush(brushColor);
+	pBrush = (CBrush*)pDC->SelectObject(&brush);
+
+	pDC->Rectangle(point.x - nSize, point.y - nSize, point.x + nSize, point.y + nSize);
+	pDC->SelectObject(pPen);
+	pDC->SelectObject(pBrush);
+}
+
+
 void CSjData1View::OnPenWidth1()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nWidth = 1;
 }
 
 
 void CSjData1View::OnPenWidth2()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nWidth = 2;
 }
 
 
 void CSjData1View::OnPenWidth3()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nWidth = 3;
 }
 
 
 void CSjData1View::OnPenRed()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_penColor = RGB(255, 0, 0);
 }
 
 
 void CSjData1View::OnPenGreen()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_penColor = RGB(0, 255, 0);
 }
 
 
 void CSjData1View::OnPenBlue()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_penColor = RGB(0, 0, 255);
 }
 
 
 void CSjData1View::OnBrushRed()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_brushColor = RGB(255, 0, 0);
 }
 
 
 void CSjData1View::OnBrushGreen()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_brushColor = RGB(0, 255, 0);
 }
 
 
 void CSjData1View::OnBrushBlue()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_brushColor = RGB(0, 0, 255);
 }
 
 
 void CSjData1View::OnPenCustom()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CColorDialog dlg(m_penColor);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		m_penColor = dlg.GetColor();
+	}
 }
 
 
 void CSjData1View::OnBrushCustom()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CColorDialog dlg(m_brushColor);
+
+	if (dlg.DoModal() == IDOK)
+	{
+		m_brushColor = dlg.GetColor();
+	}
 }
 
+
+void CSjData1View::OnOne()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nSize = 10;
+}
+
+
+void CSjData1View::OnTwo()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nSize = 20;
+}
+
+
+void CSjData1View::OnThree()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nSize = 30;
+}

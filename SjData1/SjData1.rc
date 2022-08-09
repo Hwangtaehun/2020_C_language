@@ -70,7 +70,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\SjData1.ico"
+
 IDR_SjData1TYPE         ICON                    "res\\SjData1Doc.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -78,6 +80,7 @@ IDR_SjData1TYPE         ICON                    "res\\SjData1Doc.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -96,6 +99,9 @@ BEGIN
     SEPARATOR
     BUTTON      ID_FILE_PRINT
     BUTTON      ID_APP_ABOUT
+    BUTTON      IDM_ONE
+    BUTTON      IDM_TWO
+    BUTTON      IDM_THREE
 END
 
 

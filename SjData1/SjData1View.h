@@ -42,9 +42,14 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	int m_nSize;
+	int m_nWidth;
+	COLORREF m_penColor;
+	COLORREF m_brushColor;
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	void DrawRect(CDC * pDC, CPoint point);
 	void DrawRect(CDC * pDC, CPoint point, int nSize);
+	void DrawRect(CDC * pDC, CPoint point, int nSize, int nWidth, COLORREF penColor, COLORREF brushColor);
 	afx_msg void OnPenWidth1();
 	afx_msg void OnPenWidth2();
 	afx_msg void OnPenWidth3();
@@ -56,6 +61,9 @@ public:
 	afx_msg void OnBrushBlue();
 	afx_msg void OnPenCustom();
 	afx_msg void OnBrushCustom();
+	afx_msg void OnOne();
+	afx_msg void OnTwo();
+	afx_msg void OnThree();
 };
 
 #ifndef _DEBUG  // SjData1View.cpp의 디버그 버전

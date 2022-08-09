@@ -56,13 +56,14 @@
 #define IDM_PEN_WIDTH2                  32812
 #define IDM_PEN_WIDTH3                  32813
 #define IDM_PEN_WIDTH_CUSTOM            32814
+#define ID_BUTTON32839                  32839
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         32836
+#define _APS_NEXT_COMMAND_VALUE         32840
 #define _APS_NEXT_CONTROL_VALUE         1003
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -49,4 +49,11 @@ public:
 	int m_nCnt;
 	CPoint m_aPoint[30];
 	int m_aSize[30];
+	afx_msg void OnUp();
+	afx_msg void OnDown();
+	afx_msg void OnLeft();
+	afx_msg void OnRight();
+	int m_aWidth[30];
+	COLORREF m_aPenColor[30];
+	COLORREF m_aBurshColor[30];
 };
