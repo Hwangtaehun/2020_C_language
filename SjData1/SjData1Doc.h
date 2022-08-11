@@ -86,5 +86,8 @@ public:
 	COLORREF m_aPenColor[30];
 	COLORREF m_aBurshColor[30];*/
 	//DATA m_bData[30];
-	CData m_bData[30];
+	//CData m_bData[30];
+	//CObList m_List;
+	//CTypedPtrList <CObList, CData*> m_List;
+	CList<CData, CData&> m_List;
 };

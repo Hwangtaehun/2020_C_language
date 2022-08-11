@@ -6,6 +6,8 @@ class CData : public CObject
 {
 public:
 	CData();
+	CData(const CData & param);
+	CData& operator=(const CData& param);
 	virtual ~CData();
 private:
 	CPoint m_Point;

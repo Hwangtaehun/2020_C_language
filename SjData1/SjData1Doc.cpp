@@ -60,49 +60,95 @@ BOOL CSjData1Doc::OnNewDocument()
 
 void CSjData1Doc::Serialize(CArchive& ar)
 {
-	int i;
+	//int i;
+	//if (ar.IsStoring())
+	//{
+	//	// TODO: 여기에 저장 코드를 추가합니다.
+	//	ar << m_nCnt;
+	//	for (i = 0; i < m_nCnt; i++)
+	//	{
+	//		/*ar << m_aPoint[i];
+	//		ar << m_aSize[i];
+	//		ar << m_aWidth[i];
+	//		ar << m_aPenColor[i];
+	//		ar << m_aBurshColor[i];*/
+
+	//		/*ar << m_bData[i].m_Point;
+	//		ar << m_bData[i].m_nSize;
+	//		ar << m_bData[i].m_nWidth;
+	//		ar << m_bData[i].m_penColor;
+	//		ar << m_bData[i].m_burshColor;*/
+
+	//		//m_bData[i].LoadSave(ar);
+	//		m_bData[i].Serialize(ar);
+	//	}
+	//}
+	//else
+	//{
+	//	// TODO: 여기에 로딩 코드를 추가합니다.
+	//	ar >> m_nCnt;
+	//	for (i = 0; i < m_nCnt; i++)
+	//	{
+	//		/*ar >> m_aPoint[i];
+	//		ar >> m_aSize[i];
+	//		ar >> m_aWidth[i];
+	//		ar >> m_aPenColor[i];
+	//		ar >> m_aBurshColor[i];*/
+
+	//		/*ar >> m_bData[i].m_Point;
+	//		ar >> m_bData[i].m_nSize;
+	//		ar >> m_bData[i].m_nWidth;
+	//		ar >> m_bData[i].m_penColor;
+	//		ar >> m_bData[i].m_burshColor;*/
+
+	//		//m_bData[i].LoadSave(ar);
+	//		m_bData[i].Serialize(ar);
+	//	}
+	//}
+
+	/*int i, cnt;
+	CData* pNode;
 	if (ar.IsStoring())
 	{
-		// TODO: 여기에 저장 코드를 추가합니다.
-		ar << m_nCnt;
-		for (i = 0; i < m_nCnt; i++)
+		ar << m_List.GetCount();
+		for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
 		{
-			/*ar << m_aPoint[i];
-			ar << m_aSize[i];
-			ar << m_aWidth[i];
-			ar << m_aPenColor[i];
-			ar << m_aBurshColor[i];*/
-
-			/*ar << m_bData[i].m_Point;
-			ar << m_bData[i].m_nSize;
-			ar << m_bData[i].m_nWidth;
-			ar << m_bData[i].m_penColor;
-			ar << m_bData[i].m_burshColor;*/
-
-			//m_bData[i].LoadSave(ar);
-			m_bData[i].Serialize(ar);
+			pNode = (CData*)m_List.GetNext(pos);
+			pNode->Serialize(ar);
 		}
 	}
 	else
 	{
-		// TODO: 여기에 로딩 코드를 추가합니다.
-		ar >> m_nCnt;
-		for (i = 0; i < m_nCnt; i++)
+		m_List.RemoveAll();
+		ar >> cnt;
+		for (i = 0; i < cnt; i++)
 		{
-			/*ar >> m_aPoint[i];
-			ar >> m_aSize[i];
-			ar >> m_aWidth[i];
-			ar >> m_aPenColor[i];
-			ar >> m_aBurshColor[i];*/
+			pNode = new CData;
+			pNode->Serialize(ar);
+			m_List.AddTail(pNode);
+		}
+	}*/
 
-			/*ar >> m_bData[i].m_Point;
-			ar >> m_bData[i].m_nSize;
-			ar >> m_bData[i].m_nWidth;
-			ar >> m_bData[i].m_penColor;
-			ar >> m_bData[i].m_burshColor;*/
-
-			//m_bData[i].LoadSave(ar);
-			m_bData[i].Serialize(ar);
+	int i, cnt;
+	CData node, * pNode;
+	if (ar.IsStoring())
+	{
+		ar << m_List.GetCount();
+		for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
+		{
+			node = m_List.GetNext(pos);
+			node.Serialize(ar);
+		}
+	}
+	else
+	{
+		m_List.RemoveAll();
+		ar >> cnt;
+		for (i = 0; i < cnt; i++)
+		{
+			pNode = new CData;
+			pNode->Serialize(ar);
+			m_List.AddTail(*pNode);
 		}
 	}
 }
@@ -182,12 +228,29 @@ void CSjData1Doc::Dump(CDumpContext& dc) const
 void CSjData1Doc::OnUp()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	for (int i = 0; i < m_nCnt; i++)
+	//for (int i = 0; i < m_nCnt; i++)
+	//{
+	//	//m_aPoint[i].y -= 5;
+	//	//m_bData[i].m_Point.y += -5;
+	//	m_bData[i].ModifyPoint(0, -5);
+	//}
+
+	/*CData* pNode;
+	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
 	{
-		//m_aPoint[i].y -= 5;
-		//m_bData[i].m_Point.y += -5;
-		m_bData[i].ModifyPoint(0, -5);
+		pNode = (CData*)m_List.GetNext(pos);
+		pNode->ModifyPoint(0, -5);
+	}*/
+	
+	CData node;
+	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
+	{
+		node = m_List.GetAt(pos);
+		node.ModifyPoint(0, -5);
+		m_List.SetAt(pos, node);
+		m_List.GetNext(pos);
 	}
+
 	UpdateAllViews(NULL);
 }
 
@@ -195,12 +258,29 @@ void CSjData1Doc::OnUp()
 void CSjData1Doc::OnDown()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	for (int i = 0; i < m_nCnt; i++)
+	//for (int i = 0; i < m_nCnt; i++)
+	//{
+	//	//m_aPoint[i].y += 5;
+	//	//m_bData[i].m_Point.y += 5;
+	//	m_bData[i].ModifyPoint(0, 5);
+	//}
+
+	/*CData* pNode;
+	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
 	{
-		//m_aPoint[i].y += 5;
-		//m_bData[i].m_Point.y += 5;
-		m_bData[i].ModifyPoint(0, 5);
+		pNode = (CData*)m_List.GetNext(pos);
+		pNode->ModifyPoint(0, 5);
+	}*/
+
+	CData node;
+	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
+	{
+		node = m_List.GetAt(pos);
+		node.ModifyPoint(0, 5);
+		m_List.SetAt(pos, node);
+		m_List.GetNext(pos);
 	}
+
 	UpdateAllViews(NULL);
 }
 
@@ -208,11 +288,28 @@ void CSjData1Doc::OnDown()
 void CSjData1Doc::OnLeft()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	for (int i = 0; i < m_nCnt; i++)
+	//for (int i = 0; i < m_nCnt; i++)
+	//{
+	//	//m_aPoint[i].x -= 5;
+	//	//m_bData[i].m_Point.x += -5;
+	//	m_bData[i].ModifyPoint(-5, 0);
+	//}
+
+	/*CData* pNode;
+	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
 	{
-		//m_aPoint[i].x -= 5;
-		//m_bData[i].m_Point.x += -5;
-		m_bData[i].ModifyPoint(-5, 0);
+		pNode = (CData*)m_List.GetNext(pos);
+		pNode->ModifyPoint(-5, 0);
+	}*/
+	
+	CData node;
+	POSITION pos = m_List.GetHeadPosition();
+	for (int i = 0; i < m_List.GetCount(); i++)
+	{
+		node = m_List.GetAt(pos);
+		node.ModifyPoint(-5, 0);
+		m_List.SetAt(pos, node);
+		m_List.GetNext(pos);
 	}
 	UpdateAllViews(NULL);
 }
@@ -221,11 +318,27 @@ void CSjData1Doc::OnLeft()
 void CSjData1Doc::OnRight()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	for (int i = 0; i < m_nCnt; i++)
+	//for (int i = 0; i < m_nCnt; i++)
+	//{
+	//	//m_aPoint[i].x += 5;
+	//	//m_bData[i].m_Point.x += +5;
+	//	m_bData[i].ModifyPoint(5, 0);
+	//}
+
+	/*CData* pNode;
+	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
 	{
-		//m_aPoint[i].x += 5;
-		//m_bData[i].m_Point.x += +5;
-		m_bData[i].ModifyPoint(5, 0);
+		pNode = (CData*)m_List.GetNext(pos);
+		pNode->ModifyPoint(5, 0);
+	}*/
+	CData node;
+	POSITION pos = m_List.GetHeadPosition();
+	for (int i = 0; i < m_List.GetCount(); i++)
+	{
+		node = m_List.GetAt(pos);
+		node.ModifyPoint(5, 0);
+		m_List.SetAt(pos, node);
+		m_List.GetNext(pos);
 	}
 	UpdateAllViews(NULL);
 }

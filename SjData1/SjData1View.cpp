@@ -80,10 +80,20 @@ void CSjData1View::OnDraw(CDC* pDC)
 	if (!pDoc)
 		return;
 
-	for (int i = 0; i < pDoc->m_nCnt; i++)
+	//for (int i = 0; i < pDoc->m_nCnt; i++)
+	//{
+	//	//DrawRect(pDC, pDoc->m_aPoint[i], pDoc->m_aSize[i], pDoc->m_aWidth[i], pDoc->m_aPenColor[i], pDoc->m_aBurshColor[i]);
+	//	DrawRect(pDC, &pDoc->m_bData[i]);
+	//}
+
+	//CData* pNode;
+	CData data;
+	for (POSITION pos = pDoc->m_List.GetHeadPosition(); pos != NULL; )
 	{
-		//DrawRect(pDC, pDoc->m_aPoint[i], pDoc->m_aSize[i], pDoc->m_aWidth[i], pDoc->m_aPenColor[i], pDoc->m_aBurshColor[i]);
-		DrawRect(pDC, &pDoc->m_bData[i]);
+		/*pNode = (CData*)pDoc->m_List.GetNext(pos);*/
+		data = pDoc->m_List.GetNext(pos);
+		//DrawRect(pDC, pNode);
+		DrawRect(pDC, &data);
 	}
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
@@ -138,17 +148,28 @@ void CSjData1View::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	CClientDC dc(this);
 	CSjData1Doc* pDoc = GetDocument();
-	if (pDoc->m_nCnt < 30)
-	{
-		/*pDoc->m_bData[pDoc->m_nCnt].m_Point = point;
-		pDoc->m_bData[pDoc->m_nCnt].m_nSize = m_nSize;
-		pDoc->m_bData[pDoc->m_nCnt].m_nWidth = m_nWidth;
-		pDoc->m_bData[pDoc->m_nCnt].m_penColor = m_penColor;
-		pDoc->m_bData[pDoc->m_nCnt].m_burshColor = m_brushColor;*/
-		pDoc->m_bData[pDoc->m_nCnt].SetData(point, m_nSize, m_nWidth, m_penColor, m_brushColor);
-		DrawRect(&dc, &pDoc->m_bData[pDoc->m_nCnt]);
-		pDoc->m_nCnt++;
-	}
+	CData *pNode;
+	pNode = new CData;
+	pNode->SetData(point, m_nSize, m_nWidth, m_penColor, m_brushColor);
+	
+	
+	//pDoc->m_List.AddTail(pNode);
+	pDoc->m_List.AddTail(*pNode);
+	DrawRect(&dc, pNode);
+	//if (pDoc->m_nCnt < 30)
+	//{
+	//	/*pDoc->m_bData[pDoc->m_nCnt].m_Point = point;
+	//	pDoc->m_bData[pDoc->m_nCnt].m_nSize = m_nSize;
+	//	pDoc->m_bData[pDoc->m_nCnt].m_nWidth = m_nWidth;
+	//	pDoc->m_bData[pDoc->m_nCnt].m_penColor = m_penColor;
+	//	pDoc->m_bData[pDoc->m_nCnt].m_burshColor = m_brushColor;*/
+
+	//	pDoc->m_bData[pDoc->m_nCnt].SetData(point, m_nSize, m_nWidth, m_penColor, m_brushColor);
+	//	DrawRect(&dc, &pDoc->m_bData[pDoc->m_nCnt]);
+	//	pDoc->m_nCnt++;
+	//}
+	delete pNode;
+
 	CView::OnLButtonDown(nFlags, point);
 }
 
@@ -157,8 +178,59 @@ void CSjData1View::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	//m_nSize += 5;
-	TRACE(_T("%d, %d\n"), point.x, point.y);
+	//TRACE(_T("%d, %d\n"), point.x, point.y);
 
+	/*CString str;
+	int n = 5;
+	TRACE(_T("Trace n = %d \n"), n);
+	str.Format(_T("Output n = %d\n"), n);
+	OutputDebugString(str);
+
+	TRACE0("인수없다\n");
+	TRACE1("정수 = %d\n", n);
+	TRACE2("문자열 = %s, %d\n", _T("Sejong세종"), n);
+
+	ASSERT(n < 0);
+	VERIFY(n < 0);*/
+
+	//CUIntArray uArr;
+	/*CArray <UINT, UINT> uArr;
+
+	int i;
+	uArr.SetSize(3);
+	uArr[0] = 1;
+	uArr[1] = 2;
+	uArr.Add(11);
+	uArr.Add(22);
+	uArr.InsertAt(3, 111);
+	uArr.SetAtGrow(4, 222);
+	uArr.RemoveAt(1);
+
+	for (i = 0; i < uArr.GetCount(); i++)
+	{
+		TRACE(_T("uArr[%d] = %d\n"), i, uArr[i]);
+	}*/
+
+	//CMapStringToString map;
+	CMap <CString, LPCTSTR, CString, LPCTSTR> map;
+	CString key, value;
+	map.SetAt(_T("k1"), _T("세종"));
+	map[_T("k2")] = _T("컴퓨터");
+	map.SetAt(_T("k2"), _T("학원"));
+	TRACE(_T("map[\"k1\"] = %s\n"), map[_T("k1")]);
+	TRACE(_T("map[\"k2\"] = %s\n"), map[_T("k2")]);
+	map.Lookup(_T("k1"), value);
+	TRACE(_T("value = %s\n"), value);
+
+	POSITION pos = map.GetStartPosition();
+	while (pos != NULL)
+	{
+		map.GetNextAssoc(pos, key, value);
+		TRACE(_T("key = %s, value = %s\n"), key, value);
+	}
+	TRACE(_T("map 요소 수 = %d\n"), map.GetCount());
+	map.RemoveKey(_T("k1"));
+	TRACE(_T("map 요소 수 = %d\n"), map.GetCount());
 	CView::OnRButtonDown(nFlags, point);
 }
 

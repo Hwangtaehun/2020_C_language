@@ -14,6 +14,30 @@ CData::CData()
 	m_nWidth = 0;
 }
 
+CData::CData(const CData& param)
+{
+	TRACE(_T("복사 생성자 실행\n"));
+	m_Point = param.m_Point;
+	m_nSize = param.m_nSize;
+	m_nWidth = param.m_nWidth;
+	m_penColor = param.m_penColor;
+	m_burshColor = param.m_burshColor;
+}
+
+CData& CData::operator=(const CData& param)
+{
+	TRACE(_T("대입연산자 실행\n"));
+	if (this != &param)
+	{
+		m_Point = param.m_Point;
+		m_nSize = param.m_nSize;
+		m_nWidth = param.m_nWidth;
+		m_penColor = param.m_penColor;
+		m_burshColor = param.m_burshColor;
+	}
+	return *this;
+}
+
 CData::~CData()
 {
 }
