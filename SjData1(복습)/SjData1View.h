@@ -64,10 +64,6 @@ public:
 	afx_msg void OnOne();
 	afx_msg void OnTwo();
 	afx_msg void OnThree();
-	afx_msg void OnSizeCustom();
-	afx_msg void OnPenWidthCustom();
-	//void DrawRect(CDC * pDC, DATA * pData);
-	void DrawRect(CDC * pDC, CData * pData);
 };
 
 #ifndef _DEBUG  // SjData1View.cpp의 디버그 버전

@@ -4,36 +4,7 @@
 
 
 #pragma once
-#include "data.h"
 
-//struct DATA
-//{
-//	CPoint m_Point;
-//	int m_nSize;
-//	int m_nWidth;
-//	COLORREF m_penColor;
-//	COLORREF m_burshColor;
-//
-//	void LoadSave(CArchive &ar)
-//	{
-//		if (ar.IsStoring())
-//		{
-//			ar << m_Point;
-//			ar << m_nSize;
-//			ar << m_nWidth;
-//			ar << m_penColor;
-//			ar << m_burshColor;
-//		}
-//		else
-//		{
-//			ar >> m_Point;
-//			ar >> m_nSize;
-//			ar >> m_nWidth;
-//			ar >> m_penColor;
-//			ar >> m_burshColor;
-//		}
-//	}
-//};
 
 class CSjData1Doc : public CDocument
 {
@@ -76,15 +47,13 @@ protected:
 #endif // SHARED_HANDLERS
 public:
 	int m_nCnt;
+	CPoint m_aPoint[30];
+	int m_aSize[30];
 	afx_msg void OnUp();
 	afx_msg void OnDown();
 	afx_msg void OnLeft();
 	afx_msg void OnRight();
-	/*CPoint m_aPoint[30];
-	int m_aSize[30];
 	int m_aWidth[30];
 	COLORREF m_aPenColor[30];
-	COLORREF m_aBurshColor[30];*/
-	//DATA m_bData[30];
-	CData m_bData[30];
+	COLORREF m_aBurshColor[30];
 };

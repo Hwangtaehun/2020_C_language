@@ -67,20 +67,11 @@ void CSjData1Doc::Serialize(CArchive& ar)
 		ar << m_nCnt;
 		for (i = 0; i < m_nCnt; i++)
 		{
-			/*ar << m_aPoint[i];
+			ar << m_aPoint[i];
 			ar << m_aSize[i];
 			ar << m_aWidth[i];
 			ar << m_aPenColor[i];
-			ar << m_aBurshColor[i];*/
-
-			/*ar << m_bData[i].m_Point;
-			ar << m_bData[i].m_nSize;
-			ar << m_bData[i].m_nWidth;
-			ar << m_bData[i].m_penColor;
-			ar << m_bData[i].m_burshColor;*/
-
-			//m_bData[i].LoadSave(ar);
-			m_bData[i].Serialize(ar);
+			ar << m_aBurshColor[i];
 		}
 	}
 	else
@@ -89,20 +80,11 @@ void CSjData1Doc::Serialize(CArchive& ar)
 		ar >> m_nCnt;
 		for (i = 0; i < m_nCnt; i++)
 		{
-			/*ar >> m_aPoint[i];
+			ar >> m_aPoint[i];
 			ar >> m_aSize[i];
 			ar >> m_aWidth[i];
 			ar >> m_aPenColor[i];
-			ar >> m_aBurshColor[i];*/
-
-			/*ar >> m_bData[i].m_Point;
-			ar >> m_bData[i].m_nSize;
-			ar >> m_bData[i].m_nWidth;
-			ar >> m_bData[i].m_penColor;
-			ar >> m_bData[i].m_burshColor;*/
-
-			//m_bData[i].LoadSave(ar);
-			m_bData[i].Serialize(ar);
+			ar >> m_aBurshColor[i];
 		}
 	}
 }
@@ -184,9 +166,7 @@ void CSjData1Doc::OnUp()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	for (int i = 0; i < m_nCnt; i++)
 	{
-		//m_aPoint[i].y -= 5;
-		//m_bData[i].m_Point.y += -5;
-		m_bData[i].ModifyPoint(0, -5);
+		m_aPoint[i].y -= 5;
 	}
 	UpdateAllViews(NULL);
 }
@@ -197,9 +177,7 @@ void CSjData1Doc::OnDown()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	for (int i = 0; i < m_nCnt; i++)
 	{
-		//m_aPoint[i].y += 5;
-		//m_bData[i].m_Point.y += 5;
-		m_bData[i].ModifyPoint(0, 5);
+		m_aPoint[i].y += 5;
 	}
 	UpdateAllViews(NULL);
 }
@@ -210,9 +188,7 @@ void CSjData1Doc::OnLeft()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	for (int i = 0; i < m_nCnt; i++)
 	{
-		//m_aPoint[i].x -= 5;
-		//m_bData[i].m_Point.x += -5;
-		m_bData[i].ModifyPoint(-5, 0);
+		m_aPoint[i].x -= 5;
 	}
 	UpdateAllViews(NULL);
 }
@@ -223,9 +199,7 @@ void CSjData1Doc::OnRight()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	for (int i = 0; i < m_nCnt; i++)
 	{
-		//m_aPoint[i].x += 5;
-		//m_bData[i].m_Point.x += +5;
-		m_bData[i].ModifyPoint(5, 0);
+		m_aPoint[i].x += 5;
 	}
 	UpdateAllViews(NULL);
 }

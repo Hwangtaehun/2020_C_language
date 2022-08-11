@@ -11,7 +11,6 @@
 
 #include "SjData1Doc.h"
 #include "SjData1View.h"
-#include "sizeinputdlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,8 +42,6 @@ BEGIN_MESSAGE_MAP(CSjData1View, CView)
 	ON_COMMAND(IDM_ONE, &CSjData1View::OnOne)
 	ON_COMMAND(IDM_TWO, &CSjData1View::OnTwo)
 	ON_COMMAND(IDM_THREE, &CSjData1View::OnThree)
-	ON_COMMAND(IDM_SIZE_CUSTOM, &CSjData1View::OnSizeCustom)
-	ON_COMMAND(IDM_PEN_WIDTH_CUSTOM, &CSjData1View::OnPenWidthCustom)
 END_MESSAGE_MAP()
 
 // CSjData1View 생성/소멸
@@ -82,8 +79,7 @@ void CSjData1View::OnDraw(CDC* pDC)
 
 	for (int i = 0; i < pDoc->m_nCnt; i++)
 	{
-		//DrawRect(pDC, pDoc->m_aPoint[i], pDoc->m_aSize[i], pDoc->m_aWidth[i], pDoc->m_aPenColor[i], pDoc->m_aBurshColor[i]);
-		DrawRect(pDC, &pDoc->m_bData[i]);
+		DrawRect(pDC, pDoc->m_aPoint[i], pDoc->m_aSize[i], pDoc->m_aWidth[i], pDoc->m_aPenColor[i], pDoc->m_aBurshColor[i]);
 	}
 
 	// TODO: 여기에 원시 데이터에 대한 그리기 코드를 추가합니다.
@@ -140,13 +136,12 @@ void CSjData1View::OnLButtonDown(UINT nFlags, CPoint point)
 	CSjData1Doc* pDoc = GetDocument();
 	if (pDoc->m_nCnt < 30)
 	{
-		/*pDoc->m_bData[pDoc->m_nCnt].m_Point = point;
-		pDoc->m_bData[pDoc->m_nCnt].m_nSize = m_nSize;
-		pDoc->m_bData[pDoc->m_nCnt].m_nWidth = m_nWidth;
-		pDoc->m_bData[pDoc->m_nCnt].m_penColor = m_penColor;
-		pDoc->m_bData[pDoc->m_nCnt].m_burshColor = m_brushColor;*/
-		pDoc->m_bData[pDoc->m_nCnt].SetData(point, m_nSize, m_nWidth, m_penColor, m_brushColor);
-		DrawRect(&dc, &pDoc->m_bData[pDoc->m_nCnt]);
+		pDoc->m_aPoint[pDoc->m_nCnt] = point;
+		pDoc->m_aSize[pDoc->m_nCnt] = m_nSize;
+		pDoc->m_aWidth[pDoc->m_nCnt] = m_nWidth;
+		pDoc->m_aPenColor[pDoc->m_nCnt] = m_penColor;
+		pDoc->m_aBurshColor[pDoc->m_nCnt] = m_brushColor;
+		DrawRect(&dc, pDoc->m_aPoint[pDoc->m_nCnt], pDoc->m_aSize[pDoc->m_nCnt], pDoc->m_aWidth[pDoc->m_nCnt], pDoc->m_aPenColor[pDoc->m_nCnt], pDoc->m_aBurshColor[pDoc->m_nCnt]);
 		pDoc->m_nCnt++;
 	}
 	CView::OnLButtonDown(nFlags, point);
@@ -156,9 +151,7 @@ void CSjData1View::OnLButtonDown(UINT nFlags, CPoint point)
 void CSjData1View::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	//m_nSize += 5;
-	TRACE(_T("%d, %d\n"), point.x, point.y);
-
+	m_nSize += 5;
 	CView::OnRButtonDown(nFlags, point);
 }
 
@@ -187,28 +180,6 @@ void CSjData1View::DrawRect(CDC* pDC, CPoint point, int nSize, int nWidth, COLOR
 	brush.CreateSolidBrush(brushColor);
 	pBrush = (CBrush*)pDC->SelectObject(&brush);
 
-	pDC->Rectangle(point.x - nSize, point.y - nSize, point.x + nSize, point.y + nSize);
-	pDC->SelectObject(pPen);
-	pDC->SelectObject(pBrush);
-}
-
-
-void CSjData1View::DrawRect(CDC * pDC, /*DATA*/CData * pData)
-{
-	CPen pen, *pPen;
-	//pen.CreatePen(PS_SOLID, pData->m_nWidth, pData->m_penColor);
-	pen.CreatePen(PS_SOLID, pData->GetWidth(), pData->GetPenColor());
-	pPen = (CPen*)pDC->SelectObject(&pen);
-
-	CBrush brush, *pBrush;
-	//brush.CreateSolidBrush(pData->m_burshColor);
-	brush.CreateSolidBrush(pData->GetBurshColor());
-	pBrush = (CBrush*)pDC->SelectObject(&brush);
-
-	/*CPoint point = pData->m_Point;
-	int nSize = pData->m_nSize;*/
-	CPoint point = pData->GetPoint();
-	int nSize = pData->GetSize();
 	pDC->Rectangle(point.x - nSize, point.y - nSize, point.x + nSize, point.y + nSize);
 	pDC->SelectObject(pPen);
 	pDC->SelectObject(pBrush);
@@ -320,28 +291,4 @@ void CSjData1View::OnThree()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_nSize = 30;
-}
-
-
-void CSjData1View::OnSizeCustom()
-{
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CSizeInPutDlg dlg(this, 10, 50);
-	dlg.m_strTitle = "사각형 크기입력";
-	if (dlg.DoModal() == IDOK)
-	{
-		m_nSize = dlg.m_nEdit;
-	}
-}
-
-
-void CSjData1View::OnPenWidthCustom()
-{
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CSizeInPutDlg dlg(this, 1, 10);
-	dlg.m_strTitle = "선의 굵기 입력";
-	if (dlg.DoModal() == IDOK)
-	{
-		m_nWidth = dlg.m_nEdit;
-	}
 }

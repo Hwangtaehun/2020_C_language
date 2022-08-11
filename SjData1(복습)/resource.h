@@ -2,14 +2,16 @@
 // Microsoft Visual C++에서 생성한 포함 파일입니다.
 // SjData1.rc에서 사용되고 있습니다.
 //
+#define IDOK2                           3
+#define IDCANCEL2                       4
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDR_MAINFRAME                   128
 #define IDR_SjData1TYPE                 130
-#define IDD_SIZEINPUTDLG                312
+#define IDD_SIZECUSTOM                  310
+#define IDD_PENWIDTHCUSTOM              311
 #define IDC_EDIT_SIZE                   1000
 #define IDC_SPIN_SIZE                   1002
-#define IDC_STATIC_TiTLE                1003
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -54,14 +56,15 @@
 #define IDM_PEN_WIDTH2                  32812
 #define IDM_PEN_WIDTH3                  32813
 #define IDM_PEN_WIDTH_CUSTOM            32814
+#define ID_BUTTON32839                  32839
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        313
+#define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         32840
-#define _APS_NEXT_CONTROL_VALUE         1004
+#define _APS_NEXT_CONTROL_VALUE         1003
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
