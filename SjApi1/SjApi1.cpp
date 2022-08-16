@@ -5,11 +5,15 @@
 #include "SjApi1.h"
 
 #define MAX_LOADSTRING 100
+#define ARRAY_SIZE 5
 
 // 전역 변수:
 HINSTANCE hInst;								// 현재 인스턴스입니다.
 TCHAR szTitle[MAX_LOADSTRING];					// 제목 표시줄 텍스트입니다.
 TCHAR szWindowClass[MAX_LOADSTRING];			// 기본 창 클래스 이름입니다.
+static POINT PrePoint;
+static int m_nSize = 3;
+static COLORREF color = RGB(0, 0, 0);
 
 // 이 코드 모듈에 들어 있는 함수의 정방향 선언입니다.
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -20,6 +24,17 @@ INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 void OnLButtonDown(HWND hWnd, UINT nFlags, POINT point);
 void OnRButtonDown(HWND hWnd, UINT nFlags, POINT point);
 void OnMouseMove(HWND hWnd, UINT nFlags, POINT point);
+void OnGugudan(HWND hWnd);
+void OnSnailSequence(HWND hWnd);
+void OnMagicSquare(HWND hWnd);
+void PrintNumber(HDC hdc, int px, int py, int num);
+void ClearNumber(HDC hdc);
+void OnRed(HWND hWnd);
+void OnGreen(HWND hWnd);
+void OnBlue(HWND hWnd);
+void OnOne(HWND hWnd);
+void OnThree(HWND hWnd);
+void OnFive(HWND hWnd);
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -158,6 +173,36 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case IDM_EXIT:
 			DestroyWindow(hWnd);
 			break;
+		case IDM_RED:
+			OnRed(hWnd);
+			InvalidateRect(hWnd, NULL, FALSE);
+			break;
+		case IDM_GREEN:
+			OnGreen(hWnd);
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case IDM_BLUE:
+			OnBlue(hWnd);
+			InvalidateRect(hWnd, NULL, TRUE);
+			break;
+		case IDM_GUGUDAN:
+			OnGugudan(hWnd);
+			break;
+		case IDM_SNAILSEQUENCE:
+			OnSnailSequence(hWnd);
+			break;
+		case IDM_MAGICSQUARE:
+			OnMagicSquare(hWnd);
+			break;
+		case IDM_ONE:
+			OnOne(hWnd);
+			break;
+		case IDM_THREE:
+			OnThree(hWnd);
+			break;
+		case IDM_FIVE:
+			OnFive(hWnd);
+			break;
 		default:
 			return DefWindowProc(hWnd, message, wParam, lParam);
 		}
@@ -167,13 +212,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		// TODO: 여기에 그리기 코드를 추가합니다.
 		/*TextOut(hdc, 100, 50, _T("WM_PAINT"), 8);*/
 		SetBkMode(hdc, OPAQUE);
-		SetTextColor(hdc, RGB(0, 0, 255));
+		//SetTextColor(hdc, RGB(0, 0, 255));
+		SetTextColor(hdc, color);
 		SetBkColor(hdc, RGB(0, 255, 0));
-		TextOut(hdc, 200, 200, _T(" 문자색과 배경색 "), 10);
+		TextOut(hdc, 0, 0, _T(" 문자색과 배경색 "), 10);
 		EndPaint(hWnd, &ps);
 		break;
 	case WM_LBUTTONDOWN:
-		OnLButtonDown(hWnd, wParam, point);
+		//OnLButtonDown(hWnd, wParam, point);
+		PrePoint = point;
 		break;
 
 	case WM_RBUTTONDOWN:
@@ -248,10 +295,158 @@ void OnMouseMove(HWND hWnd, UINT nFlags, POINT point)
 	HDC hdc = GetDC(hWnd);
 	if (nFlags == MK_LBUTTON)
 	{
-		for (int i = 0; i < 30; i++)
+		HDC hdc = GetDC(hWnd);
+		HPEN newPen = CreatePen(PS_SOLID, m_nSize, color);
+		HPEN oldPen = (HPEN)SelectObject(hdc, newPen);
+		MoveToEx(hdc, PrePoint.x, PrePoint.y, NULL);
+		LineTo(hdc, point.x, point.y);
+		PrePoint = point;
+		SelectObject(hdc, oldPen);
+		DeleteObject(newPen);
+		/*for (int i = 0; i < 30; i++)
 		{
 			SetPixel(hdc, point.x + (rand() % 30 -15), point.y + (rand() % 30 -15), RGB(0, 0, 255));
-		}
+		}*/
 	}
 	ReleaseDC(hWnd, hdc);
+}
+
+void OnGugudan(HWND hWnd)
+{
+	HDC hdc = GetDC(hWnd);
+	HFONT newFont = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("궁서체"));
+	HFONT oldFont = (HFONT)SelectObject(hdc, newFont);
+
+	TCHAR tStr[20];
+	int a = 5;
+	for (int b = 1; b <= 9; b++)
+	{
+		swprintf(tStr, 20, _T("%d * %d = %2d"), a, b, a * b);
+		TextOut(hdc, 100, b * 30 + 150, tStr, 10);
+	}
+
+	SelectObject(hdc, oldFont);
+	DeleteObject(newFont);
+}
+
+void OnSnailSequence(HWND hWnd)
+{
+	HDC hdc = GetDC(hWnd);
+	HFONT newFont = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("궁서체"));
+	HFONT oldFont = (HFONT)SelectObject(hdc, newFont);
+
+	int i, num = 0, cnt = ARRAY_SIZE, x = -1, y = 0, s = 1;
+	ClearNumber(hdc);
+	while (1)
+	{
+		for (i = 0; i < cnt; i++)
+		{
+			x += s;
+			num++;
+			PrintNumber(hdc, x, y, num);
+		}
+		cnt--;
+		if (cnt == 0)
+			break;
+		for (i = 0; i < cnt; i++)
+		{
+			y += s;
+			num++;
+			PrintNumber(hdc, x, y, num);
+		}
+		s = -s;
+	}
+	SelectObject(hdc, oldFont);
+	DeleteObject(newFont);
+}
+
+void OnMagicSquare(HWND hWnd)
+{
+	HDC hdc = GetDC(hWnd);
+	HFONT newFont = CreateFont(20, 0, 0, 0, 0, 0, 0, 0, DEFAULT_CHARSET, 0, 0, 0, 0, _T("궁서체"));
+	HFONT oldFont = (HFONT)SelectObject(hdc, newFont);
+
+	int num = 0, x = ARRAY_SIZE / 2, y = 0;
+	ClearNumber(hdc);
+	while (1)
+	{
+		num++;
+		PrintNumber(hdc, x, y, num);
+
+		if (num >= ARRAY_SIZE * ARRAY_SIZE)
+			break;
+		if (num % ARRAY_SIZE == 0)
+		{
+			y = y + 1;
+			continue;
+		}
+		if (y > 0)
+			y--;
+		else
+			y = ARRAY_SIZE - 1;
+
+		if (x < ARRAY_SIZE - 1)
+			x++;
+		else
+			x = 0;
+	}
+
+	SelectObject(hdc, oldFont);
+	DeleteObject(newFont);
+}
+
+void PrintNumber(HDC hdc, int px, int py, int num)
+{
+	int startX = 50, startY = 50, nSpace = 50;
+	TCHAR tStr[20] = _T("");
+	if (num == 0)
+	{
+		swprintf(tStr, 5, _T("    "));
+	}
+	else
+	{
+		swprintf(tStr, 5, _T(" %2d "), num);
+		Sleep(200);
+	}
+	TextOut(hdc, px * nSpace + startX, py * nSpace + startY, tStr, 4);
+}
+
+void ClearNumber(HDC hdc)
+{
+	int x, y;
+	for (x = 0; x < ARRAY_SIZE; x++)
+	{
+		for (y = 0; y < ARRAY_SIZE; y++)
+		{
+			PrintNumber(hdc, x, y, 0);
+		}
+	}
+}
+
+void OnRed(HWND hWnd)
+{
+	color = RGB(255, 0, 0);
+}
+void OnGreen(HWND hWnd)
+{
+	color = RGB(0, 255, 0);
+}
+void OnBlue(HWND hWnd)
+{
+	color = RGB(0, 0, 255);
+}
+
+void OnOne(HWND hWnd)
+{
+	m_nSize = 1;
+}
+
+void OnThree(HWND hWnd)
+{
+	m_nSize = 3;
+}
+
+void OnFive(HWND hWnd)
+{
+	m_nSize = 5;
 }
