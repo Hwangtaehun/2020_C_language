@@ -49,8 +49,8 @@ END_MESSAGE_MAP()
 
 CSjPuzzleDlg::CSjPuzzleDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSjPuzzleDlg::IDD, pParent)
-	, m_colCnt(0)
-	, m_rowCnt(0)
+	, m_colCnt(5)
+	, m_rowCnt(5)
 	, m_moveCnt(0)
 	, m_nTime(0)
 	, m_strCorect(_T(""))
@@ -59,6 +59,9 @@ CSjPuzzleDlg::CSjPuzzleDlg(CWnd* pParent /*=NULL*/)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nXSize = 0;
 	m_nYSize = 0;
+	m_bGameClear = FALSE;
+	m_bGameStart = FALSE;
+	m_bHint = FALSE;
 }
 
 void CSjPuzzleDlg::DoDataExchange(CDataExchange* pDX)
@@ -119,7 +122,16 @@ BOOL CSjPuzzleDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
+	MoveWindow(100, 100, WINDOW_XSIZE, WINDOW_YSIZE);
+	m_pDC = GetDC();
+	m_mainDC.CreateCompatibleDC(m_pDC);
+	m_hintDC.CreateCompatibleDC(m_pDC);
+	m_bitMain.LoadBitmap(IDB_BITMAIN);
+	m_bitMain.LoadBitmap(IDB_BITHINT);
 
+	InitialData();
+	m_ctrlStartBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(m_bGameStart);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -162,6 +174,16 @@ void CSjPuzzleDlg::OnPaint()
 	else
 	{
 		CDialogEx::OnPaint();
+		if (m_bGameClear)
+		{
+			DIsplayOriginal();
+		}
+		else
+		{
+			DrawRectAll();
+			DisplayAll();
+			CorrectCount();
+		}
 	}
 }
 
@@ -177,18 +199,34 @@ HCURSOR CSjPuzzleDlg::OnQueryDragIcon()
 void CSjPuzzleDlg::OnClickedStartButton()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	Invalidate();
+	InitialData();
+	DrawRectAll();
+	DisplayAll();
+	MixedPicture();
+	CorrectCount();
+	m_bGameClear = FALSE;
+	m_bGameStart = TRUE;
+	m_ctrlStartBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(m_bGameStart);
+	SetTimer(0, 1000, NULL);
 }
 
 
 void CSjPuzzleDlg::OnClickedStopButton()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_bGameStart = FALSE;
+	m_ctrlStartBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(m_bGameStart);
+	KillTimer(0);
 }
 
 
 void CSjPuzzleDlg::OnClickedEndButton()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	OnOK();
 	CDialogEx::OnCancel();
 }
 
@@ -196,7 +234,32 @@ void CSjPuzzleDlg::OnClickedEndButton()
 void CSjPuzzleDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	int x, y, ex, ey;
+	CString str;
+	if (!m_bGameStart)
+		return;
+	if (m_mainRect.PtInRect(point))
+	{
+		ex = x = (point.x - START_X) / (m_nXSize + 2);
+		ey = y = (point.y - START_Y) / (m_nYSize + 2);
+		if (EmptyPosition(ex, ey))
+		{
+			MovePicture(x, y, ex, ey, 100);
+			m_moveCnt++;
 
+			if (CorrectCount())
+			{
+				MessageBox(_T("성공"));
+				ClearGame();
+			}
+		}
+	}
+	if (m_hintRect.PtInRect(point))
+	{
+		SetTimer(1, 5000, NULL);
+		m_bHint = TRUE;
+		PreView();
+	}
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
@@ -204,7 +267,15 @@ void CSjPuzzleDlg::OnLButtonDown(UINT nFlags, CPoint point)
 void CSjPuzzleDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
+	if (nIDEvent == 1)
+	{
+		KillTimer(1);
+		m_bHint = FALSE;
+		PreView();
+		return;
+	}
+	m_nTime++;
+	UpdateData(FALSE);
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -212,40 +283,243 @@ void CSjPuzzleDlg::OnTimer(UINT_PTR nIDEvent)
 void CSjPuzzleDlg::OnClickedShowNumber()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	DrawRectAll();
+	DisplayAll();
 }
 
 
 void CSjPuzzleDlg::InitialData()
 {
+	int x, y, cnt = 0;
+	UpdateData(TRUE);
+	if (m_colCnt < 3 || m_colCnt > 7)
+		m_colCnt = 5;
+	if (m_rowCnt < 3 || m_rowCnt > 7)
+		m_rowCnt = 5;
+	m_nXSize = PIC_SIZE / m_colCnt;
+	m_nYSize = PIC_SIZE / m_rowCnt;
+	m_mainRect.left = START_X - 1;
+	m_mainRect.top = START_Y - 1;
+	m_mainRect.right = START_X + m_colCnt * (m_nXSize + 2) + 1;
+	m_mainRect.bottom = START_Y + m_rowCnt * (m_nYSize + 2) + 1;
+	m_hintRect.left = m_mainRect.right + 20;
+	m_hintRect.top = START_Y - 1;
+	m_hintRect.right = m_hintRect.left + HINT_SIZE;
+	m_hintRect.bottom = START_Y + HINT_SIZE;
+	m_strCorect = "";
+	m_moveCnt = 0;
+	m_nTime = 0;
+	for (y = 0; y < m_rowCnt; y++)
+	{
+		for (x = 0; x < m_colCnt; x++)
+		{
+			m_aMap[x][y] = cnt++;
+		}
+	}
+	m_aMap[m_colCnt - 1][m_rowCnt - 1] = -1;
 }
 
 
 void CSjPuzzleDlg::DrawRectAll()
 {
+	int x, y;
+	m_pDC->Rectangle(m_mainRect);
+	m_pDC->Rectangle(m_hintRect);
+	for (x = 0; x < m_colCnt; x++)
+	{
+		for (y = 0; y < m_rowCnt; y++)
+		{
+			DrawRect(x, y);
+		}
+	}
+	PreView();
 }
 
 
 void CSjPuzzleDlg::DrawRect(int nX, int nY)
 {
+	m_pDC->Rectangle(START_X + nX * (m_nXSize + 2), START_Y + nY * (m_nYSize + 2), START_X + (nX + 1) * (m_nXSize + 2), START_Y + (nY + 1) * (m_nYSize + 2));
 }
 
 
 void CSjPuzzleDlg::DisplayAll()
 {
+	int x, y;
+	for (x = 0; x < m_colCnt; x++)
+	{
+		for (y = 0; y < m_rowCnt; y++)
+		{
+			DrawPicture(x, y, m_aMap[x][y]);
+		}
+	}
 }
 
 
 void CSjPuzzleDlg::DrawPicture(int nX, int nY, int nPictureNo)
 {
+	int x, y;
+	x = (int)(nPictureNo % m_colCnt);
+	y = (int)(nPictureNo / m_colCnt);
+
+	m_pDC->BitBlt(START_X + 1 + (nX * (m_nXSize + 2)), START_Y + 1 + (nY * (m_nYSize + 2)), m_nXSize, m_nYSize, &m_mainDC, (x * m_nXSize), (y * m_nYSize), SRCCOPY);
+	if (m_bNumber)
+		DisplayNumber();
 }
 
 
 BOOL CSjPuzzleDlg::CorrectCount()
 {
-	return 0;
+	int x, y, cnt = 0, correct = 0;
+	for (y = 0; y < m_rowCnt; y++)
+	{
+		for (x = 0; x < m_colCnt; x++)
+		{
+			if (m_aMap[x][y] == cnt)
+				correct++;
+			cnt++;
+		}
+	}
+	if (m_aMap[m_colCnt - 1][m_rowCnt - 1] == -1)
+		correct++;
+
+	m_strCorect.Format(_T(" %d / %d "), correct, m_colCnt * m_rowCnt);
+	UpdateData(FALSE);
+	if (correct == m_colCnt * m_rowCnt)
+		return TRUE;
+	else
+		return FALSE;
 }
 
 
 void CSjPuzzleDlg::DisplayNumber()
 {
+	int x, y;
+	CString str;
+	for (y = 0; y < m_rowCnt; y++)
+	{
+		for (x = 0; x < m_colCnt; x++)
+		{
+			str.Format(_T("%2d"), m_aMap[x][y]);
+			m_pDC->TextOut(START_X + x * (m_nXSize + 2) + 2, START_Y + y * (m_nYSize + 2) + 2, str);
+		}
+	}
+}
+
+
+BOOL CSjPuzzleDlg::EmptyPosition(int& nX, int& nY)
+{
+	// TODO: 여기에 구현 코드 추가.
+	int i;
+	for (i = 0; i < m_colCnt; i++)
+	{
+		if (m_aMap[i][nY] == -1)
+		{
+			nX = i;
+			return TRUE;
+		}
+	}
+	for (i = 0; i < m_rowCnt; i++)
+	{
+		if (m_aMap[nX][i] == -1)
+		{
+			nY = i;
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+
+void CSjPuzzleDlg::MovePicture(int nX, int nY, int eX, int eY, int nTime)
+{
+	// TODO: 여기에 구현 코드 추가.
+	int i;
+	if (nX > eX)
+	{
+		for (i = eX; i < nX; i++)
+		{
+			m_aMap[i][nY] = m_aMap[i + 1][nY];
+			DrawPicture(i, nY, m_aMap[i][nY]);
+			DrawRect(i + 1, nY);
+			Sleep(nTime);
+		}
+	}
+	else if (nX < eX)
+	{
+		for (i = eX; i < nX; i++)
+		{
+			m_aMap[i][nY] = m_aMap[i - 1][nY];
+			DrawPicture(i, nY, m_aMap[i][nY]);
+			DrawRect(i - 1, nY);
+			Sleep(nTime);
+		}
+	}
+	else if (nY > eY)
+	{
+		for (i = eY; i < nY; i++)
+		{
+			m_aMap[nX][i] = m_aMap[nX][i + 1];
+			DrawPicture(nX, i, m_aMap[nX][i]);
+			DrawRect(nX, i + 1);
+			Sleep(nTime);
+		}
+	}
+	else if (nY < eY)
+	{
+		for (i = eY; i < nY; i++)
+		{
+			m_aMap[nX][i] = m_aMap[nX][i - 1];
+			DrawPicture(nX, i, m_aMap[nX][i]);
+			DrawRect(nX, i - 1);
+			Sleep(nTime);
+		}
+	}
+	m_aMap[nX][nY] = -1;
+}
+
+
+void CSjPuzzleDlg::DIsplayOriginal()
+{
+	// TODO: 여기에 구현 코드 추가.
+	m_pDC->BitBlt(START_X + m_colCnt, START_Y + m_rowCnt, PIC_SIZE, PIC_SIZE, &m_mainDC, 0, 0, SRCCOPY);
+}
+
+
+void CSjPuzzleDlg::PreView()
+{
+	// TODO: 여기에 구현 코드 추가.
+	if (m_bHint)
+		m_pDC->StretchBlt(m_hintRect.left, m_hintRect.top, HINT_SIZE, HINT_SIZE, &m_mainDC, 0, 0, PIC_SIZE, PIC_SIZE, SRCCOPY);
+	else
+		m_pDC->BitBlt(m_hintRect.left, m_hintRect.top, HINT_SIZE, HINT_SIZE, &m_mainDC, 0, 0, SRCCOPY);
+}
+
+
+void CSjPuzzleDlg::ClearGame()
+{
+	// TODO: 여기에 구현 코드 추가.
+	m_bGameStart = FALSE;
+	m_ctrlStartBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(m_bGameStart);
+	KillTimer(0);
+	m_bGameClear = TRUE;
+	DIsplayOriginal();
+}
+
+
+void CSjPuzzleDlg::MixedPicture()
+{
+	// TODO: 여기에 구현 코드 추가.
+	int x, y, ex, ey;
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < m_colCnt * m_rowCnt * 10; i++)
+	{
+		ex = x = rand() % m_colCnt;
+		ey = y = rand() % m_rowCnt;
+		if (EmptyPosition(ex, ey))
+		{
+			MovePicture(x, y, ex, ey, 1);
+		}
+	}
 }

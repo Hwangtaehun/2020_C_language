@@ -70,4 +70,10 @@ public:
 	void DrawPicture(int nX, int nY, int nPictureNo);
 	BOOL CorrectCount();
 	void DisplayNumber();
+	BOOL EmptyPosition(int& nX, int& nY);
+	void MovePicture(int nX, int nY, int eX, int eY, int nTime);
+	void DIsplayOriginal();
+	void PreView();
+	void ClearGame();
+	void MixedPicture();
 };

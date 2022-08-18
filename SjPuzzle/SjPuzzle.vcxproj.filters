@@ -65,5 +65,11 @@
     <Image Include="D:\수업용bmp\한반도500.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="..\수업용bmp\학원300_1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="..\수업용bmp\한반도500.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>
