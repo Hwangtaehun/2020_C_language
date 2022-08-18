@@ -159,7 +159,7 @@ void CSjBitmap1View::OnRButtonDown(UINT nFlags, CPoint point)
 	
 	dc.StretchBlt(0, 0, 211, 120, &memDC, 0, 0, 211, 120, SRCCOPY);
 	dc.StretchBlt(0, 150, 211 / 2, 120 / 2, &memDC, 0, 0, 211, 120, SRCCOPY);
-	dc.StretchBlt(0, 250, 211, 120, &memDC, 210, 119, -211, -120, SRCCOPY);
+	dc.StretchBlt(0, 250, 211, 120, &memDC, 210, 0, -211, 120, SRCCOPY);
 	dc.StretchBlt(250, 250, 211, 120, &memDC, 210, 119, -211, -120, SRCCOPY);
 
 	memDC.SelectObject(pBitmap);
