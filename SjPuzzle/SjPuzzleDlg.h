@@ -72,7 +72,7 @@ public:
 	void DisplayNumber();
 	BOOL EmptyPosition(int& nX, int& nY);
 	void MovePicture(int nX, int nY, int eX, int eY, int nTime);
-	void DIsplayOriginal();
+	void DisplayOriginal();
 	void PreView();
 	void ClearGame();
 	void MixedPicture();
