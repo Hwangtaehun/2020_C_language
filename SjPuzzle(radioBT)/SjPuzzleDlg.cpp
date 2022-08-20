@@ -55,7 +55,7 @@ CSjPuzzleDlg::CSjPuzzleDlg(CWnd* pParent /*=NULL*/)
 	, m_nTime(0)
 	, m_strCorect(_T(""))
 	, m_bNumber(FALSE)
-	, m_nCombo(0)
+	, m_nRadio(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nXSize = 0;
@@ -63,7 +63,6 @@ CSjPuzzleDlg::CSjPuzzleDlg(CWnd* pParent /*=NULL*/)
 	m_bGameClear = FALSE;
 	m_bGameStart = FALSE;
 	m_bHint = FALSE;
-	SelectNumber = 0;
 }
 
 void CSjPuzzleDlg::DoDataExchange(CDataExchange* pDX)
@@ -77,8 +76,7 @@ void CSjPuzzleDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_CHECK_PNUMBER, m_bNumber);
 	DDX_Control(pDX, IDC_BT_START, m_ctrlStartBt);
 	DDX_Control(pDX, IDC_BT_STOP, m_ctrlStopBt);
-	DDX_Control(pDX, IDC_COMBO1, m_ctrlCombo);
-	DDX_CBIndex(pDX, IDC_COMBO1, m_nCombo);
+	DDX_Radio(pDX, IDC_RADIO1, m_nRadio);
 }
 
 BEGIN_MESSAGE_MAP(CSjPuzzleDlg, CDialogEx)
@@ -91,7 +89,8 @@ BEGIN_MESSAGE_MAP(CSjPuzzleDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CHECK_PNUMBER, &CSjPuzzleDlg::OnClickedShowNumber)
 	ON_BN_CLICKED(IDC_BT_EXIT, &CSjPuzzleDlg::OnClickedEndButton)
-	ON_CBN_SELCHANGE(IDC_COMBO1, &CSjPuzzleDlg::OnCbnSelchangeCombo1)
+	ON_BN_CLICKED(IDC_RADIO1, &CSjPuzzleDlg::OnBnClickedRadio1)
+	ON_BN_CLICKED(IDC_RADIO2, &CSjPuzzleDlg::OnBnClickedRadio2)
 END_MESSAGE_MAP()
 
 
@@ -140,15 +139,6 @@ BOOL CSjPuzzleDlg::OnInitDialog()
 	InitialData();
 	m_ctrlStartBt.EnableWindow(!m_bGameStart);
 	m_ctrlStopBt.EnableWindow(m_bGameStart);
-
-	m_ctrlCombo.AddString(_T("한반도"));
-	m_ctrlCombo.AddString(_T("공원"));
-	m_ctrlCombo.SetCurSel(0);
-
-	UpdateData(TRUE);
-	SelectNumber = m_nCombo;
-	UpdateData(FALSE);
-
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -544,25 +534,24 @@ void CSjPuzzleDlg::MixedPicture()
 }
 
 
-void CSjPuzzleDlg::OnCbnSelchangeCombo1()
+void CSjPuzzleDlg::OnBnClickedRadio1()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
-	SelectNumber = m_nCombo;
+	m_pDC = GetDC();
+	m_mainDC.SelectObject(&m_bitMain);
+	InitialData();
 	UpdateData(FALSE);
-	switch (SelectNumber)
-	{
-	case 0:
-		m_pDC = GetDC();
-		m_mainDC.SelectObject(&m_bitMain);
-		InitialData();
-		break;
-	case 1:
-		m_pDC = GetDC();
-		m_bitOther.LoadBitmap(IDB_BITPARK);
-		m_mainDC.SelectObject(&m_bitOther);
-		InitialData();
-		break;
-	}
-	
+}
+
+
+void CSjPuzzleDlg::OnBnClickedRadio2()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	m_pDC = GetDC();
+	m_bitOther.LoadBitmap(IDB_BITPARK);
+	m_mainDC.SelectObject(&m_bitOther);
+	InitialData();
+	UpdateData(FALSE);
 }

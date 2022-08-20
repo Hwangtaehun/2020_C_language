@@ -76,9 +76,8 @@ public:
 	void PreView();
 	void ClearGame();
 	void MixedPicture();
-	CComboBox m_ctrlCombo;
-	int m_nCombo;
-	int SelectNumber;
+	int m_nRadio;
+	afx_msg void OnBnClickedRadio1();
+	afx_msg void OnBnClickedRadio2();
 	CBitmap m_bitOther;
-	afx_msg void OnCbnSelchangeCombo1();
 };
