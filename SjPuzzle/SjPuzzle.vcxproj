@@ -122,8 +122,6 @@
     <None Include="res\SjPuzzle.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\Github\2022_C_and_C_plus_plus_language\수업용bmp\학원300_1.bmp" />
-    <Image Include="..\Github\2022_C_and_C_plus_plus_language\수업용bmp\한반도500.bmp" />
     <Image Include="..\수업용bmp\공원500.bmp" />
     <Image Include="..\수업용bmp\학원300_1.bmp" />
     <Image Include="..\수업용bmp\한반도500.bmp" />
