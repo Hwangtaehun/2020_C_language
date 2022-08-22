@@ -8,8 +8,8 @@
 #define HINT_SIZE 300
 #define START_X 7
 #define START_Y 7
-#define WINDOW_XSIZE 860
-#define WINDOW_YSIZE 560
+#define WINDOW_XSIZE 870
+#define WINDOW_YSIZE 580
 
 // CSjPuzzleDlg 대화 상자
 class CSjPuzzleDlg : public CDialogEx
