@@ -34,9 +34,7 @@ public:
 	int m_nEng;
 	CString m_strID;
 	CEditNumber m_ctrlJumin1;
-	CString m_strJumin1;
 	CEditNumber m_ctrlJumin2;
-	CString m_strJumin2;
 	int m_nKor;
 	int m_nMat;
 	CString m_strPassword1;
@@ -70,4 +68,6 @@ public:
 	afx_msg void OnCustomdrawSliderEng(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnKillfocusMat();
 	afx_msg void OnDeltaposSpinMat(NMHDR *pNMHDR, LRESULT *pResult);
+	CString m_strJumin1;
+	CString m_strJumin2;
 };

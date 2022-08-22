@@ -13,7 +13,6 @@ IMPLEMENT_DYNAMIC(CInputDlg, CDialogEx)
 
 CInputDlg::CInputDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CInputDlg::IDD, pParent)
-	, m_strJumin1(_T(""))
 	, m_bCheckInform(FALSE)
 	, m_strDay(_T(""))
 	, m_strMonth(_T(""))
@@ -21,7 +20,6 @@ CInputDlg::CInputDlg(CWnd* pParent /*=NULL*/)
 	, m_strName(_T(""))
 	, m_nEng(0)
 	, m_strID(_T(""))
-	, m_strJumin2(_T(""))
 	, m_nKor(0)
 	, m_nMat(0)
 	, m_strPassword1(_T(""))
@@ -29,6 +27,8 @@ CInputDlg::CInputDlg(CWnd* pParent /*=NULL*/)
 	, m_radioArmy(0)
 	, m_radioMale(0)
 	, m_radioSolar(0)
+	, m_strJumin1(_T(""))
+	, m_strJumin2(_T(""))
 {
 
 }
@@ -52,9 +52,7 @@ void CInputDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_ENG, m_nEng);
 	DDX_Text(pDX, IDC_ID, m_strID);
 	DDX_Control(pDX, IDC_JUMIN1, m_ctrlJumin1);
-	DDX_Text(pDX, IDC_JUMIN1, m_strJumin1);
 	DDX_Control(pDX, IDC_JUMIN2, m_ctrlJumin2);
-	DDX_Text(pDX, IDC_JUMIN2, m_strJumin2);
 	DDX_Text(pDX, IDC_KOR, m_nKor);
 	DDX_Text(pDX, IDC_MAT, m_nMat);
 	DDX_Text(pDX, IDC_PASSWORD1, m_strPassword1);
@@ -72,6 +70,10 @@ void CInputDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SPIN_KOR, m_ctrlSpinKor);
 	DDX_Control(pDX, IDC_SPIN_MAT, m_ctrlSpinMat);
 	DDX_Control(pDX, IDC_RADIO_FEMALE, m_radioFemale);
+	DDX_Text(pDX, IDC_JUMIN1, m_strJumin1);
+	DDV_MaxChars(pDX, m_strJumin1, 6);
+	DDX_Text(pDX, IDC_JUMIN2, m_strJumin2);
+	DDV_MaxChars(pDX, m_strJumin2, 7);
 }
 
 
