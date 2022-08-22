@@ -152,7 +152,7 @@ void CInputDlg::OnKillfocusJumin2()
 	}
 	na = 11 - tot % 11;
 	na %= 10;
-	if (na != (strJumin[12 -'0']))
+	if (na != (strJumin[12] -'0'))
 	{
 		MessageBox(_T("틀린 주민번호 입니다."));
 	}
