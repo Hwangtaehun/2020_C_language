@@ -77,8 +77,8 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=nullptr*/)
 
 	m_nextRect.left = START_X + BLOCK_SIZE * COL_CNT + 20;
 	m_nextRect.top = START_Y + 30;
-	m_nextRect.right = m_nextRect.left = 130;
-	m_nextRect.bottom = m_nextRect.top = 80;
+	m_nextRect.right = m_nextRect.left + 130;
+	m_nextRect.bottom = m_nextRect.top + 80;
 }
 
 void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
