@@ -297,12 +297,13 @@ void DrawScreen()
         {
             if (g_Table[row][col] == -1)
             {
-                BitBlt(g_hdc, START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, g_BackDC, col * BLOCK_SIZE, row * BLOCK_SIZE, SRCCOPY);
+                BitBlt(g_hdc, START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, 
+                    BLOCK_SIZE, BLOCK_SIZE, g_BackDC, col * BLOCK_SIZE, row * BLOCK_SIZE, SRCCOPY);
             }
             else
             {
-                BitBlt(g_hdc, START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, g_BlockDC,
-                    g_Table[row][col] * BLOCK_SIZE, g_nBitType * BLOCK_SIZE, SRCCOPY);
+                BitBlt(g_hdc, START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, 
+                    BLOCK_SIZE, BLOCK_SIZE, g_BlockDC, g_Table[row][col] * BLOCK_SIZE, g_nBitType * BLOCK_SIZE, SRCCOPY);
             }
         }
     }

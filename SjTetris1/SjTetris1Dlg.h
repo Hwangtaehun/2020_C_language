@@ -1,35 +1,34 @@
-ï»¿
-// SjTetris1Dlg.h: í—¤ë” íŒŒì¼
+
+// SjTetris1Dlg.h : Çì´õ ÆÄÀÏ
 //
 
 #pragma once
+#include "afxwin.h"
 #define COL_CNT 10
 #define ROW_CNT 20
 #define START_X 10
 #define START_Y 10
 #define BLOCK_SIZE 32
 
-// CSjTetris1Dlg ëŒ€í™” ìƒì
+// CSjTetris1Dlg ´ëÈ­ »óÀÚ
 class CSjTetris1Dlg : public CDialogEx
 {
-// ìƒì„±ì…ë‹ˆë‹¤.
+// »ı¼ºÀÔ´Ï´Ù.
 public:
-	CSjTetris1Dlg(CWnd* pParent = nullptr);	// í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
+	CSjTetris1Dlg(CWnd* pParent = NULL);	// Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_SJTETRIS1_DIALOG };
-#endif
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 
-// êµ¬í˜„ì…ë‹ˆë‹¤.
+// ±¸ÇöÀÔ´Ï´Ù.
 protected:
 	HICON m_hIcon;
 
-	// ìƒì„±ëœ ë©”ì‹œì§€ ë§µ í•¨ìˆ˜
+	// »ı¼ºµÈ ¸Ş½ÃÁö ¸Ê ÇÔ¼ö
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
@@ -40,7 +39,7 @@ public:
 	CBitmap m_bmBack;
 	CDC m_BackDC;
 	CDC m_BlockDC;
-	CDC* m_pDC;
+	CDC *m_pDC;
 	char m_Table[ROW_CNT][COL_CNT];
 	CRect m_nextRect;
 	CRect m_mainRect;
@@ -67,4 +66,7 @@ public:
 	afx_msg void OnBnClickedButtonExit();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	int m_nScore;
+	int m_nNextPattern;
+	void NextBlock(bool bFlag);
 };

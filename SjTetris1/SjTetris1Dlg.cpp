@@ -1,9 +1,8 @@
-ï»¿
-// SjTetris1Dlg.cpp: êµ¬í˜„ íŒŒì¼
+
+// SjTetris1Dlg.cpp : ±¸Çö ÆÄÀÏ
 //
 
-#include "pch.h"
-#include "framework.h"
+#include "stdafx.h"
 #include "SjTetris1.h"
 #include "SjTetris1Dlg.h"
 #include "afxdialogex.h"
@@ -14,36 +13,45 @@
 
 POINT Pattern[7][16] =
 {
-	{{0,0},{0,-1},{-1,0},{-1,-1}, {0,0},{0,-1},{-1,0},{-1,-1}, {0,0},{0,-1},{-1,0},{-1,-1}, {0,0},{0,-1},{-1,0},{-1,-1}},
-	{{0,0},{1,0},{-1,0},{-2,0}, {0,0},{0,1},{0,2},{0,-1}, {0,0},{1,0},{-1,0},{-2,0}, {0,0},{0,1},{0,2},{0,-1}},
-	{{0,0},{-1,0},{0,-1},{1,-1}, {0,0},{0,1},{-1,0},{-1,-1}, {0,0},{-1,0},{0,-1},{1,-1}, {0,0},{0,1},{-1,0},{-1,-1}},
-	{{0,0},{-1,-1},{0,-1},{1,0}, {0,0},{-1,0},{-1,1},{0,-1}, {0,0},{-1,-1},{0,-1},{1,0}, {0,0},{-1,0},{-1,1},{0,-1}},
-	{{-1,0},{-1,1},{0,1},{1,1}, {0,1},{1,1},{1,0},{1,-1}, {-1,-1},{0,-1},{1,-1},{1,0}, {0,-1},{-1,-1},{-1,0},{-1,1}},
-	{{-1,1},{0,1},{1,1},{1,0}, {0,-1},{1,-1},{1,0},{1,1}, {-1,0},{-1,-1},{0,-1},{1,-1}, {-1,1},{-1,0},{-1,-1},{0,1}},
-	{{0,0},{-1,0},{1,0},{0,1}, {0,0},{0,-1},{0,1},{1,0}, {0,0},{-1,0},{1,0},{0,-1}, {0,0},{-1,0},{0,-1},{0,1}}
+	{ { 0, 0 }, { 0, -1 }, { -1, 0 }, { -1, -1 }, { 0, 0 }, { 0, -1 }, { -1, 0 }, { -1, -1 }, { 0, 0 }, { 0, -1 }, { -1, 0 }, { -1, -1 }, { 0, 0 }, { 0, -1 }, { -1, 0 }, { -1, -1 } },
+	{ { 0, 0 }, { 1, 0 }, { -1, 0 }, { -2, 0 }, { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, -1 }, { 0, 0 }, { 1, 0 }, { -1, 0 }, { -2, 0 }, { 0, 0 }, { 0, 1 }, { 0, 2 }, { 0, -1 } },
+	{ { 0, 0 }, { -1, 0 }, { 0, -1 }, { 1, -1 }, { 0, 0 }, { 0, 1 }, { -1, 0 }, { -1, -1 }, { 0, 0 }, { -1, 0 }, { 0, -1 }, { 1, -1 }, { 0, 0 }, { 0, 1 }, { -1, 0 }, { -1, -1 } },
+	{ { 0, 0 }, { -1, -1 }, { 0, -1 }, { 1, 0 }, { 0, 0 }, { -1, 0 }, { -1, 1 }, { 0, -1 }, { 0, 0 }, { -1, -1 }, { 0, -1 }, { 1, 0 }, { 0, 0 }, { -1, 0 }, { -1, 1 }, { 0, -1 } },
+	{ { -1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 }, { 0, 1 }, { 1, 1 }, { 1, 0 }, { 1, -1 }, { -1, -1 }, { 0, -1 }, { 1, -1 }, { 1, 0 }, { 0, -1 }, { -1, -1 }, { -1, 0 }, { -1, 1 } },
+	{ { -1, 1 }, { 0, 1 }, { 1, 1 }, { 1, 0 }, { 0, -1 }, { 1, -1 }, { 1, 0 }, { 1, 1 }, { -1, 0 }, { -1, -1 }, { 0, -1 }, { 1, -1 }, { -1, 1 }, { -1, 0 }, { -1, -1 }, { 0, 1 } },
+	{ { 0, 0 }, { -1, 0 }, { 1, 0 }, { 0, 1 }, { 0, 0 }, { 0, -1 }, { 0, 1 }, { 1, 0 }, { 0, 0 }, { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 0 }, { -1, 0 }, { 0, -1 }, { 0, 1 } }
 };
 
-// ì‘ìš© í”„ë¡œê·¸ë¨ ì •ë³´ì— ì‚¬ìš©ë˜ëŠ” CAboutDlg ëŒ€í™” ìƒìì…ë‹ˆë‹¤.
+POINT nextPattern[7][4] =
+{
+	{{-1, 0}, {0, 0}, {-1, 1}, {0, 1}},
+	{{-1, 1}, {0, 1}, {1, 1}, {-2, 1}},
+	{{0, 1}, {-1, 1}, {0, 0}, {1, 0}},
+	{{0, 1}, {-1, 0}, {0, 0}, {1, 1}},
+	{{-1, 1}, {-1, 0}, {0, 1}, {1, 1}},
+	{{1, 1}, {0, 1}, {-1, 1}, {1, 0}},
+	{{0, 1}, {-1, 1}, {1, 1}, {0, 0}}
+};
+
+// ÀÀ¿ë ÇÁ·Î±×·¥ Á¤º¸¿¡ »ç¿ëµÇ´Â CAboutDlg ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_ABOUTBOX };
-#endif
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
-// êµ¬í˜„ì…ë‹ˆë‹¤.
+// ±¸ÇöÀÔ´Ï´Ù.
 protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
+CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
 {
 }
 
@@ -56,12 +64,13 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CSjTetris1Dlg ëŒ€í™” ìƒì
+// CSjTetris1Dlg ´ëÈ­ »óÀÚ
 
 
 
-CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_SJTETRIS1_DIALOG, pParent)
+CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CSjTetris1Dlg::IDD, pParent)
+	, m_nScore(0)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nX = COL_CNT / 2;
@@ -70,6 +79,9 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=nullptr*/)
 	m_nRot = 0;
 	m_bStart = FALSE;
 	m_nBitType = 1;
+	m_nNextPattern = 0;
+	m_nScore = 0;
+
 	m_mainRect.left = START_X;
 	m_mainRect.top = START_Y;
 	m_mainRect.right = START_X + BLOCK_SIZE * COL_CNT + 4;
@@ -84,35 +96,36 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=nullptr*/)
 void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_START_BT, m_ctrlStartBt);
-	DDX_Control(pDX, IDC_STOP_BT, m_ctrlStopBt);
+	DDX_Control(pDX, IDC_BUTTON_START, m_ctrlStartBt);
+	DDX_Control(pDX, IDC_BUTTON_STOP, m_ctrlStopBt);
+	DDX_Text(pDX, IDC_EDIT_SCORE, m_nScore);
 }
 
 BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_START_BT, &CSjTetris1Dlg::OnBnClickedButtonStart)
-	ON_BN_CLICKED(IDC_STOP_BT, &CSjTetris1Dlg::OnBnClickedButtonStop)
-	ON_BN_CLICKED(IDC_EXIT_BT, &CSjTetris1Dlg::OnBnClickedButtonExit)
+	ON_BN_CLICKED(IDC_BUTTON_START, &CSjTetris1Dlg::OnBnClickedButtonStart)
+	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSjTetris1Dlg::OnBnClickedButtonStop)
+	ON_BN_CLICKED(IDC_BUTTON_EXIT, &CSjTetris1Dlg::OnBnClickedButtonExit)
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
-// CSjTetris1Dlg ë©”ì‹œì§€ ì²˜ë¦¬ê¸°
+// CSjTetris1Dlg ¸Ş½ÃÁö Ã³¸®±â
 
 BOOL CSjTetris1Dlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// ì‹œìŠ¤í…œ ë©”ë‰´ì— "ì •ë³´..." ë©”ë‰´ í•­ëª©ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// ½Ã½ºÅÛ ¸Ş´º¿¡ "Á¤º¸..." ¸Ş´º Ç×¸ñÀ» Ãß°¡ÇÕ´Ï´Ù.
 
-	// IDM_ABOUTBOXëŠ” ì‹œìŠ¤í…œ ëª…ë ¹ ë²”ìœ„ì— ìˆì–´ì•¼ í•©ë‹ˆë‹¤.
+	// IDM_ABOUTBOX´Â ½Ã½ºÅÛ ¸í·É ¹üÀ§¿¡ ÀÖ¾î¾ß ÇÕ´Ï´Ù.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
-	if (pSysMenu != nullptr)
+	if (pSysMenu != NULL)
 	{
 		BOOL bNameValid;
 		CString strAboutMenu;
@@ -125,18 +138,18 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 		}
 	}
 
-	// ì´ ëŒ€í™” ìƒìì˜ ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.  ì‘ìš© í”„ë¡œê·¸ë¨ì˜ ì£¼ ì°½ì´ ëŒ€í™” ìƒìê°€ ì•„ë‹ ê²½ìš°ì—ëŠ”
-	//  í”„ë ˆì„ì›Œí¬ê°€ ì´ ì‘ì—…ì„ ìë™ìœ¼ë¡œ ìˆ˜í–‰í•©ë‹ˆë‹¤.
-	SetIcon(m_hIcon, TRUE);			// í° ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.
-	SetIcon(m_hIcon, FALSE);		// ì‘ì€ ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.
+	// ÀÌ ´ëÈ­ »óÀÚÀÇ ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.  ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ ÁÖ Ã¢ÀÌ ´ëÈ­ »óÀÚ°¡ ¾Æ´Ò °æ¿ì¿¡´Â
+	//  ÇÁ·¹ÀÓ¿öÅ©°¡ ÀÌ ÀÛ¾÷À» ÀÚµ¿À¸·Î ¼öÇàÇÕ´Ï´Ù.
+	SetIcon(m_hIcon, TRUE);			// Å« ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.
+	SetIcon(m_hIcon, FALSE);		// ÀÛÀº ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.
 
-	// TODO: ì—¬ê¸°ì— ì¶”ê°€ ì´ˆê¸°í™” ì‘ì—…ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ Ãß°¡ ÃÊ±âÈ­ ÀÛ¾÷À» Ãß°¡ÇÕ´Ï´Ù.
 	MoveWindow(100, 100, m_mainRect.right + 180, m_mainRect.bottom + 45);
 	m_pDC = GetDC();
 	m_bmBlock.LoadBitmap(IDB_BLOCK);
 	m_BlockDC.CreateCompatibleDC(m_pDC);
 	m_BlockDC.SelectObject(&m_bmBlock);
-	m_bmBack.LoadBitmap(IDB_BACK1);
+	m_bmBack.LoadBitmap(IDB_BACKGROUND);
 	m_BackDC.CreateCompatibleDC(m_pDC);
 	m_BackDC.SelectObject(&m_bmBack);
 
@@ -144,7 +157,7 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	m_ctrlStartBt.EnableWindow(TRUE);
 	m_ctrlStopBt.EnableWindow(FALSE);
 	memset((void*)m_Table, -1, sizeof(m_Table));
-	return TRUE;  // í¬ì»¤ìŠ¤ë¥¼ ì»¨íŠ¸ë¡¤ì— ì„¤ì •í•˜ì§€ ì•Šìœ¼ë©´ TRUEë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
+	return TRUE;  // Æ÷Ä¿½º¸¦ ÄÁÆ®·Ñ¿¡ ¼³Á¤ÇÏÁö ¾ÊÀ¸¸é TRUE¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
 }
 
 void CSjTetris1Dlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -160,19 +173,19 @@ void CSjTetris1Dlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// ëŒ€í™” ìƒìì— ìµœì†Œí™” ë‹¨ì¶”ë¥¼ ì¶”ê°€í•  ê²½ìš° ì•„ì´ì½˜ì„ ê·¸ë¦¬ë ¤ë©´
-//  ì•„ë˜ ì½”ë“œê°€ í•„ìš”í•©ë‹ˆë‹¤.  ë¬¸ì„œ/ë·° ëª¨ë¸ì„ ì‚¬ìš©í•˜ëŠ” MFC ì• í”Œë¦¬ì¼€ì´ì…˜ì˜ ê²½ìš°ì—ëŠ”
-//  í”„ë ˆì„ì›Œí¬ì—ì„œ ì´ ì‘ì—…ì„ ìë™ìœ¼ë¡œ ìˆ˜í–‰í•©ë‹ˆë‹¤.
+// ´ëÈ­ »óÀÚ¿¡ ÃÖ¼ÒÈ­ ´ÜÃß¸¦ Ãß°¡ÇÒ °æ¿ì ¾ÆÀÌÄÜÀ» ±×¸®·Á¸é
+//  ¾Æ·¡ ÄÚµå°¡ ÇÊ¿äÇÕ´Ï´Ù.  ¹®¼­/ºä ¸ğµ¨À» »ç¿ëÇÏ´Â MFC ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ °æ¿ì¿¡´Â
+//  ÇÁ·¹ÀÓ¿öÅ©¿¡¼­ ÀÌ ÀÛ¾÷À» ÀÚµ¿À¸·Î ¼öÇàÇÕ´Ï´Ù.
 
 void CSjTetris1Dlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ê·¸ë¦¬ê¸°ë¥¼ ìœ„í•œ ë””ë°”ì´ìŠ¤ ì»¨í…ìŠ¤íŠ¸ì…ë‹ˆë‹¤.
+		CPaintDC dc(this); // ±×¸®±â¸¦ À§ÇÑ µğ¹ÙÀÌ½º ÄÁÅØ½ºÆ®ÀÔ´Ï´Ù.
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// í´ë¼ì´ì–¸íŠ¸ ì‚¬ê°í˜•ì—ì„œ ì•„ì´ì½˜ì„ ê°€ìš´ë°ì— ë§ì¶¥ë‹ˆë‹¤.
+		// Å¬¶óÀÌ¾ğÆ® »ç°¢Çü¿¡¼­ ¾ÆÀÌÄÜÀ» °¡¿îµ¥¿¡ ¸ÂÃä´Ï´Ù.
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -180,7 +193,7 @@ void CSjTetris1Dlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// ì•„ì´ì½˜ì„ ê·¸ë¦½ë‹ˆë‹¤.
+		// ¾ÆÀÌÄÜÀ» ±×¸³´Ï´Ù.
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -190,8 +203,8 @@ void CSjTetris1Dlg::OnPaint()
 	}
 }
 
-// ì‚¬ìš©ìê°€ ìµœì†Œí™”ëœ ì°½ì„ ë„ëŠ” ë™ì•ˆì— ì»¤ì„œê°€ í‘œì‹œë˜ë„ë¡ ì‹œìŠ¤í…œì—ì„œ
-//  ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
+// »ç¿ëÀÚ°¡ ÃÖ¼ÒÈ­µÈ Ã¢À» ²ô´Â µ¿¾È¿¡ Ä¿¼­°¡ Ç¥½ÃµÇµµ·Ï ½Ã½ºÅÛ¿¡¼­
+//  ÀÌ ÇÔ¼ö¸¦ È£ÃâÇÕ´Ï´Ù.
 HCURSOR CSjTetris1Dlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -201,7 +214,6 @@ HCURSOR CSjTetris1Dlg::OnQueryDragIcon()
 
 void CSjTetris1Dlg::DrawScr()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€
 	int row, col;
 	m_pDC->Rectangle(m_mainRect);
 	m_pDC->Rectangle(m_nextRect);
@@ -211,21 +223,22 @@ void CSjTetris1Dlg::DrawScr()
 		{
 			if (m_Table[row][col] == -1)
 			{
-				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, 0, 0, SRCCOPY);
+				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, col * BLOCK_SIZE, row *BLOCK_SIZE, SRCCOPY);
 			}
 			else
 			{
-				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BlockDC, 
-				m_Table[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, SRCCOPY);
+				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BlockDC,
+					m_Table[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, SRCCOPY);
 			}
 		}
 	}
+	m_nScore += 10;
+	NextBlock(m_bStart);
 }
 
 
 void CSjTetris1Dlg::InitialGame()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	memset((void *)m_Table, -1, sizeof(m_Table));
 	DrawScr();
 	m_nPattern = rand() % 7;
@@ -234,13 +247,15 @@ void CSjTetris1Dlg::InitialGame()
 	m_nX = COL_CNT / 2;
 	m_bStart = TRUE;
 	DrawBlock(TRUE);
+
+	m_nNextPattern = rand() % 7;
+	NextBlock(TRUE);
 	SetTimer(1, 500, NULL);
 }
 
 
 void CSjTetris1Dlg::DrawBlock(bool bFlag)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	for (int i = 0; i < 4; i++)
 	{
 		if (bFlag)
@@ -253,7 +268,7 @@ void CSjTetris1Dlg::DrawBlock(bool bFlag)
 		{
 			m_pDC->BitBlt(START_X + 2 + (m_nX + Pattern[m_nPattern][i + m_nRot * 4].x) * BLOCK_SIZE,
 				START_Y + 2 + (m_nY + Pattern[m_nPattern][i + m_nRot * 4].y) * BLOCK_SIZE,
-				BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, 0, 0, SRCCOPY);
+				BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, (m_nX + Pattern[m_nPattern][i + m_nRot * 4].x) * BLOCK_SIZE, (m_nY + Pattern[m_nPattern][i + m_nRot * 4].y) * BLOCK_SIZE, SRCCOPY);
 		}
 	}
 }
@@ -261,7 +276,6 @@ void CSjTetris1Dlg::DrawBlock(bool bFlag)
 
 BOOL CSjTetris1Dlg::BlockDown()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	if (!IsAround(m_nX, m_nY + 1))
 	{
 		SetTable();
@@ -276,7 +290,6 @@ BOOL CSjTetris1Dlg::BlockDown()
 
 BOOL CSjTetris1Dlg::IsAround(int nX, int nY)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int i, row, col;
 	for (i = 0; i < 4; i++)
 	{
@@ -297,7 +310,6 @@ BOOL CSjTetris1Dlg::IsAround(int nX, int nY)
 
 void CSjTetris1Dlg::SetTable()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int i, row, col, sw;
 	for (i = 0; i < 4; i++)
 	{
@@ -325,6 +337,9 @@ void CSjTetris1Dlg::SetTable()
 				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, 0, 0, SRCCOPY);
 				Sleep(20);
 			}
+			UpdateData(TRUE);
+			m_nScore += 10;
+			UpdateData(FALSE);
 			DrawScr();
 			Sleep(100);
 			row++;
@@ -332,12 +347,16 @@ void CSjTetris1Dlg::SetTable()
 	}
 	m_nX = COL_CNT / 2;
 	m_nY = 1;
-	m_nPattern = rand() % 7;
+	m_nPattern = m_nNextPattern;
+	NextBlock(FALSE);
+	m_nNextPattern = rand() % 7;
+	NextBlock(TRUE);
+	//m_nPattern = rand() % 7;
 	m_nRot = 1;
 	if (!IsAround(m_nX, m_nY + 1))
 	{
 		KillTimer(1);
-		MessageBox(_T("ìœ¼ì•…"));
+		MessageBox(_T("À¸¾Ç"));
 		m_ctrlStartBt.EnableWindow(TRUE);
 		m_ctrlStopBt.EnableWindow(FALSE);
 		return;
@@ -347,7 +366,6 @@ void CSjTetris1Dlg::SetTable()
 
 void CSjTetris1Dlg::RolateBlock(bool bFlag)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int nRot = m_nRot;
 	DrawBlock(FALSE);
 	if (++m_nRot > 3)
@@ -360,7 +378,6 @@ void CSjTetris1Dlg::RolateBlock(bool bFlag)
 
 void CSjTetris1Dlg::MoveDown()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	while (BlockDown())
 	{
 		Sleep(30);
@@ -370,7 +387,6 @@ void CSjTetris1Dlg::MoveDown()
 
 void CSjTetris1Dlg::MoveRight()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	if (!IsAround(m_nX + 1, m_nY))
 		return;
 	DrawBlock(FALSE);
@@ -381,7 +397,6 @@ void CSjTetris1Dlg::MoveRight()
 
 void CSjTetris1Dlg::MoveLeft()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	if (!IsAround(m_nX - 1, m_nY))
 		return;
 	DrawBlock(FALSE);
@@ -392,7 +407,7 @@ void CSjTetris1Dlg::MoveLeft()
 
 void CSjTetris1Dlg::OnBnClickedButtonStart()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	InitialGame();
 	m_ctrlStartBt.EnableWindow(FALSE);
 	m_ctrlStopBt.EnableWindow(TRUE);
@@ -402,7 +417,7 @@ void CSjTetris1Dlg::OnBnClickedButtonStart()
 
 void CSjTetris1Dlg::OnBnClickedButtonStop()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	m_bStart = FALSE;
 	KillTimer(1);
 	m_ctrlStartBt.EnableWindow(TRUE);
@@ -412,14 +427,14 @@ void CSjTetris1Dlg::OnBnClickedButtonStop()
 
 void CSjTetris1Dlg::OnBnClickedButtonExit()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	OnOK();
 }
 
 
 void CSjTetris1Dlg::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ê°’ì„ í˜¸ì¶œí•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ¸Ş½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº»°ªÀ» È£ÃâÇÕ´Ï´Ù.
 	BlockDown();
 	CDialogEx::OnTimer(nIDEvent);
 }
@@ -427,7 +442,7 @@ void CSjTetris1Dlg::OnTimer(UINT_PTR nIDEvent)
 
 BOOL CSjTetris1Dlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ì—¬ê¸°ì— íŠ¹ìˆ˜í™”ëœ ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ í´ë˜ìŠ¤ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ Æ¯¼öÈ­µÈ ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº» Å¬·¡½º¸¦ È£ÃâÇÕ´Ï´Ù.
 	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
 		return TRUE;
 	if (pMsg->message == WM_KEYDOWN && m_bStart)
@@ -453,4 +468,28 @@ BOOL CSjTetris1Dlg::PreTranslateMessage(MSG* pMsg)
 		}
 	}
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+void CSjTetris1Dlg::NextBlock(bool bFlag)
+{
+	// TODO: ¿©±â¿¡ ±¸Çö ÄÚµå Ãß°¡.
+	int i, x = 50, y = 10;
+	if (m_nNextPattern == 0)
+		x = 65;
+	else if (m_nNextPattern == 1)
+		x = 65, y = 0;
+
+	if (bFlag)
+	{
+		for (i = 0; i < 4; i++)
+		{
+			m_pDC->BitBlt(m_nextRect.left + x + (nextPattern[m_nNextPattern][i].x) * BLOCK_SIZE,
+				m_nextRect.top + y + (nextPattern[m_nNextPattern][i].y) * BLOCK_SIZE,
+				BLOCK_SIZE, BLOCK_SIZE, &m_BlockDC, m_nNextPattern * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, SRCCOPY);
+		}
+	}
+	else
+	{
+		m_pDC->Rectangle(m_nextRect);
+	}
 }
