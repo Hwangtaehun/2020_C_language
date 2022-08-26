@@ -472,9 +472,9 @@ void SetTable()
     g_nX = COL_CNT / 2;
     g_nY = 1;
     g_nPattern = g_nNextPattern;
-    NextBlock(FALSE);
+    //NextBlock(FALSE);
     g_nNextPattern = rand() % 7;
-    NextBlock(TRUE);
+    //NextBlock(TRUE);
     //g_nPattern = rand() % 7;
     g_nRot = 1;
     if (!IsAround(g_nX, g_nY + 1))
