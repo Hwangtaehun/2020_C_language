@@ -47,7 +47,7 @@ int walking (int **walk, int size)
     int x, y, bx, by;
     for(x = 0; x < size ; x++)
     {
-         for(x = 0; x < size ; x++)
+         for(y = 0; y < size ; y++)
         {
             gotoxy((x+1)*5, y*2+5);
             printf("бс");
@@ -59,13 +59,13 @@ int walking (int **walk, int size)
     while(1)
     {
         do{
-            bx =x;
-            bx += rand()%3+1;
+            bx = x;
+            bx += rand()%3-1;
         }while(bx < 0 || bx >= size);
         do{
-            by =y;
-            by += rand()%3+1;
-        }while(bx < 0 || bx >= size);
+            by = y;
+            by += rand()%3-1;
+        }while(by < 0 || by >= size);
         if(bx == x && by == y)
             continue;
 
