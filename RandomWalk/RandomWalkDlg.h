@@ -71,4 +71,5 @@ public:
 	void DisplayAll();
 	void DrawPicture(int nX, int nY);
 	void DrawWalker(int nX, int nY);
+	afx_msg void OnClickedButtonExit();
 };

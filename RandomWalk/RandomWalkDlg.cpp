@@ -89,6 +89,7 @@ BEGIN_MESSAGE_MAP(CRandomWalkDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CRandomWalkDlg::OnClickedButtonStop)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CHECK_VISIT, &CRandomWalkDlg::OnClickedCheckVisit)
+	ON_BN_CLICKED(IDC_BUTTON_EXIT, &CRandomWalkDlg::OnClickedButtonExit)
 END_MESSAGE_MAP()
 
 
@@ -140,7 +141,7 @@ BOOL CRandomWalkDlg::OnInitDialog()
 
 	InitialData();
 	m_ctrlStartBt.EnableWindow(!m_bGameStart);
-	m_ctrlStopBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(m_bGameStart);
 	srand((unsigned int)time(NULL));
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -201,19 +202,46 @@ HCURSOR CRandomWalkDlg::OnQueryDragIcon()
 void CRandomWalkDlg::OnClickedButtonStart()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	Invalidate();
+	InitialData();
+	DrawRectAll();
+	m_nX = rand() % m_nXcnt;
+	m_nY = rand() % m_nYcnt;
+	m_aWalk[m_nY][m_nX]++;
+	m_nVisitCount++;
+	DrawWalker(m_nX, m_nY);
+
+	m_bGameStart = TRUE;
+	m_ctrlStartBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(m_bGameStart);
+	SetTimer(0, 1000, NULL);
+	SetTimer(1, m_nSpeed, NULL);
 }
 
 
 void CRandomWalkDlg::OnClickedButtonStop()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_bGameStart = FALSE;
+	m_ctrlStartBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(m_bGameStart);
+	KillTimer(0);
+	KillTimer(1);
 }
 
 
 void CRandomWalkDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-
+	if (nIDEvent == 0)
+	{
+		m_nTime++;
+		UpdateData(FALSE);
+	}
+	else if (nIDEvent == 1)
+	{
+		Walking();
+	}
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -221,6 +249,8 @@ void CRandomWalkDlg::OnTimer(UINT_PTR nIDEvent)
 void CRandomWalkDlg::OnClickedCheckVisit()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData();
+	Invalidate();
 }
 
 
@@ -271,19 +301,82 @@ void CRandomWalkDlg::DrawRect(int nX, int nY)
 
 void CRandomWalkDlg::Walking()
 {
+	int bx, by;
+	do{
+		do{
+			bx = m_nX;
+			bx += rand() % 3 - 1;
+		} while (bx < 0 || bx >= m_nXcnt);
+
+		do{
+			by = m_nY;
+			by += rand() % 3 - 1;
+		} while (by < 0 || by >= m_nYcnt);
+
+	} while (bx == m_nX && by == m_nY);
+
+	DrawPicture(m_nX, m_nY);
+	m_nX = bx;
+	m_nY = by;
+	m_aWalk[m_nY][m_nX]++;
+	DrawWalker(m_nX, m_nY);
+	m_nMoveCnt++;
+	if (m_aWalk[m_nY][m_nX] == 1)
+	{
+		m_nVisitCount++;
+		if (m_nVisitCount >= m_nXcnt * m_nYcnt)
+		{
+			m_bGameStart = FALSE;
+			m_ctrlStartBt.EnableWindow(!m_bGameStart);
+			m_ctrlStopBt.EnableWindow(m_bGameStart);
+			KillTimer(1);
+			KillTimer(0);
+		}
+	}
+	m_strVisit.Format(_T("%d/%d"), m_nVisitCount, m_nXcnt * m_nYcnt);
+	UpdateData(FALSE);
 }
 
 
 void CRandomWalkDlg::DisplayAll()
 {
+	int x, y;
+	for (x = 0; x < m_nXcnt; x++)
+	{
+		for (y = 0; y < m_nYcnt; y++)
+		{
+			DrawPicture(x, y);
+		}
+	}
+	DrawWalker(m_nX, m_nY);
 }
 
 
 void CRandomWalkDlg::DrawPicture(int nX, int nY)
 {
+	if (m_aWalk[nY][nX] == 0)
+		m_pDC->BitBlt(START_X + 1 + (nX * (m_nXsize + 2)), START_Y + 1 + (nY * (m_nYsize + 2)), m_nXsize, m_nYsize, &m_mainDC, (nX * m_nXsize), (nY * m_nYsize), SRCCOPY);
+	else
+	{
+		m_pDC->BitBlt(START_X + 1 + (nX * (m_nXsize + 2)), START_Y + 1 + (nY * (m_nYsize + 2)), m_nXsize, m_nYsize, &m_backDC, (nX * m_nXsize), (nY * m_nYsize), SRCCOPY);
+		if (m_bCheckVisit)
+		{
+			CString str;
+			str.Format(_T("%2d"), m_aWalk[nY][nX]);
+			m_pDC->TextOut(START_X + nX * (m_nXsize + 2) + 2, START_Y + nY * (m_nYsize + 2) + 2, str);
+		}
+	}
 }
 
 
 void CRandomWalkDlg::DrawWalker(int nX, int nY)
 {
+	m_pDC->StretchBlt(START_X + 1 + (nX * (m_nXsize + 2)), START_Y + 1 + (nY * (m_nYsize + 2)), m_nXsize, m_nYsize, &m_walkerDC, 0, 0, 72, 72, SRCCOPY);
+}
+
+
+void CRandomWalkDlg::OnClickedButtonExit()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	OnOK();
 }
