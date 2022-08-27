@@ -251,11 +251,21 @@ void CRandomWalkDlg::InitialData()
 
 void CRandomWalkDlg::DrawRectAll()
 {
+	int x, y;
+	for (x = 0; x < m_nXcnt; x++)
+	{
+		for (y = 0; y < m_nYcnt; y++)
+		{
+			DrawRect(x, y);
+		}
+	}
 }
 
 
 void CRandomWalkDlg::DrawRect(int nX, int nY)
 {
+	//m_pDC->Rectangle(START_X + nX * (m_nXsize + 2), START_Y + nY * (m_nYsize + 2), START_X + (nX + 1) * (m_nXsize + 2), START_Y + nY * (m_nYsize + 2));
+	m_pDC->Draw3dRect(START_X + nX * (m_nXsize + 2), START_Y + nY * (m_nYsize + 2), m_nXsize, m_nYsize, RGB(128, 128, 128), RGB(255, 255, 255));
 }
 
 
