@@ -128,7 +128,20 @@ BOOL CRandomWalkDlg::OnInitDialog()
 	m_pDC->SetBkMode(TRANSPARENT);
 	m_pDC->SetTextColor(RGB(0, 0, 255));
 
+	m_mainDC.CreateCompatibleDC(m_pDC);
+	m_backDC.CreateCompatibleDC(m_pDC);
+	m_walkerDC.CreateCompatibleDC(m_pDC);
+	m_bitMain.LoadBitmap(IDM_BITMAIN);
+	m_bitBack.LoadBitmap(IDM_BACK);
+	m_bitWalker.LoadBitmap(IDM_WALKER);
+	m_mainDC.SelectObject(&m_bitMain);
+	m_backDC.SelectObject(&m_bitBack);
+	m_walkerDC.SelectObject(&m_bitWalker);
+
 	InitialData();
+	m_ctrlStartBt.EnableWindow(!m_bGameStart);
+	m_ctrlStopBt.EnableWindow(!m_bGameStart);
+	srand((unsigned int)time(NULL));
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -221,6 +234,18 @@ void CRandomWalkDlg::InitialData()
 
 	m_nXsize = PIC_SIZE / m_nXcnt;
 	m_nYsize = PIC_SIZE / m_nYcnt;
+
+	m_mainRect.left = START_X - 1;
+	m_mainRect.top = START_Y - 1;
+	m_mainRect.right = START_X + m_nXcnt * (m_nXsize + 2) + 1;
+	m_mainRect.bottom = START_Y + m_nYcnt * (m_nYsize + 2) + 1;
+
+	m_strVisit = "";
+	m_nMoveCnt = 0;
+	m_nTime = 0;
+	m_nVisitCount = 0;
+
+	memset((void*)m_aWalk, 0, sizeof(m_aWalk));
 }
 
 

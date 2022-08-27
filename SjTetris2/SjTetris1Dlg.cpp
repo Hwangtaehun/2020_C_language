@@ -523,22 +523,35 @@ void CSjTetris1Dlg::NextBlock(bool bFlag)
 void CSjTetris1Dlg::DrawScr2()
 {
 	// TODO: 여기에 구현 코드 추가.
-	int x = BLOCK_SIZE * COL_CNT / 2; // 2 * x = BLOCK_SIZE * ROW_CNT / 2
 	CDC* pDC = GetDC();
-
-	for (int i = 0; i < 5; i++)
+	int x = 0, y = 0;
+	for (int i = 1; i < 6; i++)
+	{
+		if (i < 3)
+		{
+			x = (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14);
+			y = 0;
+		}
+		else
+		{
+			x = (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14) - 175;
+			y = BLOCK_SIZE * ROW_CNT / 2 + 54;
+		}
+		pDC->Rectangle(m_mainRect2.left + x, m_mainRect2.top + y, m_mainRect2.right + x, m_mainRect2.bottom + y);
+	}
+	DrawScr3();
+	/*for (int i = 0; i < 5; i++)
 	{
 		if (i < 2)
 		{
-			pDC->Rectangle((i + 2) * x + 195 + (i * 14), 10, (i + 3) * x + 199 + (i * 14), 2 * x + 14);
+			pDC->Rectangle((i + 2) * BLOCK_SIZE * COL_CNT / 2 + START_X + 185 + (i * 14), START_Y, (i + 3) * BLOCK_SIZE * COL_CNT / 2 + START_X + 189 + (i * 14), BLOCK_SIZE * ROW_CNT / 2 + 14);
 		}
 
 		else
 		{
-			pDC->Rectangle(i * x + 20 + (i - 2) * 14, 2 * x + 64, (i + 1) * x + 24 + (i - 2) * 14, 4 * x + 68);
+			pDC->Rectangle(i * BLOCK_SIZE * COL_CNT / 2 + START_X + 10 + (i - 2) * 14, BLOCK_SIZE * ROW_CNT / 2 + START_Y + 54, (i + 1) * BLOCK_SIZE * COL_CNT / 2 + START_X + 14 + (i - 2) * 14, BLOCK_SIZE * ROW_CNT + START_Y + 58);
 		}
-	}
-	DrawScr3();
+	}*/
 
 	/*int row, col;
 	for (int i = 1; i < 6; i++)
@@ -613,9 +626,43 @@ void CSjTetris1Dlg::DrawScr2()
 void CSjTetris1Dlg::DrawScr3()
 {
 	// TODO: 여기에 구현 코드 추가.
+	int x = 0, y = 0;
 	int row, col;
 	m_pDC->Rectangle(m_mainRect2);
 	for (int i = 1; i < 6; i++)
+	{
+		if (i < 3)
+		{
+			x = (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14);
+			y = 0;
+		}
+		else
+		{
+			x = (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14) - 175;
+			y = BLOCK_SIZE * ROW_CNT / 2 + 54;
+		}
+
+		for (row = 0; row < ROW_CNT; row++)
+		{
+			for (col = 0; col < COL_CNT; col++)
+			{
+				if (m_Table[i][row][col] == -1)
+				{
+					m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y,
+						BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+						col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				}
+				else
+				{
+					m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y, 
+						BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+						m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+
+				}
+			}
+		}
+	}
+	/*for (int i = 1; i < 6; i++)
 	{
 		if (i < 3)
 		{
@@ -660,5 +707,5 @@ void CSjTetris1Dlg::DrawScr3()
 				}
 			}
 		}
-	}
+	}*/
 }
