@@ -354,170 +354,50 @@ void CSejongMineDlg::InitGame()
 void CSejongMineDlg::MineSetting(int dx, int dy)
 {
 	// TODO: 여기에 구현 코드 추가.
-	int i, x, y;
-	srand((unsigned)time(NULL));
-	for (i = 0; i < m_nMineCnt; i++)
-	{
-		do
-		{
-			x = rand() % m_nBoxCntX;
-			y = rand() % m_nBoxCntY;
-		} while (m_BoxState[y][x] != 0 || (x == dx && y == dy));
-		m_BoxState[y][x] = 9;
-		for (x = 0; x < m_nBoxCntX; x++)
-		{
-			for (y = 0; y < m_nBoxCntY; y++)
-			{
-				if (m_BoxState[y][x] == 9)
-					continue;
-				m_BoxState[y][x] = CountMines(x, y);
-			}
-		}
-	}
 }
 
 
 int CSejongMineDlg::CountMines(int x, int y)
 {
 	// TODO: 여기에 구현 코드 추가.
-	int i, j, cnt = 0, startX, startY, endX, endY;
-	startX = (x > 0) ? x - 1 : x;
-	startY = (y > 0) ? y - 1 : y;
-	endX = (x < m_nBoxCntX - 1) ? x + 1 : x;
-	endY = (y < m_nBoxCntY - 1) ? y + 1 : y;
-	for (i = startX; i <= endX; i++)
-	{
-		for (j = startY; j <= endY; j++)
-		{
-			if (m_BoxState[j][i] == 9)
-			{
-				cnt++;
-			}
-		}
-	}
-	return cnt;
+	return 0;
 }
 
 
 void CSejongMineDlg::LRButtonClick(int x, int y, bool bStyle)
 {
 	// TODO: 여기에 구현 코드 추가.
-	int i, j, startX, startY, endX, endY;
-	startX = (x > 0) ? x - 1 : x;
-	startY = (y > 0) ? y - 1 : y;
-	endX = (x < m_nBoxCntX - 1) ? x + 1 : x;
-	endY = (y < m_nBoxCntY - 1) ? y + 1 : y;
-	for (i = startX; i <= endX; i++)
-	{
-		for (j = startY; j <= endY; j++)
-		{
-			if (m_BoxStyle[j][i] < 2)
-			{
-				if (bStyle)
-					DrawBox(i, j, 14 + m_BoxStyle[i][j]);
-				else
-					DrawBox(i, j, m_BoxStyle[j][i]);
-			}
-		}
-	}
 }
 
 
 void CSejongMineDlg::ClickBox(int x, int y)
 {
 	// TODO: 여기에 구현 코드 추가.
-	if (x >= 0 && y >= 0 && x < m_nBoxCntX && y < m_nBoxCntY)
-	{
-		if (m_BoxStyle[y][x] >= 2)
-		{
-			return;
-		}
-		m_BoxStyle[y][x] = 14 - m_BoxState[y][x];
-		DrawBox(x, y, m_BoxStyle[y][x]);
-		if (--m_nOpened <= 0)
-			return;
-		if (m_BoxState[y][x] == 0)
-		{
-			ClickBox(x - 1, y - 1);
-			ClickBox(x - 1, y);
-			ClickBox(x - 1, y + 1);
-			ClickBox(x, y - 1);
-			ClickBox(x, y + 1);
-			ClickBox(x + 1, y - 1);
-			ClickBox(x + 1, y);
-			ClickBox(x + 1, y + 1);
-		}
-	}
 }
 
 
 void CSejongMineDlg::GameWin()
 {
 	// TODO: 여기에 구현 코드 추가.
-	m_nGameState = 3;
-	KillTimer(0);
-	m_bTimerState = FALSE;
-	DrawFace(4);
-	MessageBox(_T("축하합니다. winner"));
 }
 
 
 void CSejongMineDlg::GameLose()
 {
 	// TODO: 여기에 구현 코드 추가.
-	int x, y;
-	m_nGameState = 2;
-	KillTimer(0);
-	m_bTimerState = FALSE;
-	DrawFace(3);
-	for (x = 0; x < m_nBoxCntX; x++)
-	{
-		for (y = 0; y < m_nBoxCntY; y++)
-		{
-			if (m_BoxStyle[y][x] != 2 && m_BoxState[y][x] != 9 || m_BoxStyle[y][x] == 3)
-			{
-				continue;
-			}
-			if (m_BoxStyle[y][x] == 2 && m_BoxState[y][x] != 9)
-			{
-				m_BoxStyle[y][x] = 4;
-			}
-			else if (m_BoxStyle[y][x] != 2)
-			{
-				m_BoxStyle[y][x] = 5;
-			}
-			DrawBox(x, y, m_BoxStyle[y][x]);
-		}
-	}
 }
 
 
 void CSejongMineDlg::WriteFile()
 {
 	// TODO: 여기에 구현 코드 추가.
-	CFile file;
-	file.Open(_T("SejongMine.dat"), CFile::modeCreate | CFile::modeWrite);
-	GetWindowRect(&m_WndRect);
-
-	IData.Difficulty = m_nld;
-	IData.Width = m_nBoxCntX;
-	IData.Height = m_nBoxCntX;
-	IData.Mines = m_nMineCnt;
-	IData.Xpos = m_WndRect.left;
-	IData.Ypos = m_WndRect.top;
-
-	file.Write((void*)&IData, sizeof(IData));
-	file.Close();
 }
 
 
 BOOL CSejongMineDlg::PreTranslateMessage(MSG* pMsg)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
-		return TRUE;
-	if (pMsg->wParam == VK_F2)
-		SendMessage(WM_COMMAND, IDM_START);
+
 	return CDialogEx::PreTranslateMessage(pMsg);
 }
 
@@ -590,34 +470,7 @@ void CSejongMineDlg::OnStart()
 void CSejongMineDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	int x, y;
-	if (m_FaceRect.PtInRect(point))
-	{
-		DrawFace(1);
-	}
-	if (m_WndRect.PtInRect(point) && m_nGameState < 2)
-	{
-		DrawFace(2);
-		m_bLbuttonDown = TRUE;
-		x = (point.x - BOX_START_X) / 16;
-		y = (point.y - BOX_START_Y) / 16;
-		if (m_nGameState == 0)
-		{
-			m_nGameState = 1;
-			SetTimer(0, 1000, NULL);
-			m_bTimerState = TRUE;
-			MineSetting(x, y);
-		}
-		if (m_bRbuttonDown)
-		{
-			LRButtonClick(x, y, TRUE);
-		}
-		else
-		{
-			if (m_BoxStyle[y][x] < 2)
-				DrawBox(x, y, 14 + m_BoxStyle[y][x]);
-		}
-	}
+
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
@@ -625,38 +478,7 @@ void CSejongMineDlg::OnLButtonDown(UINT nFlags, CPoint point)
 void CSejongMineDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	if (m_FaceRect.PtInRect(point))
-	{
-		InitGame();
-		InvalidateRect(m_FaceRect, FALSE);
-		return;
-	}
-	m_bLbuttonDown = FALSE;
-	if (m_bRbuttonDown)
-	{
-		InvalidateRect(m_WndRect, FALSE);
-		return;
-	}
-	if (m_WndRect.PtInRect(point) && m_nGameState < 2)
-	{
-		DrawFace(0);
-		int x, y;
-		x = (point.x - BOX_START_X) / 16;
-		y = (point.y - BOX_START_Y) / 16;
-		if (m_BoxStyle[y][x] == 9 && m_BoxStyle[y][x] < 2)
-		{
-			m_BoxStyle[y][x] = 3;
-			DrawBox(x, y, m_BoxStyle[y][x]);
-			GameLose();
-			return;
-		}
-		if (m_BoxStyle[y][x] < 2)
-		{
-			ClickBox(x, y);
-			if (m_nOpened == 0)
-				GameWin();
-		}
-	}
+
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
@@ -664,40 +486,7 @@ void CSejongMineDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CSejongMineDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	static int x = 0, y = 0;
 
-	if (nFlags && MK_LBUTTON && m_nGameState < 2)
-	{
-		if (m_FaceRect.PtInRect(point))
-		{
-			DrawFace(1);
-			return;
-		}
-		if (!m_WndRect.PtInRect(point))
-		{
-			InvalidateRect(m_WndRect, FALSE);
-			return;
-		}
-		if (m_bRbuttonDown & m_bLbuttonDown)
-		{
-			LRButtonClick(x, y, FALSE);
-		}
-		else
-		{
-			DrawBox(x, y, m_BoxStyle[y][x]);
-		}
-		x = (point.x - BOX_START_X) / 16;
-		y = (point.y - BOX_START_Y) / 16;
-		if (m_bRbuttonDown & m_bLbuttonDown)
-		{
-			LRButtonClick(x, y, TRUE);
-		}
-		else
-		{
-			if (m_BoxStyle[y][x] < 2)
-				DrawBox(x, y, 14 + m_BoxStyle[y][x]);
-		}
-	}
 	CDialogEx::OnMouseMove(nFlags, point);
 }
 
@@ -705,38 +494,7 @@ void CSejongMineDlg::OnMouseMove(UINT nFlags, CPoint point)
 void CSejongMineDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	int x, y;
-	if (m_WndRect.PtInRect(point) && m_nGameState != 2)
-	{
-		x = (point.x - BOX_START_X) / 16;
-		y = (point.y - BOX_START_Y) / 16;
-		m_bRbuttonDown = TRUE;
-		if (m_bLbuttonDown)
-		{
-			LRButtonClick(x, y, TRUE);
-			DrawFace(2);
-			return;
-		}
-		if (m_BoxStyle[y][x] < 3)
-		{
-			switch (m_BoxStyle[y][x])
-			{
-			case 0:
-				m_BoxStyle[y][x] = 2;
-				m_nMine--;
-				DrawMineCounter();
-				break;
-			case 1:
-				m_BoxStyle[y][x] = 0;
-				break;
-			case 2:
-				m_BoxStyle[y][x] = 1;
-				m_nMine++;
-				DrawMineCounter();
-			}
-			DrawBox(x, y, m_BoxStyle[y][x]);
-		}
-	}
+
 	CDialogEx::OnRButtonDown(nFlags, point);
 }
 
@@ -744,11 +502,7 @@ void CSejongMineDlg::OnRButtonDown(UINT nFlags, CPoint point)
 void CSejongMineDlg::OnRButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	if (m_bLbuttonDown)
-	{
-		InvalidateRect(m_WndRect, FALSE);
-	}
-	m_bRbuttonDown = FALSE;
+
 	CDialogEx::OnRButtonUp(nFlags, point);
 }
 
@@ -756,8 +510,7 @@ void CSejongMineDlg::OnRButtonUp(UINT nFlags, CPoint point)
 void CSejongMineDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	m_nTime++;
-	DrawTimer();
+
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -765,6 +518,6 @@ void CSejongMineDlg::OnTimer(UINT_PTR nIDEvent)
 void CSejongMineDlg::OnDestroy()
 {
 	CDialogEx::OnDestroy();
-	WriteFile();
+
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 }
