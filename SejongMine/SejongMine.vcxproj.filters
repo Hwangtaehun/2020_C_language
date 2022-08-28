@@ -74,5 +74,11 @@
     <Image Include="res\DISPLAY_.BMP">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\NumberR.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\Face.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>
