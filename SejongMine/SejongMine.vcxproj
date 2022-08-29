@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CustomDlg.h" />
+    <ClInclude Include="RankDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SejongMine.h" />
     <ClInclude Include="SejongMineDlg.h" />
@@ -110,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CustomDlg.cpp" />
+    <ClCompile Include="RankDlg.cpp" />
     <ClCompile Include="SejongMine.cpp" />
     <ClCompile Include="SejongMineDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
