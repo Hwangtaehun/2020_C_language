@@ -65,13 +65,7 @@
     <Image Include="res\SejongMine.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\BITMAP_F.BMP">
-      <Filter>리소스 파일</Filter>
-    </Image>
     <Image Include="res\box.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\DISPLAY_.BMP">
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\NumberR.bmp">
