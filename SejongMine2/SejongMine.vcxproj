@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{365A6F18-EFEE-4EF0-91D4-2EEC0F278EF4}</ProjectGuid>
-    <RootNamespace>SjTetris1</RootNamespace>
+    <ProjectGuid>{1A953C72-E2F9-4E76-B0C4-1781F9126BCF}</ProjectGuid>
+    <RootNamespace>SejongMine</RootNamespace>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -101,39 +101,44 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CustomDlg.h" />
+    <ClInclude Include="NameDlg.h" />
+    <ClInclude Include="RankDlg.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="SjTetris1.h" />
-    <ClInclude Include="SjTetris1Dlg.h" />
+    <ClInclude Include="SejongMine.h" />
+    <ClInclude Include="SejongMineDlg.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SjTetris1.cpp" />
-    <ClCompile Include="SjTetris1Dlg.cpp" />
+    <ClCompile Include="CustomDlg.cpp" />
+    <ClCompile Include="NameDlg.cpp" />
+    <ClCompile Include="RankDlg.cpp" />
+    <ClCompile Include="SejongMine.cpp" />
+    <ClCompile Include="SejongMineDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SjTetris1.rc" />
+    <ResourceCompile Include="SejongMine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\SjTetris1.rc2" />
+    <None Include="res\SejongMine.rc2" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\bitmap1.bmp" />
-    <Image Include="res\Block1.bmp" />
-    <Image Include="res\SjTetris1.ico" />
-    <Image Include="res\꽃320.bmp" />
-    <Image Include="res\폭포320.bmp" />
+    <Image Include="res\box.bmp" />
+    <Image Include="res\Face.bmp" />
+    <Image Include="res\NumberR.bmp" />
+    <Image Include="res\SejongMine.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="SjTetris1.rc" />
+      <UserProperties RESOURCE_FILE="SejongMine.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

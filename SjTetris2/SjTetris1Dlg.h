@@ -72,5 +72,5 @@ public:
 	void NextBlock(bool bFlag);
 	void DrawScr2();
 	char m_Table2[ROW_CNT][COL_CNT];
-	void DrawScr3();
+	void DrawScr3(int i, int x, int y);
 };

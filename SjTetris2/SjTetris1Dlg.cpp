@@ -538,49 +538,34 @@ void CSjTetris1Dlg::DrawScr2()
 			y = BLOCK_SIZE * ROW_CNT / 2 + 54;
 		}
 		pDC->Rectangle(m_mainRect2.left + x, m_mainRect2.top + y, m_mainRect2.right + x, m_mainRect2.bottom + y);
+		DrawScr3(i, x, y);
 	}
-	DrawScr3();
 }
 
-void CSjTetris1Dlg::DrawScr3()
+void CSjTetris1Dlg::DrawScr3(int i, int x, int y)
 {
 	// TODO: 여기에 구현 코드 추가.
-	int x = 0, y = 0;
 	int row, col;
-	m_pDC->Rectangle(m_mainRect2);
-	for (int i = 1; i < 6; i++)
+	for (row = 0; row < ROW_CNT; row++)
 	{
-		if (i < 3)
+		for (col = 0; col < COL_CNT; col++)
 		{
-			x = (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14);
-			y = 0;
-		}
-		else
-		{
-			x = (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14) - 175;
-			y = BLOCK_SIZE * ROW_CNT / 2 + 54;
-		}
-
-		for (row = 0; row < ROW_CNT; row++)
-		{
-			for (col = 0; col < COL_CNT; col++)
+			if (m_Table[i][row][col] == -1)
 			{
-				if (m_Table[i][row][col] == -1)
-				{
-					m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y,
-						BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
-						col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
-				}
-				else
-				{
-					m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y, 
-						BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
-						m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y,
+					BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+					col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+			}
+			else
+			{
+				m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y,
+					BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+					m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
 
-				}
 			}
 		}
 	}
+	
 }
 
 /*DrawScr2() 수정*/
@@ -667,50 +652,51 @@ void CSjTetris1Dlg::DrawScr3()
 		}
 	}*/
 
-	/*DrawScr3() 수정*/
-		/*for (int i = 1; i < 6; i++)
+/*DrawScr3() 수정*/
+	/*for (int i = 1; i < 6; i++)
+	{
+		if (i < 3)
 		{
-			if (i < 3)
+			for (row = 0; row < ROW_CNT; row++)
 			{
-				for (row = 0; row < ROW_CNT; row++)
+				for (col = 0; col < COL_CNT; col++)
 				{
-					for (col = 0; col < COL_CNT; col++)
+					if (m_Table[i][row][col] == -1)
 					{
-						if (m_Table[i][row][col] == -1)
-						{
-							m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2,
-								BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
-								col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
-						}
-						else
-						{
-							m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
-								m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, 
+							BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+							col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					}
+					else
+					{
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+							m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
 
-						}
 					}
 				}
 			}
-			else
+		}
+		else
+		{
+			for (row = 0; row < ROW_CNT; row++)
 			{
-				for (row = 0; row < ROW_CNT; row++)
+				for (col = 0; col < COL_CNT; col++)
 				{
-					for (col = 0; col < COL_CNT; col++)
+					if (m_Table[i][row][col] == -1)
 					{
-						if (m_Table[i][row][col] == -1)
-						{
-							m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 - 175 + (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + BLOCK_SIZE * ROW_CNT / 2 + 54,
-								BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
-								col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
-						}
-						else
-						{
-							m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 - 175 + (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + BLOCK_SIZE * ROW_CNT / 2 + 54,
-								BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
-								m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 - 175 + (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + BLOCK_SIZE * ROW_CNT / 2 + 54,
+							BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+							col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					}
+					else
+					{
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 - 175 + (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + BLOCK_SIZE * ROW_CNT / 2 + 54,
+							BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+							m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
 
-						}
 					}
 				}
 			}
-		}*/
+		}
+	}*/
+

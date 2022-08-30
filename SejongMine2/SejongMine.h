@@ -1,5 +1,5 @@
 
-// SjTetris1.h : PROJECT_NAME 응용 프로그램에 대한 주 헤더 파일입니다.
+// SejongMine.h : PROJECT_NAME 응용 프로그램에 대한 주 헤더 파일입니다.
 //
 
 #pragma once
@@ -11,14 +11,14 @@
 #include "resource.h"		// 주 기호입니다.
 
 
-// CSjTetris1App:
-// 이 클래스의 구현에 대해서는 SjTetris1.cpp을 참조하십시오.
+// CSejongMineApp:
+// 이 클래스의 구현에 대해서는 SejongMine.cpp을 참조하십시오.
 //
 
-class CSjTetris1App : public CWinApp
+class CSejongMineApp : public CWinApp
 {
 public:
-	CSjTetris1App();
+	CSejongMineApp();
 
 // 재정의입니다.
 public:
@@ -29,4 +29,4 @@ public:
 	DECLARE_MESSAGE_MAP()
 };
 
-extern CSjTetris1App theApp;
+extern CSejongMineApp theApp;

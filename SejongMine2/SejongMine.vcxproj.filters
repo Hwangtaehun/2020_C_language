@@ -18,10 +18,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SjTetris1.h">
+    <ClInclude Include="SejongMine.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SjTetris1Dlg.h">
+    <ClInclude Include="SejongMineDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -33,42 +33,57 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CustomDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="RankDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="NameDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SjTetris1.cpp">
+    <ClCompile Include="SejongMine.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SjTetris1Dlg.cpp">
+    <ClCompile Include="SejongMineDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="CustomDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RankDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NameDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SjTetris1.rc">
+    <ResourceCompile Include="SejongMine.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\SjTetris1.rc2">
+    <None Include="res\SejongMine.rc2">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\SjTetris1.ico">
+    <Image Include="res\SejongMine.ico">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\Block1.bmp">
+    <Image Include="res\box.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\꽃320.bmp">
+    <Image Include="res\Face.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
-    <Image Include="res\bitmap1.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\폭포320.bmp">
+    <Image Include="res\NumberR.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>

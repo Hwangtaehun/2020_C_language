@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SjTetris1", "SjTetris1.vcxproj", "{365A6F18-EFEE-4EF0-91D4-2EEC0F278EF4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SejongMine", "SejongMine.vcxproj", "{1A953C72-E2F9-4E76-B0C4-1781F9126BCF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{365A6F18-EFEE-4EF0-91D4-2EEC0F278EF4}.Debug|Win32.ActiveCfg = Debug|Win32
-		{365A6F18-EFEE-4EF0-91D4-2EEC0F278EF4}.Debug|Win32.Build.0 = Debug|Win32
-		{365A6F18-EFEE-4EF0-91D4-2EEC0F278EF4}.Release|Win32.ActiveCfg = Release|Win32
-		{365A6F18-EFEE-4EF0-91D4-2EEC0F278EF4}.Release|Win32.Build.0 = Release|Win32
+		{1A953C72-E2F9-4E76-B0C4-1781F9126BCF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1A953C72-E2F9-4E76-B0C4-1781F9126BCF}.Debug|Win32.Build.0 = Debug|Win32
+		{1A953C72-E2F9-4E76-B0C4-1781F9126BCF}.Release|Win32.ActiveCfg = Release|Win32
+		{1A953C72-E2F9-4E76-B0C4-1781F9126BCF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

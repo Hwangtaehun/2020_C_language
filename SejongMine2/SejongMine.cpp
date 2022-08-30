@@ -1,26 +1,26 @@
 
-// SjTetris1.cpp : 응용 프로그램에 대한 클래스 동작을 정의합니다.
+// SejongMine.cpp : 응용 프로그램에 대한 클래스 동작을 정의합니다.
 //
 
 #include "stdafx.h"
-#include "SjTetris1.h"
-#include "SjTetris1Dlg.h"
+#include "SejongMine.h"
+#include "SejongMineDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// CSjTetris1App
+// CSejongMineApp
 
-BEGIN_MESSAGE_MAP(CSjTetris1App, CWinApp)
+BEGIN_MESSAGE_MAP(CSejongMineApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 
-// CSjTetris1App 생성
+// CSejongMineApp 생성
 
-CSjTetris1App::CSjTetris1App()
+CSejongMineApp::CSejongMineApp()
 {
 	// 다시 시작 관리자 지원
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -30,14 +30,14 @@ CSjTetris1App::CSjTetris1App()
 }
 
 
-// 유일한 CSjTetris1App 개체입니다.
+// 유일한 CSejongMineApp 개체입니다.
 
-CSjTetris1App theApp;
+CSejongMineApp theApp;
 
 
-// CSjTetris1App 초기화
+// CSejongMineApp 초기화
 
-BOOL CSjTetris1App::InitInstance()
+BOOL CSejongMineApp::InitInstance()
 {
 	// 응용 프로그램 매니페스트가 ComCtl32.dll 버전 6 이상을 사용하여 비주얼 스타일을
 	// 사용하도록 지정하는 경우, Windows XP 상에서 반드시 InitCommonControlsEx()가 필요합니다.
@@ -70,7 +70,7 @@ BOOL CSjTetris1App::InitInstance()
 	// 적절한 내용으로 수정해야 합니다.
 	SetRegistryKey(_T("로컬 응용 프로그램 마법사에서 생성된 응용 프로그램"));
 
-	CSjTetris1Dlg dlg;
+	CSejongMineDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
