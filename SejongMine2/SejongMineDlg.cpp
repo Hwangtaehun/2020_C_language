@@ -8,7 +8,7 @@
 #include "CustomDlg.h"
 #include "RankDlg.h"
 #include "NameDlg.h"
-#include <stdio.h>;
+#include "afxtempl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,7 +28,7 @@ struct RandData
 {
 	int Time;
 	char Name[20];
-} rData[4][4] = { 0 };
+} rData[3][3] = { 0 };
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -103,6 +103,7 @@ BEGIN_MESSAGE_MAP(CSejongMineDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_WM_DESTROY()
 	ON_COMMAND(IDM_TOP, &CSejongMineDlg::OnTop)
+	ON_COMMAND(IDM_EXIT, &CSejongMineDlg::OnExit)
 END_MESSAGE_MAP()
 
 
@@ -154,17 +155,46 @@ BOOL CSejongMineDlg::OnInitDialog()
 	CFile file;
 	if (file.Open(_T("SejongMine.dat"), CFile::modeRead))
 	{
+		CRankDlg dlg;
+		CString Level[4] = { _T("초급"), _T("중급"), _T("고급"), _T("사용자 정의") };
+
 		file.Read((void*)&IData, sizeof(IData));
 		m_nld = IData.Difficulty;
 		m_nBoxCntX = IData.Width;
 		m_nBoxCntY = IData.Height;
 		m_nMineCnt = IData.Mines;
 		file.Read((void*)&rData, sizeof(rData));
-		ReadRank(m_nld);
+		for (int n = 0; n < 5; n++)
+		{
+			if (n < 3)
+			{
+				dlg.m_strLevel = Level[n];
+				dlg.m_strName1 = rData[n][0].Name;
+				dlg.m_nTime1 = rData[n][0].Time;
+				dlg.m_strName2 = rData[n][1].Name;
+				dlg.m_nTime2 = rData[n][1].Time;
+				dlg.m_strName3 = rData[n][2].Name;
+				dlg.m_nTime3 = rData[n][2].Time;
+			}
+			else
+			{
+				dlg.m_strLevel = _T("없음");
+				dlg.m_strName1 = _T("1");
+				dlg.m_nTime1 = 1;
+				dlg.m_strName1 = _T("2");
+				dlg.m_nTime2 = 2;
+				dlg.m_strName1 = _T("3");
+				dlg.m_nTime3 = 3;
+			}
+		}
+		UpdateData(FALSE);
 		file.Close();
 	}
 	else
+	{
 		OnBeginner();
+		m_nld = IDM_BEGINNER;
+	}	
 	ResizeWindow();
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -248,8 +278,8 @@ void CSejongMineDlg::ResizeWindow()
 	int nXsize, nYsize, nWidth, nHeight;
 	nXsize = (GetSystemMetrics(SM_CXSCREEN));
 	nYsize = (GetSystemMetrics(SM_CYSCREEN));
-	nWidth = m_nBoxCntX * 16 + 42;
-	nHeight = m_nBoxCntY * 16 + 125;
+	nWidth = m_nBoxCntX * 16 + 42 + 10;
+	nHeight = m_nBoxCntY * 16 + 125 + 55;
 
 	if (m_bFirst)
 	{
@@ -477,7 +507,10 @@ void CSejongMineDlg::GameWin()
 		m_strCustomName = dlg.m_strName;
 		m_nCustomTime = m_nTime;
 	}
-	WriteFile();
+	TRACE(_T("승리 팝업 실행중입니다\n"));
+	TRACE("Rank 들어가기 전 rData[0][0].time = %d\n", rData[0][0].Time);
+	TRACE("Rank 들어가기 전 m_nCustomTime = %d\n", m_nCustomTime);
+	Rank();
 }
 
 
@@ -514,6 +547,7 @@ void CSejongMineDlg::GameLose()
 void CSejongMineDlg::WriteFile()
 {
 	// TODO: 여기에 구현 코드 추가.
+	TRACE(_T("WriteFile 팝업 실행중입니다\n"));
 	CFile file;
 	file.Open(_T("SejongMine.dat"), CFile::modeCreate | CFile::modeWrite);
 	GetWindowRect(&m_WndRect);
@@ -525,9 +559,11 @@ void CSejongMineDlg::WriteFile()
 	IData.Xpos = m_WndRect.left;
 	IData.Ypos = m_WndRect.top;
 
-	Rank();
+	TRACE("WriteFile rData[0][0].time = %d\n", rData[0][0].Time);
+	TRACE("WriteFile m_nCustomTime = %d\n", m_nCustomTime);
 	file.Write((void*)&IData, sizeof(IData));
 	file.Write((void*)rData, sizeof(rData));
+	TRACE("WriteFile 적은 후rData[0][0].time = %d\n", rData[0][0].Time);
 	file.Close();
 }
 
@@ -791,23 +827,6 @@ void CSejongMineDlg::OnDestroy()
 }
 
 
-void CSejongMineDlg::Rank()
-{
-	if (m_nld == IDM_BEGINNER)
-	{
-		RankSort(0);
-	}
-	else if (m_nld == IDM_INTERMEDIATE)
-	{
-		RankSort(1);
-	}
-	else if (m_nld == IDM_EXPERIENCE)
-	{
-		RankSort(2);
-	}
-}
-
-
 void CSejongMineDlg::OnTop()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
@@ -828,18 +847,156 @@ void CSejongMineDlg::OnTop()
 	else
 	{
 		n = 3;
+	}	
+
+	CString Level[4] = { _T("초급"), _T("중급"), _T("고급"), _T("사용자 정의") };
+
+	if (n < 3)
+	{
+		dlg.m_strLevel = Level[n];
+		dlg.m_strName1 = rData[n][0].Name;
+		dlg.m_nTime1 = rData[n][0].Time;
+		dlg.m_strName2 = rData[n][1].Name;
+		dlg.m_nTime2 = rData[n][1].Time;
+		dlg.m_strName3 = rData[n][2].Name;
+		dlg.m_nTime3 = rData[n][2].Time;
+	}
+	else
+	{
+		dlg.m_strLevel = _T("없음");
+		dlg.m_strName1 = _T("");
+		dlg.m_nTime1 = 0;
+		dlg.m_strName1 = _T("");
+		dlg.m_nTime2 = 0;
+		dlg.m_strName1 = _T("");
+		dlg.m_nTime3 = 0;
+	}
+	UpdateData(FALSE);
+	dlg.DoModal();
+}
+
+
+void CSejongMineDlg::Rank()
+{
+	TRACE("Rank 전 rData[0][0].time = %d\n", rData[0][0].Time);
+	TRACE("Rank 전 m_nCustomTime = %d\n", m_nCustomTime);
+	if (m_nld == IDM_BEGINNER)
+	{
+		RankSort(0);
+	}
+	else if (m_nld == IDM_INTERMEDIATE)
+	{
+		RankSort(1);
+	}
+	else if (m_nld == IDM_EXPERIENCE)
+	{
+		RankSort(2);
+	}
+	TRACE("Rank 후 m_nCustomTime = %d\n", m_nCustomTime);
+}
+
+
+void CSejongMineDlg::RankSort(int n)
+{
+	TRACE(_T("RankSort 팝업 실행중입니다\n"));
+	TRACE("Sort 전 rData[0][0].time = %d\n", rData[0][0].Time);
+	TRACE("Sort 전 m_nCustomTime = %d\n", m_nCustomTime);
+	int i = 0;
+	for (int i = 0; i < 3; i++)
+	{
+		if (rData[n][i].Time == 0)
+		{
+			strcpy_s(rData[n][i].Name, 20, CT2A(m_strCustomName));
+			rData[n][i].Time = m_nCustomTime;
+			break;
+		}
+	}
+	for (i = 2; i >= 0; i--)
+	{
+		if (m_nCustomTime < rData[n][i].Time)
+		{
+			if (i < 2)
+				rData[n][i + 1] = rData[n][i];
+			strcpy_s(rData[n][i].Name, 20, CT2A(m_strCustomName));
+			rData[n][i].Time = m_nCustomTime;
+		}
 	}
 
-	CString Level[4] = { _T("초급"), _T("중급"), _T("고급"), _T("기타") };
+	/*for (i = 2; i >= 0; i--)
+	{
+		if ((m_nCustomTime < rData[n][i].Time || rData[n][i].Time == 0) && i != 2)
+		{
+			rData[n][i + 1] = rData[n][i];
+		}
+		else
+		{
+			break;
+		}
+	}
+	if (i < 2)
+	{
+		strcpy_s(rData[n][i + 1].Name, 20, CT2A(m_strCustomName));
+		rData[n][i + 1].Time = m_nCustomTime;
+	}*/
 
-	dlg.m_strLevel = Level[n];
-	dlg.m_strName1 = rData[n][0].Name;
-	dlg.m_nTime1 = rData[n][0].Time;
-	dlg.m_strName2 = rData[n][1].Name;
-	dlg.m_nTime2 = rData[n][1].Time;
-	dlg.m_strName3 = rData[n][2].Name;
-	dlg.m_nTime3 = rData[n][2].Time;
+	TRACE("Sort 후 rData[0][0].time = %d\n", rData[0][2].Time);
+	TRACE("Sort 후 m_nCustomTime = %d\n", m_nCustomTime);
+}
 
+void CSejongMineDlg::OnExit()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	OnOK();
+}
+
+//void CSejongMineDlg::ReadRank(UINT m_nld)
+//{
+//	//CRankDlg dlg;
+//	//if (m_nld == IDM_BEGINNER)
+//	//{
+//	//	dlg.m_strLevel = _T("초급");
+//	//	dlg.m_strName1 = rData[0][0].Name;
+//	//	dlg.m_nTime1 = 111;// rData[0][0].Time;
+//	//	dlg.m_strName2 = rData[0][1].Name;
+//	//	dlg.m_nTime2 = rData[0][1].Time;
+//	//	dlg.m_strName3 = rData[0][2].Name;
+//	//	dlg.m_nTime3 = rData[0][2].Time;
+//	//}
+//	//else if (m_nld == IDM_INTERMEDIATE)
+//	//{
+//	//	dlg.m_strLevel = _T("중급");
+//	//	dlg.m_strName1 = rData[1][0].Name;
+//	//	dlg.m_nTime1 = 222;// rData[1][0].Time;
+//	//	dlg.m_strName2 = rData[1][1].Name;
+//	//	dlg.m_nTime2 = rData[1][1].Time;
+//	//	dlg.m_strName3 = rData[1][2].Name;
+//	//	dlg.m_nTime3 = rData[1][2].Time;
+//	//}
+//	//else if (m_nld == IDM_EXPERIENCE)
+//	//{
+//	//	dlg.m_strLevel = _T("상급");
+//	//	dlg.m_strName1 = rData[2][0].Name;
+//	//	dlg.m_nTime1 = 333; //rData[2][0].Time;
+//	//	dlg.m_strName2 = rData[2][1].Name;
+//	//	dlg.m_nTime2 = rData[2][1].Time;
+//	//	dlg.m_strName3 = rData[2][2].Name;
+//	//	dlg.m_nTime3 = rData[2][2].Time;
+//	//}
+//	//else
+//	//{
+//	//	dlg.m_strLevel = _T("없음");
+//	//	dlg.m_strName1 = _T("1");
+//	//	dlg.m_nTime1 = 1;
+//	//	dlg.m_strName1 = _T("2");
+//	//	dlg.m_nTime2 = 2;
+//	//	dlg.m_strName1 = _T("3");
+//	//	dlg.m_nTime3 = 3;
+//	//}
+//	//UpdateData(FALSE);
+//}
+
+//void CSejongMineDlg::OnTop()
+// {
 	//if (m_nld == IDM_BEGINNER)
 	//{
 	//	dlg.m_strLevel = _T("초급");
@@ -880,84 +1037,4 @@ void CSejongMineDlg::OnTop()
 	//	dlg.m_strName1 = _T("3");
 	//	dlg.m_nTime3 = 3;
 	//}
-	UpdateData(FALSE);
-	dlg.DoModal();
-}
-
-
-void CSejongMineDlg::ReadRank(UINT m_nld)
-{
-	//CRankDlg dlg;
-	//if (m_nld == IDM_BEGINNER)
-	//{
-	//	dlg.m_strLevel = _T("초급");
-	//	dlg.m_strName1 = rData[0][0].Name;
-	//	dlg.m_nTime1 = 111;// rData[0][0].Time;
-	//	dlg.m_strName2 = rData[0][1].Name;
-	//	dlg.m_nTime2 = rData[0][1].Time;
-	//	dlg.m_strName3 = rData[0][2].Name;
-	//	dlg.m_nTime3 = rData[0][2].Time;
-	//}
-	//else if (m_nld == IDM_INTERMEDIATE)
-	//{
-	//	dlg.m_strLevel = _T("중급");
-	//	dlg.m_strName1 = rData[1][0].Name;
-	//	dlg.m_nTime1 = 222;// rData[1][0].Time;
-	//	dlg.m_strName2 = rData[1][1].Name;
-	//	dlg.m_nTime2 = rData[1][1].Time;
-	//	dlg.m_strName3 = rData[1][2].Name;
-	//	dlg.m_nTime3 = rData[1][2].Time;
-	//}
-	//else if (m_nld == IDM_EXPERIENCE)
-	//{
-	//	dlg.m_strLevel = _T("상급");
-	//	dlg.m_strName1 = rData[2][0].Name;
-	//	dlg.m_nTime1 = 333; //rData[2][0].Time;
-	//	dlg.m_strName2 = rData[2][1].Name;
-	//	dlg.m_nTime2 = rData[2][1].Time;
-	//	dlg.m_strName3 = rData[2][2].Name;
-	//	dlg.m_nTime3 = rData[2][2].Time;
-	//}
-	//else
-	//{
-	//	dlg.m_strLevel = _T("없음");
-	//	dlg.m_strName1 = _T("1");
-	//	dlg.m_nTime1 = 1;
-	//	dlg.m_strName1 = _T("2");
-	//	dlg.m_nTime2 = 2;
-	//	dlg.m_strName1 = _T("3");
-	//	dlg.m_nTime3 = 3;
-	//}
-	//UpdateData(FALSE);
-}
-
-
-void CSejongMineDlg::RankSort(int n)
-{
-	int i = 0;
-	/*for (int i = 0; i < 3; i++)
-	{
-		if (rData[n][i].Time == 0)
-		{
-			strcpy_s(rData[n][i].Name, sizeof(m_strCustomName), m_strCustomName[20]);
-			rData[n][i].Time = m_nCustomTime;
-			rData[n][i] = rData[n][i];
-		}
-	}*/
-	for (i = 2; i >= 0; i--)
-	{
-		if ((m_nCustomTime < rData[n][i].Time || rData[n][i].Time == 0) && i != 2)
-		{
-			rData[n][i + 1] = rData[n][i];
-		}
-		else
-		{
-			break;
-		}
-	}
-	if (i < 2)
-	{
-		strcpy_s(rData[n][i + 1].Name, 20, CT2A(m_strCustomName));
-		rData[n][i + 1].Time = m_nCustomTime;
-	}
-}
+//}

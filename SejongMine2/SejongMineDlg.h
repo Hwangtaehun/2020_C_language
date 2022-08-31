@@ -90,10 +90,9 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnDestroy();
 	int m_nCustomTime;
-//	CString m_strCustomName;
 	void Rank();
 	afx_msg void OnTop();
-	void ReadRank(UINT m_nld);
 	void RankSort(int n);
 	CString m_strCustomName;
+	afx_msg void OnExit();
 };

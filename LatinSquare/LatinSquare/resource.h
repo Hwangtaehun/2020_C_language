@@ -25,6 +25,7 @@
 #define IDC_TIMER                       1014
 #define IDC_HINT_NUMBER                 1015
 #define IDC_BT_INTRO                    1016
+#define IDC_BT_HELP                     1016
 #define IDC_IDADD                       1017
 #define IDC_PORT                        1018
 #define IDC_LONG_S                      1022
