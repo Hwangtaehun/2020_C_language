@@ -8,7 +8,6 @@
 #include "CustomDlg.h"
 #include "RankDlg.h"
 #include "NameDlg.h"
-#include "afxtempl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -164,7 +163,7 @@ BOOL CSejongMineDlg::OnInitDialog()
 		m_nBoxCntY = IData.Height;
 		m_nMineCnt = IData.Mines;
 		file.Read((void*)&rData, sizeof(rData));
-		for (int n = 0; n < 5; n++)
+		for (int n = 0; n < 4; n++)
 		{
 			if (n < 3)
 			{
@@ -178,13 +177,13 @@ BOOL CSejongMineDlg::OnInitDialog()
 			}
 			else
 			{
-				dlg.m_strLevel = _T("없음");
-				dlg.m_strName1 = _T("1");
-				dlg.m_nTime1 = 1;
-				dlg.m_strName1 = _T("2");
-				dlg.m_nTime2 = 2;
-				dlg.m_strName1 = _T("3");
-				dlg.m_nTime3 = 3;
+				dlg.m_strLevel = _T("사용자 정의는 기록 불가");
+				dlg.m_strName1 = _T("");
+				dlg.m_nTime1 = 0;
+				dlg.m_strName1 = _T("");
+				dlg.m_nTime2 = 0;
+				dlg.m_strName1 = _T("");
+				dlg.m_nTime3 = 0;
 			}
 		}
 		UpdateData(FALSE);
