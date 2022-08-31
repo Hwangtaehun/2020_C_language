@@ -3,11 +3,11 @@
   <ItemGroup>
     <Filter Include="소스 파일">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="헤더 파일">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
     <Filter Include="리소스 파일">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -15,16 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="SejongMine.h">
+    <ClInclude Include="LatinSquare.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SejongMineDlg.h">
+    <ClInclude Include="LatinSquareDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="framework.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
@@ -33,63 +30,33 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="CustomDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="RankDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="NameDlg.h">
+    <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SejongMine.cpp">
+    <ClCompile Include="LatinSquare.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="SejongMineDlg.cpp">
+    <ClCompile Include="LatinSquareDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="CustomDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="RankDlg.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="NameDlg.cpp">
+    <ClCompile Include="pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="SejongMine.rc">
+    <ResourceCompile Include="LatinSquare.rc">
       <Filter>리소스 파일</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\SejongMine.rc2">
+    <None Include="res\LatinSquare.rc2">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\SejongMine.ico">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\BITMAP_F.BMP">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\box.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\DISPLAY_.BMP">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\Face.bmp">
-      <Filter>리소스 파일</Filter>
-    </Image>
-    <Image Include="res\NumberR.bmp">
+    <Image Include="res\LatinSquare.ico">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
