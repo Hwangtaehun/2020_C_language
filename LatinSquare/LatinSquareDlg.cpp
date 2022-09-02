@@ -1,39 +1,37 @@
-ï»¿
-// LatinSquareDlg.cpp: êµ¬í˜„ íŒŒì¼
+
+// LatinSquareDlg.cpp : ±¸Çö ÆÄÀÏ
 //
 
-#include "pch.h"
-#include "framework.h"
+#include "stdafx.h"
 #include "LatinSquare.h"
 #include "LatinSquareDlg.h"
 #include "afxdialogex.h"
+#include "HelpDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
 
-// ì‘ìš© í”„ë¡œê·¸ë¨ ì •ë³´ì— ì‚¬ìš©ë˜ëŠ” CAboutDlg ëŒ€í™” ìƒìì…ë‹ˆë‹¤.
+// ÀÀ¿ë ÇÁ·Î±×·¥ Á¤º¸¿¡ »ç¿ëµÇ´Â CAboutDlg ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_ABOUTBOX };
-#endif
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
-// êµ¬í˜„ì…ë‹ˆë‹¤.
+// ±¸ÇöÀÔ´Ï´Ù.
 protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
+CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
 {
 }
 
@@ -46,35 +44,31 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CLatinSquareDlg ëŒ€í™” ìƒì
+// CLatinSquareDlg ´ëÈ­ »óÀÚ
 
 
 
-CLatinSquareDlg::CLatinSquareDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_LATINSQUARE_DIALOG, pParent)
+CLatinSquareDlg::CLatinSquareDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CLatinSquareDlg::IDD, pParent)
 	, m_nExamNo(1)
 	, m_nHintCnt(5)
 	, m_strTime(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	m_nX = 0;
-	m_nY = 0;
-	m_Time = 0;
-	m_munCnt = 0;
 }
 
 void CLatinSquareDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EXAM_NUMBER, m_nExamNo);
-	DDX_Text(pDX, IDC_HINT_NUMBER, m_nHintCnt);
-	DDX_Text(pDX, IDC_TIMER, m_strTime);
-	DDX_Control(pDX, IDC_BT_START, m_ctrlStartBt);
-	DDX_Control(pDX, IDC_BT_EXAMMAKE, m_ctrlExamBt);
+	DDX_Text(pDX, IDC_EXAM_NO, m_nExamNo);
+	DDX_Text(pDX, IDC_HINT_CNT, m_nHintCnt);
+	DDX_Text(pDX, IDC_TIME, m_strTime);
+	DDX_Control(pDX, IDC_BT_GAMESTART, m_ctrlStartBt);
+	DDX_Control(pDX, IDC_BT_GAMESTOP, m_ctrlStopBt);
+	DDX_Control(pDX, IDC_BT_EXAM, m_ctrlExamBt);
 	DDX_Control(pDX, IDC_BT_HINT, m_ctrlHintBt);
-	DDX_Control(pDX, IDC_BT_EXAMCORRECT, m_ctrlCheckBt);
+	DDX_Control(pDX, IDC_BT_CHECK, m_ctrlCheckBt);
 	DDX_Control(pDX, IDC_SPIN_NUMBER, m_ctrlSpin);
-	DDX_Control(pDX, IDC_BT_FINISH, m_ctrlStopBt);
 	DDX_Control(pDX, IDC_BT_EXAMST, m_ctrlSaveBt);
 }
 
@@ -82,32 +76,32 @@ BEGIN_MESSAGE_MAP(CLatinSquareDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BT_EXAMMAKE, &CLatinSquareDlg::OnClickedButtonExam)
-	ON_BN_CLICKED(IDC_BT_EXAMCORRECT, &CLatinSquareDlg::OnClickedButtonCheck)
+	ON_BN_CLICKED(IDC_BT_EXAM, &CLatinSquareDlg::OnClickedButtonExam)
+	ON_BN_CLICKED(IDC_BT_CHECK, &CLatinSquareDlg::OnClickedButtonCheck)
 	ON_BN_CLICKED(IDC_BT_HELP, &CLatinSquareDlg::OnClickedButtonHelp)
 	ON_BN_CLICKED(IDC_BT_HINT, &CLatinSquareDlg::OnClickedButtonHint)
-	ON_BN_CLICKED(IDC_BT_START, &CLatinSquareDlg::OnClickedGameStart)
-	ON_BN_CLICKED(IDC_BT_FINISH, &CLatinSquareDlg::OnClickedGameStop)
+	ON_BN_CLICKED(IDC_BT_GAMESTART, &CLatinSquareDlg::OnClickedButtonGamestart)
+	ON_BN_CLICKED(IDC_BT_GAMESTOP, &CLatinSquareDlg::OnClickedButtonGamestop)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
 	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 
-// CLatinSquareDlg ë©”ì‹œì§€ ì²˜ë¦¬ê¸°
+// CLatinSquareDlg ¸Ş½ÃÁö Ã³¸®±â
 
 BOOL CLatinSquareDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// ì‹œìŠ¤í…œ ë©”ë‰´ì— "ì •ë³´..." ë©”ë‰´ í•­ëª©ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// ½Ã½ºÅÛ ¸Ş´º¿¡ "Á¤º¸..." ¸Ş´º Ç×¸ñÀ» Ãß°¡ÇÕ´Ï´Ù.
 
-	// IDM_ABOUTBOXëŠ” ì‹œìŠ¤í…œ ëª…ë ¹ ë²”ìœ„ì— ìˆì–´ì•¼ í•©ë‹ˆë‹¤.
+	// IDM_ABOUTBOX´Â ½Ã½ºÅÛ ¸í·É ¹üÀ§¿¡ ÀÖ¾î¾ß ÇÕ´Ï´Ù.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
-	if (pSysMenu != nullptr)
+	if (pSysMenu != NULL)
 	{
 		BOOL bNameValid;
 		CString strAboutMenu;
@@ -120,12 +114,12 @@ BOOL CLatinSquareDlg::OnInitDialog()
 		}
 	}
 
-	// ì´ ëŒ€í™” ìƒìì˜ ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.  ì‘ìš© í”„ë¡œê·¸ë¨ì˜ ì£¼ ì°½ì´ ëŒ€í™” ìƒìê°€ ì•„ë‹ ê²½ìš°ì—ëŠ”
-	//  í”„ë ˆì„ì›Œí¬ê°€ ì´ ì‘ì—…ì„ ìë™ìœ¼ë¡œ ìˆ˜í–‰í•©ë‹ˆë‹¤.
-	SetIcon(m_hIcon, TRUE);			// í° ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.
-	SetIcon(m_hIcon, FALSE);		// ì‘ì€ ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.
+	// ÀÌ ´ëÈ­ »óÀÚÀÇ ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.  ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ ÁÖ Ã¢ÀÌ ´ëÈ­ »óÀÚ°¡ ¾Æ´Ò °æ¿ì¿¡´Â
+	//  ÇÁ·¹ÀÓ¿öÅ©°¡ ÀÌ ÀÛ¾÷À» ÀÚµ¿À¸·Î ¼öÇàÇÕ´Ï´Ù.
+	SetIcon(m_hIcon, TRUE);			// Å« ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.
+	SetIcon(m_hIcon, FALSE);		// ÀÛÀº ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.
 
-	// TODO: ì—¬ê¸°ì— ì¶”ê°€ ì´ˆê¸°í™” ì‘ì—…ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ Ãß°¡ ÃÊ±âÈ­ ÀÛ¾÷À» Ãß°¡ÇÕ´Ï´Ù.
 	m_pDC = GetDC();
 	m_NumberDC.CreateCompatibleDC(m_pDC);
 	m_bmNumber.LoadBitmap(IDB_NUMBER);
@@ -139,7 +133,7 @@ BOOL CLatinSquareDlg::OnInitDialog()
 	FILE* inf;
 	if ((fopen_s(&inf, "sudoku1.txt", "rt")) != NULL)
 	{
-		MessageBox(_T("ë¬¸ì œ Fileì´ ì—†ë„¤ìœ !!"));
+		MessageBox(_T("¹®Á¦ FileÀÌ ¾ø³×À¯!!"));
 	}
 	else
 	{
@@ -150,7 +144,7 @@ BOOL CLatinSquareDlg::OnInitDialog()
 	m_nExamNo = m_munCnt;
 	UpdateData(FALSE);
 	m_ctrlSpin.SetRange(1, m_munCnt);
-	return TRUE;  // í¬ì»¤ìŠ¤ë¥¼ ì»¨íŠ¸ë¡¤ì— ì„¤ì •í•˜ì§€ ì•Šìœ¼ë©´ TRUEë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
+	return TRUE;  // Æ÷Ä¿½º¸¦ ÄÁÆ®·Ñ¿¡ ¼³Á¤ÇÏÁö ¾ÊÀ¸¸é TRUE¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
 }
 
 void CLatinSquareDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -166,19 +160,19 @@ void CLatinSquareDlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// ëŒ€í™” ìƒìì— ìµœì†Œí™” ë‹¨ì¶”ë¥¼ ì¶”ê°€í•  ê²½ìš° ì•„ì´ì½˜ì„ ê·¸ë¦¬ë ¤ë©´
-//  ì•„ë˜ ì½”ë“œê°€ í•„ìš”í•©ë‹ˆë‹¤.  ë¬¸ì„œ/ë·° ëª¨ë¸ì„ ì‚¬ìš©í•˜ëŠ” MFC ì• í”Œë¦¬ì¼€ì´ì…˜ì˜ ê²½ìš°ì—ëŠ”
-//  í”„ë ˆì„ì›Œí¬ì—ì„œ ì´ ì‘ì—…ì„ ìë™ìœ¼ë¡œ ìˆ˜í–‰í•©ë‹ˆë‹¤.
+// ´ëÈ­ »óÀÚ¿¡ ÃÖ¼ÒÈ­ ´ÜÃß¸¦ Ãß°¡ÇÒ °æ¿ì ¾ÆÀÌÄÜÀ» ±×¸®·Á¸é
+//  ¾Æ·¡ ÄÚµå°¡ ÇÊ¿äÇÕ´Ï´Ù.  ¹®¼­/ºä ¸ğµ¨À» »ç¿ëÇÏ´Â MFC ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ °æ¿ì¿¡´Â
+//  ÇÁ·¹ÀÓ¿öÅ©¿¡¼­ ÀÌ ÀÛ¾÷À» ÀÚµ¿À¸·Î ¼öÇàÇÕ´Ï´Ù.
 
 void CLatinSquareDlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ê·¸ë¦¬ê¸°ë¥¼ ìœ„í•œ ë””ë°”ì´ìŠ¤ ì»¨í…ìŠ¤íŠ¸ì…ë‹ˆë‹¤.
+		CPaintDC dc(this); // ±×¸®±â¸¦ À§ÇÑ µğ¹ÙÀÌ½º ÄÁÅØ½ºÆ®ÀÔ´Ï´Ù.
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// í´ë¼ì´ì–¸íŠ¸ ì‚¬ê°í˜•ì—ì„œ ì•„ì´ì½˜ì„ ê°€ìš´ë°ì— ë§ì¶¥ë‹ˆë‹¤.
+		// Å¬¶óÀÌ¾ğÆ® »ç°¢Çü¿¡¼­ ¾ÆÀÌÄÜÀ» °¡¿îµ¥¿¡ ¸ÂÃä´Ï´Ù.
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -186,7 +180,7 @@ void CLatinSquareDlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// ì•„ì´ì½˜ì„ ê·¸ë¦½ë‹ˆë‹¤.
+		// ¾ÆÀÌÄÜÀ» ±×¸³´Ï´Ù.
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
@@ -196,8 +190,8 @@ void CLatinSquareDlg::OnPaint()
 	}
 }
 
-// ì‚¬ìš©ìê°€ ìµœì†Œí™”ëœ ì°½ì„ ë„ëŠ” ë™ì•ˆì— ì»¤ì„œê°€ í‘œì‹œë˜ë„ë¡ ì‹œìŠ¤í…œì—ì„œ
-//  ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
+// »ç¿ëÀÚ°¡ ÃÖ¼ÒÈ­µÈ Ã¢À» ²ô´Â µ¿¾È¿¡ Ä¿¼­°¡ Ç¥½ÃµÇµµ·Ï ½Ã½ºÅÛ¿¡¼­
+//  ÀÌ ÇÔ¼ö¸¦ È£ÃâÇÕ´Ï´Ù.
 HCURSOR CLatinSquareDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -207,7 +201,7 @@ HCURSOR CLatinSquareDlg::OnQueryDragIcon()
 
 void CLatinSquareDlg::OnClickedButtonExam()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	char buf1[90], buf2[90];
 	FILE* inf;
 	int i;
@@ -221,12 +215,12 @@ void CLatinSquareDlg::OnClickedButtonExam()
 	{
 		if (fgets(buf1, 90, inf) == NULL)
 		{
-			MessageBox(_T("ë¬¸ì œ ë²•ìœ„ ì˜¤ë¥˜"));
+			MessageBox(_T("¹®Á¦ ¹ıÀ§ ¿À·ù"));
 			return;
 		}
 		if (fgets(buf2, 90, inf) == NULL)
 		{
-			MessageBox(_T("ë¬¸ì œ ë²•ìœ„ ì˜¤ë¥˜"));
+			MessageBox(_T("¹®Á¦ ¹ıÀ§ ¿À·ù"));
 			return;
 		}
 	}
@@ -249,7 +243,7 @@ void CLatinSquareDlg::OnClickedButtonExam()
 
 void CLatinSquareDlg::OnClickedButtonCheck()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	int i, j, nCnt = 0;
 	CString str;
 	AllViews();
@@ -266,12 +260,12 @@ void CLatinSquareDlg::OnClickedButtonCheck()
 	}
 	if (nCnt == 0)
 	{
-		MessageBox(_T("ì¶•í•˜í•©ë‹ˆë‹¤!!"));
+		MessageBox(_T("ÃàÇÏÇÕ´Ï´Ù!!"));
 		KillTimer(1);
 	}
 	else
 	{
-		str.Format(_T("%d ê°œ í‹€ë ¸ìŠµë‹ˆë‹¤."), nCnt);
+		str.Format(_T("%d °³ Æ²·È½À´Ï´Ù."), nCnt);
 		MessageBox(str);
 	}
 }
@@ -279,20 +273,19 @@ void CLatinSquareDlg::OnClickedButtonCheck()
 
 void CLatinSquareDlg::OnClickedButtonHelp()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
-	/*CHelpDlg dlg;
-	dlg.m_strHelp = _T("ìŠ¤ë„ì¿ ë¥¼ í‘¸ëŠ” ë°©ë²•\r\nìŠ¤ë„ì¿ ëŠ” êµµì€ ì„ ìœ¼ë¡œ ë‚˜ëˆ ì§„ ì‘ì€ 9ê°œì˜ ì‚¬ê°í˜•ìœ¼ë¡œ ì´ë£¨ì–´ì ¸ ìˆìŠµë‹ˆë‹¤. \r\nì´ ì‚¬ê°í˜• ì•ˆì—ëŠ” 1ë¶€í„° 9ê¹Œì§€ì˜ ìˆ˜ê°€ ë¹ ì§ì—†ì´ ë“¤ì–´ê°€ì•¼ í•©ë‹ˆë‹¤.ìŠ¤í† ì¿ ì˜ ê°€ë¡œ í•œì¤„ì—ëŠ” 1ë¶€í„° 9ê¹Œì§€ì˜ ìˆ˜ê°€ í•˜ë‚˜ì”© ë“¤ì–´ê°€ì•¼í•˜ë©°, \r\nì„¸ë¡œ í•œì¤„ì—ë„ 1ë¶€í„° 9ê¹Œì§€ì˜ ìˆ˜ê°€ ë¹ ì§ì—†ì´ í•˜ë‚˜ì”© ë“¤ì–´ê°€ì•¼ í•©ë‹ˆë‹¤.");
-	dlg.DoModal();*/
-
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	CHelpDlg dlg;
+	dlg.m_strHelp = _T("½ºµµÄí¸¦ Çª´Â ¹æ¹ı\r\n½ºµµÄí´Â ±½Àº ¼±À¸·Î ³ª´²Áø ÀÛÀº 9°³ÀÇ »ç°¢ÇüÀ¸·Î ÀÌ·ç¾îÁ® ÀÖ½À´Ï´Ù. \r\nÀÌ »ç°¢Çü ¾È¿¡´Â 1ºÎÅÍ 9±îÁöÀÇ ¼ö°¡ ºüÁü¾øÀÌ µé¾î°¡¾ß ÇÕ´Ï´Ù.½ºÅäÄíÀÇ °¡·Î ÇÑÁÙ¿¡´Â 1ºÎÅÍ 9±îÁöÀÇ ¼ö°¡ ÇÏ³ª¾¿ µé¾î°¡¾ßÇÏ¸ç, \r\n¼¼·Î ÇÑÁÙ¿¡µµ 1ºÎÅÍ 9±îÁöÀÇ ¼ö°¡ ºüÁü¾øÀÌ ÇÏ³ª¾¿ µé¾î°¡¾ß ÇÕ´Ï´Ù.");
+	dlg.DoModal();
 }
 
 
 void CLatinSquareDlg::OnClickedButtonHint()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	if (m_nHintCnt == 0)
 	{
-		MessageBox(_T("íŒíŠ¸ë¥¼ ì´ë¯¸ ì „ë¶€ ì‚¬ìš©í•˜ì˜€ìŠµë‹ˆë‹¤."));
+		MessageBox(_T("ÈùÆ®¸¦ ÀÌ¹Ì ÀüºÎ »ç¿ëÇÏ¿´½À´Ï´Ù."));
 	}
 	else
 	{
@@ -305,12 +298,12 @@ void CLatinSquareDlg::OnClickedButtonHint()
 }
 
 
-void CLatinSquareDlg::OnClickedGameStart()
+void CLatinSquareDlg::OnClickedButtonGamestart()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	if (m_cTable[0][0] == 0)
 	{
-		MessageBox(_T("ë¬¸ì œê°€ ì—†ì–´ìš”!!"));
+		MessageBox(_T("¹®Á¦°¡ ¾ø¾î¿ä!!"));
 		return;
 	}
 	m_bGame = true;
@@ -322,9 +315,9 @@ void CLatinSquareDlg::OnClickedGameStart()
 }
 
 
-void CLatinSquareDlg::OnClickedGameStop()
+void CLatinSquareDlg::OnClickedButtonGamestop()
 {
-	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
 	KillTimer(1);
 	m_bGame = false;
 	InitGame();
@@ -333,7 +326,7 @@ void CLatinSquareDlg::OnClickedGameStop()
 
 void CLatinSquareDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
-	// TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ê°’ì„ í˜¸ì¶œí•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ¸Ş½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº»°ªÀ» È£ÃâÇÕ´Ï´Ù.
 	if (m_NumRect.PtInRect(point))
 	{
 		int x, y, n = 0;
@@ -359,7 +352,7 @@ void CLatinSquareDlg::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CLatinSquareDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
-	// TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ê°’ì„ í˜¸ì¶œí•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ¸Ş½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº»°ªÀ» È£ÃâÇÕ´Ï´Ù.
 	m_Point = point;
 	CDialogEx::OnMouseMove(nFlags, point);
 }
@@ -367,10 +360,10 @@ void CLatinSquareDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 void CLatinSquareDlg::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ê°’ì„ í˜¸ì¶œí•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ ¸Ş½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº»°ªÀ» È£ÃâÇÕ´Ï´Ù.
 	UpdateData(FALSE);
 	m_Time++;
-	m_strTime.Format(_T("%2d ë¶„ %2dì´ˆ"), m_Time / 60, m_Time % 60);
+	m_strTime.Format(_T("%2d ºĞ %2dÃÊ"), m_Time / 60, m_Time % 60);
 	UpdateData(FALSE);
 	CDialogEx::OnTimer(nIDEvent);
 }
@@ -378,7 +371,7 @@ void CLatinSquareDlg::OnTimer(UINT_PTR nIDEvent)
 
 BOOL CLatinSquareDlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ì—¬ê¸°ì— íŠ¹ìˆ˜í™”ëœ ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ í´ë˜ìŠ¤ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
+	// TODO: ¿©±â¿¡ Æ¯¼öÈ­µÈ ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº» Å¬·¡½º¸¦ È£ÃâÇÕ´Ï´Ù.
 	int i, x, y;
 	if (pMsg->message == WM_KEYDOWN && (pMsg->wParam == VK_RETURN || pMsg->wParam == VK_ESCAPE))
 	{
@@ -455,7 +448,6 @@ BOOL CLatinSquareDlg::PreTranslateMessage(MSG* pMsg)
 
 void CLatinSquareDlg::InitGame()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	m_nExamNo = 1;
 	m_nHintCnt = 5;
 	m_Time = 0;
@@ -463,15 +455,14 @@ void CLatinSquareDlg::InitGame()
 	m_ctrlCheckBt.EnableWindow(m_bGame);
 	m_ctrlHintBt.EnableWindow(m_bGame);
 	m_ctrlStopBt.EnableWindow(m_bGame);
-	m_ctrlExamBt.EnableWindow(m_bGame);
-	m_ctrlStartBt.EnableWindow(m_bGame);
+	m_ctrlExamBt.EnableWindow(!m_bGame);
+	m_ctrlStartBt.EnableWindow(!m_bGame);
 	UpdateData(FALSE);
 }
 
 
 void CLatinSquareDlg::AllViews()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int x = 0, y;
 	for (x = 0; x < NUM_CNT; x++)
 	{
@@ -486,8 +477,7 @@ void CLatinSquareDlg::AllViews()
 
 void CLatinSquareDlg::DrawLine()
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
-	CPen pen, * pPen;
+	CPen pen, *pPen;
 	int i, j, x, y;
 	pen.CreatePen(PS_SOLID, 2, RGB(0, 0, 255));
 	pPen = m_pDC->SelectObject(&pen);
@@ -508,7 +498,6 @@ void CLatinSquareDlg::DrawLine()
 
 void CLatinSquareDlg::ViewPic(int x, int y)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int style, num;
 	if (m_aTable[y][x] == 0)
 	{
@@ -520,17 +509,16 @@ void CLatinSquareDlg::ViewPic(int x, int y)
 		style = BMP_SIZE;
 		num = m_aTable[y][x];
 	}
-	m_pDC->BitBlt(START_X + x * DISP_SIZE + (x / 3) * 6, START_Y + y * DISP_SIZE + (x / 3) * 6, BMP_SIZE, BMP_SIZE, &m_NumberDC, style, (num * BMP_SIZE), SRCCOPY);
+	m_pDC->BitBlt(START_X + x * DISP_SIZE + (x / 3) * 6, START_Y + y * DISP_SIZE + (y / 3) * 6, BMP_SIZE, BMP_SIZE, &m_NumberDC, style, (num * BMP_SIZE), SRCCOPY);
 }
 
 
 void CLatinSquareDlg::DrawBox(int x, int y)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	if (m_aTable[y][x] != 0)
 		return;
 	int sx, sy;
-	CPen pen, * pPen;
+	CPen pen, *pPen;
 	pen.CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
 	pPen = (CPen*)m_pDC->SelectObject(&pen);
 	ViewPic(m_nX, m_nY);
@@ -545,7 +533,6 @@ void CLatinSquareDlg::DrawBox(int x, int y)
 
 int CLatinSquareDlg::IsNumber(int n)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int i, j, cnt = 0;
 	AllViews();
 	for (i = m_nX / 3 * 3; i < m_nX / 3 * 3 + 3; i++)
@@ -579,16 +566,14 @@ int CLatinSquareDlg::IsNumber(int n)
 
 bool CLatinSquareDlg::IsDuplicate(int x, int y, int num)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	return false;
 }
 
 
 void CLatinSquareDlg::DrawX(int x, int y)
 {
-	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int sx, sy;
-	CPen pen, * pPen;
+	CPen pen, *pPen;
 	pen.CreatePen(PS_SOLID, 2, RGB(255, 0, 0));
 	pPen = (CPen*)m_pDC->SelectObject(&pen);
 	sx = START_X + x * DISP_SIZE + (x / 3) * 6;
@@ -597,4 +582,13 @@ void CLatinSquareDlg::DrawX(int x, int y)
 	m_pDC->LineTo(sx + DISP_SIZE - 4, sy + DISP_SIZE - 4);
 	m_pDC->MoveTo(sx + DISP_SIZE - 4, sy);
 	m_pDC->LineTo(sx, sy + DISP_SIZE - 4);
+}
+
+
+void CLatinSquareDlg::WriteFile()
+{
+	CFile file;
+	file.Open(_T("sudoku1.txt"), CFile::modeCreate | CFile::modeWrite);
+
+
 }

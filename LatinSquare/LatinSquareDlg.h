@@ -1,35 +1,35 @@
-ï»¿
-// LatinSquareDlg.h: í—¤ë” íŒŒì¼
+
+// LatinSquareDlg.h : Çì´õ ÆÄÀÏ
 //
 
 #pragma once
+#include "afxwin.h"
+#include "afxcmn.h"
 #define NUM_CNT 9
 #define BMP_SIZE 48
 #define DISP_SIZE 52
 #define START_X 10
 #define START_Y 10
 
-// CLatinSquareDlg ëŒ€í™” ìƒì
+// CLatinSquareDlg ´ëÈ­ »óÀÚ
 class CLatinSquareDlg : public CDialogEx
 {
-// ìƒì„±ì…ë‹ˆë‹¤.
+// »ı¼ºÀÔ´Ï´Ù.
 public:
-	CLatinSquareDlg(CWnd* pParent = nullptr);	// í‘œì¤€ ìƒì„±ìì…ë‹ˆë‹¤.
+	CLatinSquareDlg(CWnd* pParent = NULL);	// Ç¥ÁØ »ı¼ºÀÚÀÔ´Ï´Ù.
 
-// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
-#ifdef AFX_DESIGN_TIME
+// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
 	enum { IDD = IDD_LATINSQUARE_DIALOG };
-#endif
 
 	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
+	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV Áö¿øÀÔ´Ï´Ù.
 
 
-// êµ¬í˜„ì…ë‹ˆë‹¤.
+// ±¸ÇöÀÔ´Ï´Ù.
 protected:
 	HICON m_hIcon;
 
-	// ìƒì„±ëœ ë©”ì‹œì§€ ë§µ í•¨ìˆ˜
+	// »ı¼ºµÈ ¸Ş½ÃÁö ¸Ê ÇÔ¼ö
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnPaint();
@@ -49,8 +49,8 @@ public:
 	afx_msg void OnClickedButtonCheck();
 	afx_msg void OnClickedButtonHelp();
 	afx_msg void OnClickedButtonHint();
-	afx_msg void OnClickedGameStart();
-	afx_msg void OnClickedGameStop();
+	afx_msg void OnClickedButtonGamestart();
+	afx_msg void OnClickedButtonGamestop();
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -78,4 +78,5 @@ public:
 	bool IsDuplicate(int x, int y, int num);
 	void DrawX(int x, int y);
 	CButton m_ctrlSaveBt;
+	void WriteFile();
 };
