@@ -7,6 +7,7 @@
 #include "LatinSquareDlg.h"
 #include "afxdialogex.h"
 #include "HelpDlg.h"
+#include "ExamAdd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -85,6 +86,7 @@ BEGIN_MESSAGE_MAP(CLatinSquareDlg, CDialogEx)
 	ON_WM_LBUTTONDOWN()
 	ON_WM_MOUSEMOVE()
 	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BT_EXAMMAKE, &CLatinSquareDlg::OnClickedButtonExammake)
 END_MESSAGE_MAP()
 
 
@@ -587,8 +589,27 @@ void CLatinSquareDlg::DrawX(int x, int y)
 
 void CLatinSquareDlg::WriteFile()
 {
-	CFile file;
-	file.Open(_T("sudoku1.txt"), CFile::modeCreate | CFile::modeWrite);
+	CStdioFile file;
+	file.Open(_T("sudoku1.txt"), CFile::modeCreate | CFile::modeNoTruncate | CFile::modeWrite);
+	TRACE(_T("출력 후 NewExam[0] = %s\n NewExam[1] = %s\n"), NewExam[0], NewExam[1]);
+	file.SeekToEnd();
+	file.WriteString(_T("\n") + (_T("%s"), NewExam[0]));
+	file.SeekToEnd();
+	file.WriteString(_T("\n") + (_T("%s"), NewExam[1]));
+	file.Close();
+}
 
 
+void CLatinSquareDlg::OnClickedButtonExammake()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CExamAdd dlg;
+	TRACE(_T("NewExam[0] = %s\n NewExam[1] = %s\n"), NewExam[0], NewExam[1]);
+	if (dlg.DoModal() == IDOK)
+	{
+		NewExam[0] = _T("\n") + dlg.m_strExam1 + dlg.m_strExam2 + dlg.m_strExam3 + dlg.m_strExam4 + dlg.m_strExam5 + dlg.m_strExam6 + dlg.m_strExam7 + dlg.m_strExam8 + dlg.m_strExam9;
+		NewExam[1] = _T("\n") + dlg.m_strCheck1 + dlg.m_strCheck2 + dlg.m_strCheck3 + dlg.m_strCheck4 + dlg.m_strCheck5 + dlg.m_strCheck6 + dlg.m_strCheck7 + dlg.m_strCheck8 + dlg.m_strCheck9;
+		WriteFile();
+	}
+	UpdateData(FALSE);
 }

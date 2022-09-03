@@ -79,4 +79,6 @@ public:
 	void DrawX(int x, int y);
 	CButton m_ctrlSaveBt;
 	void WriteFile();
+	CString NewExam[2];
+	afx_msg void OnClickedButtonExammake();
 };
