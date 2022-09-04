@@ -21,6 +21,8 @@ struct LastData
 	int Mines;
 	int Xpos;
 	int Ypos;
+	int Question;
+	int Color;
 } IData = { 0 };
 
 struct RandData
@@ -78,6 +80,8 @@ CSejongMineDlg::CSejongMineDlg(CWnd* pParent /*=NULL*/)
 	m_nGameState = 0;
 	m_nCustomTime = 0;
 	m_strCustomName = _T("");
+	m_nQuestion = 0;
+	m_nColor = 0;
 }
 
 void CSejongMineDlg::DoDataExchange(CDataExchange* pDX)
@@ -103,6 +107,9 @@ BEGIN_MESSAGE_MAP(CSejongMineDlg, CDialogEx)
 	ON_WM_DESTROY()
 	ON_COMMAND(IDM_TOP, &CSejongMineDlg::OnTop)
 	ON_COMMAND(IDM_EXIT, &CSejongMineDlg::OnExit)
+	ON_COMMAND(IDM_QUESTION, &CSejongMineDlg::OnQuestion)
+	ON_COMMAND(IDM_COLOR, &CSejongMineDlg::OnColor)
+	ON_COMMAND(IDM_HELP, &CSejongMineDlg::OnHelp)
 END_MESSAGE_MAP()
 
 
@@ -139,17 +146,30 @@ BOOL CSejongMineDlg::OnInitDialog()
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
 	m_pDC = GetDC();
+
 	m_bmBox.LoadBitmap(IDB_BOX);
 	m_bmNumber.LoadBitmap(IDB_NUMBER);
 	m_bmFace.LoadBitmap(IDB_FACE);
 
+	m_bmOBox.LoadBitmap(IDB_BWBOX);
+	m_bmONumber.LoadBitmap(IDB_BWNUMBER);
+	m_bmOFace.LoadBitmap(IDB_BWFACE);
+
 	m_boxDC.CreateCompatibleDC(m_pDC);
 	m_numberDC.CreateCompatibleDC(m_pDC);
 	m_faceDC.CreateCompatibleDC(m_pDC);
-
-	m_boxDC.SelectObject(&m_bmBox);
-	m_numberDC.SelectObject(&m_bmNumber);
-	m_faceDC.SelectObject(&m_bmFace);
+	switch (m_nColor)
+	{
+	case 0:
+		m_boxDC.SelectObject(&m_bmOBox);
+		m_numberDC.SelectObject(&m_bmONumber);
+		m_faceDC.SelectObject(&m_bmOFace);
+		break;
+	case 1:
+		m_boxDC.SelectObject(&m_bmBox);
+		m_numberDC.SelectObject(&m_bmNumber);
+		m_faceDC.SelectObject(&m_bmFace);
+	}
 
 	CFile file;
 	if (file.Open(_T("SejongMine.dat"), CFile::modeRead))
@@ -162,6 +182,8 @@ BOOL CSejongMineDlg::OnInitDialog()
 		m_nBoxCntX = IData.Width;
 		m_nBoxCntY = IData.Height;
 		m_nMineCnt = IData.Mines;
+		m_nQuestion = IData.Question;
+		m_nColor = IData.Color;
 		file.Read((void*)&rData, sizeof(rData));
 		for (int n = 0; n < 4; n++)
 		{
@@ -193,7 +215,10 @@ BOOL CSejongMineDlg::OnInitDialog()
 	{
 		OnBeginner();
 		m_nld = IDM_BEGINNER;
-	}	
+		m_nColor = 0;
+		m_nQuestion = 0;
+	}
+
 	ResizeWindow();
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -557,6 +582,8 @@ void CSejongMineDlg::WriteFile()
 	IData.Mines = m_nMineCnt;
 	IData.Xpos = m_WndRect.left;
 	IData.Ypos = m_WndRect.top;
+	IData.Question = m_nQuestion;
+	IData.Color = m_nColor;
 
 	TRACE("WriteFile rData[0][0].time = %d\n", rData[0][0].Time);
 	TRACE("WriteFile m_nCustomTime = %d\n", m_nCustomTime);
@@ -773,24 +800,55 @@ void CSejongMineDlg::OnRButtonDown(UINT nFlags, CPoint point)
 			DrawFace(2);
 			return;
 		}
-		if (m_BoxStyle[y][x] < 3)
+		if (m_nQuestion == 0)
 		{
-			switch (m_BoxStyle[y][x])
+			if (m_BoxStyle[y][x] < 3)
 			{
-			case 0:
-				m_BoxStyle[y][x] = 2;
-				m_nMine--;
-				DrawMineCounter();
-				break;
-			case 1:
-				m_BoxStyle[y][x] = 0;
-				break;
-			case 2:
-				m_BoxStyle[y][x] = 1;
-				m_nMine++;
-				DrawMineCounter();
+				switch (m_BoxStyle[y][x])
+				{
+				case 0:
+					m_BoxStyle[y][x] = 2;
+					m_nMine--;
+					TRACE("Case 0 = %d\n", m_nQuestion);
+					DrawMineCounter();
+					break;
+				case 1:
+					m_BoxStyle[y][x] = 0;
+					TRACE("Case 1 = %d\n", m_nQuestion);
+					break;
+				case 2:
+					m_BoxStyle[y][x] = 0;
+					m_nMine++;
+					TRACE("Case 2 = %d\n", m_nQuestion);
+					DrawMineCounter();
+				}
+				DrawBox(x, y, m_BoxStyle[y][x]);
 			}
-			DrawBox(x, y, m_BoxStyle[y][x]);
+		}
+		else
+		{
+			if (m_BoxStyle[y][x] < 3)
+			{
+				switch (m_BoxStyle[y][x])
+				{
+				case 0:
+					m_BoxStyle[y][x] = 2;
+					m_nMine--;
+					TRACE("Case 0 = %d\n", m_nQuestion);
+					DrawMineCounter();
+					break;
+				case 1:
+					m_BoxStyle[y][x] = 0;
+					TRACE("Case 1 = %d\n", m_nQuestion);
+					break;
+				case 2:
+					m_BoxStyle[y][x] = 1;
+					m_nMine++;
+					TRACE("Case 2 = %d\n", m_nQuestion);
+					DrawMineCounter();
+				}
+				DrawBox(x, y, m_BoxStyle[y][x]);
+			}
 		}
 	}
 	CDialogEx::OnRButtonDown(nFlags, point);
@@ -1037,3 +1095,56 @@ void CSejongMineDlg::OnExit()
 	//	dlg.m_nTime3 = 3;
 	//}
 //}
+
+
+void CSejongMineDlg::OnQuestion()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	switch (m_nQuestion)
+	{
+	case 0:
+		m_nQuestion = 1;
+		break;
+	case 1:
+		m_nQuestion = 0;
+	}
+	
+}
+
+
+void CSejongMineDlg::OnColor()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	int color1 = m_nColor;
+	TRACE("m_nColor = %d\n", color1);
+	switch (m_nColor)
+	{
+	case 0:
+		TRACE("Case 0의 m_nColor = %d\n", m_nColor);
+		m_boxDC.SelectObject(&m_bmOBox);
+		m_numberDC.SelectObject(&m_bmONumber);
+		m_faceDC.SelectObject(&m_bmOFace);
+
+		m_nColor = 1;
+		break;
+	case 1:
+		TRACE("Case 1의 m_nColor = %d\n", m_nColor);
+		m_boxDC.SelectObject(&m_bmBox);
+		m_numberDC.SelectObject(&m_bmNumber);
+		m_faceDC.SelectObject(&m_bmFace);
+		
+		m_nColor = 0;
+	}
+	InitGame();
+	DrawFace(m_nFace);
+	DrawTimer();
+	DrawMineCounter();
+	UpdateData(FALSE);
+}
+
+
+void CSejongMineDlg::OnHelp()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+}

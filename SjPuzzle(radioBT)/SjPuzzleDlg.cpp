@@ -130,6 +130,7 @@ BOOL CSjPuzzleDlg::OnInitDialog()
 	m_pDC = GetDC();
 	m_mainDC.CreateCompatibleDC(m_pDC);
 	m_hintDC.CreateCompatibleDC(m_pDC);
+	m_bitOther.LoadBitmap(IDB_BITPARK);
 	m_bitMain.LoadBitmap(IDB_BITMAIN);
 	m_bitHint.LoadBitmap(IDB_BITHINT);
 
@@ -550,7 +551,6 @@ void CSjPuzzleDlg::OnBnClickedRadio2()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 	m_pDC = GetDC();
-	m_bitOther.LoadBitmap(IDB_BITPARK);
 	m_mainDC.SelectObject(&m_bitOther);
 	InitialData();
 	UpdateData(FALSE);

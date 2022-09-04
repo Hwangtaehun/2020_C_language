@@ -92,5 +92,14 @@
     <Image Include="res\NumberR.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\boxBW.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\FaceBW.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\NumberBW.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

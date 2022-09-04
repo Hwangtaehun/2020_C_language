@@ -130,8 +130,11 @@
   <ItemGroup>
     <Image Include="res\BITMAP_F.BMP" />
     <Image Include="res\box.bmp" />
+    <Image Include="res\boxBW.bmp" />
     <Image Include="res\DISPLAY_.BMP" />
     <Image Include="res\Face.bmp" />
+    <Image Include="res\FaceBW.bmp" />
+    <Image Include="res\NumberBW.bmp" />
     <Image Include="res\NumberR.bmp" />
     <Image Include="res\SejongMine.ico" />
   </ItemGroup>

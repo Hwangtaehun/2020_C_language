@@ -95,4 +95,12 @@ public:
 	void RankSort(int n);
 	CString m_strCustomName;
 	afx_msg void OnExit();
+	afx_msg void OnQuestion();
+	afx_msg void OnColor();
+	afx_msg void OnHelp();
+	int m_nQuestion;
+	CBitmap m_bmOBox;
+	CBitmap m_bmONumber;
+	CBitmap m_bmOFace;
+	int m_nColor;
 };
