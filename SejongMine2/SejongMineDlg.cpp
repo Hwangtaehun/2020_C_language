@@ -8,6 +8,7 @@
 #include "CustomDlg.h"
 #include "RankDlg.h"
 #include "NameDlg.h"
+#include "HelpDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -1147,4 +1148,7 @@ void CSejongMineDlg::OnColor()
 void CSejongMineDlg::OnHelp()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CHelpDlg dlg;
+	dlg.m_strHelp = _T("게임 규칙\n1. 지뢰를 피하고 빈칸을 클릭한다.\n2. 빈칸을 모두 열면 게임이 끝난다.");
+	dlg.DoModal();
 }
