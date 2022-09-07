@@ -21,10 +21,16 @@
     <ClInclude Include="SjThread3Dlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
     <ClInclude Include="targetver.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="UiThread1.h">
@@ -36,15 +42,15 @@
     <ClInclude Include="UiThreadWnd.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SjThread3.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="SjThread3Dlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UiThread1.cpp">
@@ -54,9 +60,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="UiThreadWnd.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

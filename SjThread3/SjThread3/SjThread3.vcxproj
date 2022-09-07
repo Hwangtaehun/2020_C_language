@@ -183,19 +183,25 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SjThread3.h" />
     <ClInclude Include="SjThread3Dlg.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="UiThread1.h" />
     <ClInclude Include="UiThread2.h" />
     <ClInclude Include="UiThreadWnd.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="SjThread3.cpp" />
     <ClCompile Include="SjThread3Dlg.cpp" />
-    <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="UiThread1.cpp" />
     <ClCompile Include="UiThread2.cpp" />
     <ClCompile Include="UiThreadWnd.cpp" />
