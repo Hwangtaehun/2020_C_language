@@ -49,6 +49,10 @@ END_MESSAGE_MAP()
 
 CSjEchoClientDlg::CSjEchoClientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSjEchoClientDlg::IDD, pParent)
+	, m_strIpAddress(_T(""))
+	, m_nPortNo(0)
+	, m_strSendData(_T(""))
+	, m_strReceiveData(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -56,12 +60,25 @@ CSjEchoClientDlg::CSjEchoClientDlg(CWnd* pParent /*=NULL*/)
 void CSjEchoClientDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_CONNECT_BT, m_ctrlConnectBt);
+	DDX_Control(pDX, IDC_DISCONNECT_BT, m_ctrlDisConnectBt);
+	DDX_Control(pDX, IDC_SEND_BT, m_ctrlSendBt);
+	DDX_Text(pDX, IDC_IPADDRESS, m_strIpAddress);
+	DDX_Control(pDX, IDC_IPADDRESS, m_ctrlIpAddress);
+	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
+	DDX_Text(pDX, IDC_SEND_DATA, m_strSendData);
+	DDX_Control(pDX, IDC_SEND_DATA, m_ctrlSendData);
+	DDX_Text(pDX, IDC_RECEIVE_DATA, m_strReceiveData);
+	DDX_Control(pDX, IDC_RECEIVE_DATA, m_ctrlReceiveData);
 }
 
 BEGIN_MESSAGE_MAP(CSjEchoClientDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_CONNECT_BT, &CSjEchoClientDlg::OnClickedConnectBt)
+	ON_BN_CLICKED(IDC_DISCONNECT_BT, &CSjEchoClientDlg::OnClickedDisconnectBt)
+	ON_BN_CLICKED(IDC_SEND_BT, &CSjEchoClientDlg::OnClickedSendBt)
 END_MESSAGE_MAP()
 
 
@@ -150,3 +167,39 @@ HCURSOR CSjEchoClientDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CSjEchoClientDlg::OnClickedConnectBt()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//CSocket m_Socket;
+	m_Socket.Create();
+	m_Socket.Connect(_T("localhost"), 1234);
+
+	char buf[100];
+	m_Socket.Receive(buf, 100);
+	m_strReceiveData += buf;
+	UpdateData(FALSE);
+}
+
+
+void CSjEchoClientDlg::OnClickedDisconnectBt()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_Socket.Close();
+}
+
+
+void CSjEchoClientDlg::OnClickedSendBt()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	char buf[100] = "";
+	UpdateData(TRUE);
+	strcpy_s(buf, 100, CT2A(m_strSendData));
+	m_Socket.Send(buf, 100);
+
+	char buf2[100];
+	m_Socket.Receive(buf2, 100);
+	m_strReceiveData += buf2;
+	UpdateData(FALSE);
+}

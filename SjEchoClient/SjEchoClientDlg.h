@@ -29,4 +29,19 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	CButton m_ctrlConnectBt;
+	CButton m_ctrlDisConnectBt;
+	CButton m_ctrlSendBt;
+	CString m_strIpAddress;
+	CEdit m_ctrlIpAddress;
+	int m_nPortNo;
+	CString m_strSendData;
+	CEdit m_ctrlSendData;
+	CString m_strReceiveData;
+	CEdit m_ctrlReceiveData;
+	afx_msg void OnClickedConnectBt();
+	CSocket m_Socket;
+	afx_msg void OnClickedDisconnectBt();
+	afx_msg void OnClickedSendBt();
 };
