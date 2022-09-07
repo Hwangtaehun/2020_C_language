@@ -1,7 +1,8 @@
 ﻿// UiThread2.cpp: 구현 파일
 //
-//#include "stdafx.h"
-#include "pch.h"
+
+#include "stdafx.h"
+//#include "pch.h"
 #include "SjThread3.h"
 #include "UiThread2.h"
 #include "UiThreadWnd.h"

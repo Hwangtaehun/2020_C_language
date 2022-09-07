@@ -1,9 +1,9 @@
 ﻿
 // SjThread3Dlg.cpp: 구현 파일
 //
-//#include "stdafx.h"
-#include "pch.h"
-#include "framework.h"
+#include "stdafx.h"
+//#include "pch.h"
+//#include "framework.h"
 #include "SjThread3.h"
 #include "SjThread3Dlg.h"
 #include "afxdialogex.h"
