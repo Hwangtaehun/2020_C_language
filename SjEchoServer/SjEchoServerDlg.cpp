@@ -49,6 +49,8 @@ END_MESSAGE_MAP()
 
 CSjEchoServerDlg::CSjEchoServerDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSjEchoServerDlg::IDD, pParent)
+	, m_nPortNo(1234)
+	, m_strMsg(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -56,12 +58,21 @@ CSjEchoServerDlg::CSjEchoServerDlg(CWnd* pParent /*=NULL*/)
 void CSjEchoServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_START_BT, m_ctrlStartBt);
+	DDX_Control(pDX, IDC_STOP_BT, m_ctrlStopBt);
+	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
+	DDX_Control(pDX, IDC_MESSAGE, m_ctrlMsg);
+	DDX_Text(pDX, IDC_MESSAGE, m_strMsg);
 }
 
 BEGIN_MESSAGE_MAP(CSjEchoServerDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_START_BT, &CSjEchoServerDlg::OnClickedStartBt)
+	ON_BN_CLICKED(IDC_STOP_BT, &CSjEchoServerDlg::OnClickedStopBt)
+	ON_MESSAGE(UM_ACCEPT, &CSjEchoServerDlg::OnAcceptMsg)
+	ON_MESSAGE(UM_RECEIVE, &CSjEchoServerDlg::OnReceiveMsg)
 END_MESSAGE_MAP()
 
 
@@ -97,7 +108,8 @@ BOOL CSjEchoServerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-
+	m_ctrlStartBt.EnableWindow(TRUE);
+	m_ctrlStopBt.EnableWindow(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -150,3 +162,93 @@ HCURSOR CSjEchoServerDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+
+void CSjEchoServerDlg::OnClickedStartBt()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	/*m_Server.Create(1234);
+	m_Server.Listen();*/
+	UpdateData(TRUE);
+	m_ctrlStartBt.EnableWindow(FALSE);
+	m_ctrlStartBt.SetWindowText(_T("Server 실행중"));
+	if (!m_Server.ServerStart(m_nPortNo))
+	{
+		MessageBox(_T("Server Socket 문제 발생"));
+		m_ctrlStartBt.EnableWindow(TRUE);
+		m_ctrlStartBt.SetWindowText(_T("Sever Start"));
+		return;
+	}
+	m_ctrlStopBt.EnableWindow(TRUE);
+	m_strMsg += "Server 실행 후 대기 중입니다.\r\n";
+	UpdateData(FALSE);
+}
+
+
+void CSjEchoServerDlg::OnClickedStopBt()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (AfxMessageBox(_T("Server를 종료합니다!!"), MB_YESNO) == IDYES)
+	{
+		m_ctrlStopBt.EnableWindow(FALSE);
+		m_ctrlStartBt.EnableWindow(TRUE);
+		m_ctrlStartBt.SetWindowText(_T("Sever Start"));
+		m_Server.ShutDown();
+		m_Server.Close();
+		m_Client.Close();
+		m_strMsg += "Server를 종료합니다. \r\n";
+		UpdateData(FALSE);
+	}
+	/*m_Server.Close();*/
+}
+
+
+LRESULT CSjEchoServerDlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
+{
+	// TODO: 여기에 구현 코드 추가.
+	// MessageBox(_T("UM_ACCEPT 메세지 도착"));
+	char Buf[100] = "안녕하세유 지는유 \r\n Echo Server인디유 \r\n";
+	if (!m_Server.Accept(m_Client))
+	{
+		MessageBox(_T("Client 연결 실패"));
+		return -1;
+	}
+	m_Client.SetMainWindow(this);
+	if (m_Client.Send(Buf, 100) == -1)
+	{
+		MessageBox(_T("Message 전송 실패"));
+		return -1;
+	}
+	m_strMsg += "누군가 접속 했습니다.\r\n";
+	UpdateData(FALSE);
+	m_ctrlMsg.LineScroll(m_ctrlMsg.GetLineCount(), 0);
+	return LRESULT();
+	/*m_Server.Accept(m_Client);
+	m_Client.SetMainWindow(this);
+	m_Client.Send(Buf, 100);*/
+}
+
+
+LRESULT CSjEchoServerDlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
+{
+	// TODO: 여기에 구현 코드 추가.
+	// MessageBox(_T("UM_RECEIVE 메세지 도착"));
+	char Buf1[100], Buf2[100];
+	m_Client.Receive(Buf2, 100);
+	sprintf_s(Buf1, "Server : %s\r\n", Buf2, 100);
+	if (m_Client.Send(Buf1, 100) == -1)
+	{
+		MessageBox(_T("Message 전송 실패"));
+		return -1;
+	}
+	m_strMsg += "Client : ";
+	m_strMsg += Buf2;
+	m_strMsg += "\r\n";
+	UpdateData(FALSE);
+	m_ctrlMsg.LineScroll(m_ctrlMsg.GetLineCount(), 0);
+	return LRESULT();
+	/*char Buf1[100], Buf2[100];
+	m_Client.Receive(Buf2, 100);
+	sprintf_s(Buf1, "Server : %s\r\n", Buf2, 100);
+	m_Client.Send(Buf1, 100);*/
+}
