@@ -49,7 +49,7 @@ END_MESSAGE_MAP()
 
 CSjEchoServerMulti2Dlg::CSjEchoServerMulti2Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSjEchoServerMulti2Dlg::IDD, pParent)
-	, m_nPortNo(0)
+	, m_nPortNo(1234)
 	, m_strMsg(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -203,17 +203,51 @@ void CSjEchoServerMulti2Dlg::OnClickedStopBt()
 
 LRESULT CSjEchoServerMulti2Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 {
+	char strMsg1[DATA_SIZE] = "안녕하세유 지는유 \r\n Echo Server 인디유\r\n";
+	char strMsg2[DATA_SIZE] = "접속 인원 초과입니다\r\n잠시 후 다시 이용해 주세요!\r\n";
+	char Buf[DATA_SIZE];
+	m_pClient = new CSjClientSocket;
+	if (!m_Server.Accept(*m_pClient))
+	{
+		MessageBox(_T("Client 연결 실패"));
+		return -1;
+	}
+	m_nCnt++;
+	m_pClient->SetMainWindow(this);
+	m_pClient->Send(strMsg1, DATA_SIZE);
+	sprintf_s(Buf, "%d 번째 접속자 입니다.\r\n", m_nCnt);
+	m_pClient->Send(Buf, DATA_SIZE);
+	m_strMsg += Buf;
+	UpdateData(FALSE);
+	m_ctrlMsg.LineScroll(m_ctrlMsg.GetLineCount(), 0);
 	return LRESULT();
 }
 
 
 LRESULT CSjEchoServerMulti2Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 {
+	char Buf1[100], Buf2[100];
+	CSjClientSocket* pSocket;
+	pSocket = (CSjClientSocket*)IParam;
+	pSocket->Receive(Buf2, DATA_SIZE);
+	sprintf_s(Buf1, "Server : %s\r\n", Buf2, DATA_SIZE);
+	pSocket->Send(Buf1, DATA_SIZE);
+	sprintf_s(Buf1, "Client : %s\r\n", Buf2, DATA_SIZE);
+	m_strMsg += Buf1;
+	UpdateData(FALSE);
+	m_ctrlMsg.LineScroll(m_ctrlMsg.GetLineCount(), 0);
 	return LRESULT();
 }
 
 
 LRESULT CSjEchoServerMulti2Dlg::OnCloseMsg(WPARAM wParam, LPARAM IParam)
 {
+	CSjClientSocket* pSocket;
+	pSocket = (CSjClientSocket*)IParam;
+	pSocket->ShutDown();
+	pSocket->Close();
+	delete pSocket;
+	m_strMsg += "Client가 종료됨\r\n";
+	UpdateData(FALSE);
 	return LRESULT();
 }

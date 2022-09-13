@@ -1,5 +1,5 @@
 #pragma once
-#define UM_RECEIVE (WM_USER + 1)
+#define UM_RECEIVE (WM_USER + 1)		
 #define UM_SOCKET_CLOSE (WM_USER + 3)
 // CSjClientSocket 명령 대상입니다.
 
@@ -10,11 +10,11 @@ private:
 public:
 	CSjClientSocket();
 	virtual ~CSjClientSocket();
-	bool m_bFlag;
-	bool m_bConnect;
+	bool m_bFlag;				//
+	bool m_bConnect;			//연결 상태 나타내는 변수
 	void SetMainWindow(CWnd * pWnd);
 	virtual void OnReceive(int nErrorCode);
-	virtual void OnClose(int nErrorCode);
+	virtual void OnClose(int nErrorCode); 
 };
 
 

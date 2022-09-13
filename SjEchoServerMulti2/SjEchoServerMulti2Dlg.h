@@ -6,6 +6,7 @@
 #include "SjClientSocket.h"
 #include "SjServerSocket.h"
 #include "afxwin.h"
+#define DATA_SIZE 100
 
 // CSjEchoServerMulti2Dlg 대화 상자
 class CSjEchoServerMulti2Dlg : public CDialogEx
