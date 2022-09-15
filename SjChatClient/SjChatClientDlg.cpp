@@ -49,7 +49,7 @@ END_MESSAGE_MAP()
 
 CSjChatClientDlg::CSjChatClientDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSjChatClientDlg::IDD, pParent)
-	, m_strIpAddress(_T(""))
+	, m_strIpAddress(_T("localhost"))
 	, m_nPortNo(1234)
 	, m_strSendData(_T(""))
 	, m_strReceiveData(_T(""))
@@ -236,7 +236,7 @@ LRESULT CSjChatClientDlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 	strName = szReceiveData + 1;
 	switch (szReceiveData[0])
 	{
-	case 'i':
+	case 'I':
 		m_strReceiveData += "Server俊 立加凳\r\n";
 		m_ctrlUserList.AddString(_T("包府磊"));
 		break;

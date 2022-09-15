@@ -11,8 +11,8 @@
 #define new DEBUG_NEW
 #endif
 
-#define ZeroMemory RrlZeroMemory
-#define RrlZeroMemory(destionation, Length) memset((Destination), 0, (Length))
+//#define ZeroMemory RrlZeroMemory
+//#define RrlZeroMemory(destionation, Length) memset((Destination), 0, (Length))
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -131,7 +131,7 @@ BOOL CSjChatServerDlg::OnInitDialog()
 	HOSTENT * pHostEnt = NULL;
 	gethostname(hostName, sizeof(hostName));
 	pHostEnt = gethostbyname(hostName);
-	myIpAddr.S_un.S_addr = *(u_long*)(pHostEnt->h_addr_list[0]);
+	myIpAddr.S_un.S_addr = *((u_long*)(pHostEnt->h_addr_list[0]));
 	m_strIpAddress = inet_ntoa(myIpAddr);
 	UpdateData(FALSE);
 	m_ctrlStartBt.EnableWindow(TRUE);
@@ -205,13 +205,19 @@ void CSjChatServerDlg::OnClickedStartBt()
 		m_ctrlStartBt.SetWindowText(_T("Server Start"));
 		return;
 	}
+	m_ctrlForcedBt.EnableWindow(TRUE);
+	m_ctrlSendBt.EnableWindow(TRUE);
+	m_ctrlStopBt.EnableWindow(TRUE);
+	m_strReceiveData += "Server 실행 후 대기 중입니다.\r\n";
+	UpdateData(FALSE);
+	m_ctrlSendData.SetFocus();
 }
 
 
 void CSjChatServerDlg::OnClickedStopBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (AfxMessageBox(_T("Server를 종료합니다!!"), MB_YESNO) == IDYES)
+	if (AfxMessageBox(_T("Server를 종료합니다!!"), MB_YESNO) != IDYES)
 		return;
 
 	CSjClientSocket *pNode;
@@ -248,7 +254,7 @@ void CSjChatServerDlg::OnClickedSendBt()
 	UpdateData(TRUE);
 	if (!m_strSendData.IsEmpty())
 	{
-		sprintf_s((szSendData + 1), DATA_SIZE - 1, "관리자 : %s\r\n", CT2A(m_strSendData));
+		sprintf_s((szSendData + 1), DATA_SIZE - 1, "관리자 : %s\r\n", (LPSTR)(LPCTSTR)m_strSendData);
 		szSendData[0] = 'D';
 		BroadCast((void *)szSendData);
 		m_strReceiveData += szSendData + 1;
@@ -327,7 +333,7 @@ LRESULT CSjChatServerDlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 		for (int i = 0; i < m_ctrlUserList.GetCount(); i++)
 		{
 			m_ctrlUserList.GetText(i, strName);
-			sprintf_s(szSendData, DATA_SIZE, "U%s", CT2A(strName));
+			sprintf_s(szSendData, DATA_SIZE, "U%s", (LPSTR)(LPCTSTR)strName);
 			pSocket->Send((void *)szSendData, DATA_SIZE);
 		}
 		pSocket->m_strName = szReceiveData + 1;
