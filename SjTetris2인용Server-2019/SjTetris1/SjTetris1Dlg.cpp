@@ -1,8 +1,9 @@
-
-// SjTetris1Dlg.cpp : ±¸Çö ÆÄÀÏ
+ï»¿
+// SjTetris1Dlg.cpp: êµ¬í˜„ íŒŒì¼
 //
 
-#include "stdafx.h"
+#include "pch.h"
+#include "framework.h"
 #include "SjTetris1.h"
 #include "SjTetris1Dlg.h"
 #include "afxdialogex.h"
@@ -33,20 +34,26 @@ POINT nextPattern[7][4] =
 	{{0, 1}, {-1, 1}, {1, 1}, {0, 0}}
 };
 
-// ÀÀ¿ë ÇÁ·Î±×·¥ Á¤º¸¿¡ »ç¿ëµÇ´Â CAboutDlg ´ëÈ­ »óÀÚÀÔ´Ï´Ù.
+struct ChatData
+{
+	char cFlag;
+	char szData[200];
+}gSend, gReceive;
+
+// ì‘ìš© í”„ë¡œê·¸ë¨ ì •ë³´ì— ì‚¬ìš©ë˜ëŠ” CAboutDlg ëŒ€í™” ìƒìì…ë‹ˆë‹¤.
 
 class CAboutDlg : public CDialogEx
 {
 public:
 	CAboutDlg();
 
-// ´ëÈ­ »óÀÚ µ¥ÀÌÅÍÀÔ´Ï´Ù.
+	// ëŒ€í™” ìƒì ë°ì´í„°ì…ë‹ˆë‹¤.
 	enum { IDD = IDD_ABOUTBOX };
 
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Áö¿øÀÔ´Ï´Ù.
+protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ì§€ì›ì…ë‹ˆë‹¤.
 
-// ±¸ÇöÀÔ´Ï´Ù.
+// êµ¬í˜„ì…ë‹ˆë‹¤.
 protected:
 	DECLARE_MESSAGE_MAP()
 };
@@ -64,18 +71,19 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 END_MESSAGE_MAP()
 
 
-// CSjTetris1Dlg ´ëÈ­ »óÀÚ
+// CSjTetris1Dlg ëŒ€í™” ìƒì
 
 
 
 CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CSjTetris1Dlg::IDD, pParent)
+	: CDialogEx(IDD_SJTETRIS1_DIALOG, pParent)
 	, m_nScore(0)
 	, m_strIpAddress(_T(""))
 	, m_nPortNo(1234)
-	, m_strName(_T("°ü¸®ÀÚ"))
+	, m_strName(_T("ê´€ë¦¬ì"))
 	, m_strSendData(_T(""))
 	, m_strReceiveData(_T(""))
+	//, m_strUserList(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nX = COL_CNT / 2;
@@ -101,6 +109,7 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	m_mainRect2.top = START_Y;
 	m_mainRect2.right = m_mainRect2.left + BLOCK_SIZE * COL_CNT + 4;
 	m_mainRect2.bottom = START_Y + BLOCK_SIZE * ROW_CNT + 4;
+	m_nState = 0;
 }
 
 void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
@@ -112,7 +121,7 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SERVER_START_BT, m_ctrlSVStartBt);
 	DDX_Control(pDX, IDC_SERVER_STOP_BT, m_ctrlSVStopBt);
 	DDX_Control(pDX, IDC_SEND_BT, m_ctrlSendBt);
-	DDX_Control(pDX, IDC_FORCED_EXIT_BT, m_ctrlForcedBt);
+	//  DDX_Control(pDX, IDC_FORCED_EXIT_BT, m_ctrlForcedBt);
 	DDX_Text(pDX, IDC_IP_ADDRESS, m_strIpAddress);
 	DDX_Control(pDX, IDC_IP_ADDRESS, m_ctrlIpAddress);
 	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
@@ -121,6 +130,8 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SEND_DATA, m_ctrlSendData);
 	DDX_Text(pDX, IDC_RECEIVE_DATA, m_strReceiveData);
 	DDX_Control(pDX, IDC_RECEIVE_DATA, m_ctrlReceiveData);
+	//  DDX_Control(pDX, IDC_USER_LIST, m_ctrlUserList);
+	//  DDX_LBString(pDX, IDC_USER_LIST, m_strUserList);
 }
 
 BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
@@ -134,22 +145,22 @@ BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_SERVER_START_BT, &CSjTetris1Dlg::OnClickedServerStartBt)
 	ON_BN_CLICKED(IDC_SERVER_STOP_BT, &CSjTetris1Dlg::OnClickedServerStopBt)
 	ON_BN_CLICKED(IDC_SEND_BT, &CSjTetris1Dlg::OnClickedSendBt)
-	ON_BN_CLICKED(IDC_FORCED_EXIT_BT, &CSjTetris1Dlg::OnClickedForcedExitBt)
+//	ON_BN_CLICKED(IDC_FORCED_EXIT_BT, &CSjTetris1Dlg::OnClickedForcedExitBt)
 	ON_MESSAGE(UM_ACCEPT, &CSjTetris1Dlg::OnAcceptMsg)
 	ON_MESSAGE(UM_RECEIVE, &CSjTetris1Dlg::OnReceiveMsg)
 	ON_MESSAGE(UM_SOCKET_CLOSE, &CSjTetris1Dlg::OnCloseMsg)
 END_MESSAGE_MAP()
 
 
-// CSjTetris1Dlg ¸Ş½ÃÁö Ã³¸®±â
+// CSjTetris1Dlg ë©”ì‹œì§€ ì²˜ë¦¬ê¸°
 
 BOOL CSjTetris1Dlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
-	// ½Ã½ºÅÛ ¸Ş´º¿¡ "Á¤º¸..." ¸Ş´º Ç×¸ñÀ» Ãß°¡ÇÕ´Ï´Ù.
+	// ì‹œìŠ¤í…œ ë©”ë‰´ì— "ì •ë³´..." ë©”ë‰´ í•­ëª©ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
 
-	// IDM_ABOUTBOX´Â ½Ã½ºÅÛ ¸í·É ¹üÀ§¿¡ ÀÖ¾î¾ß ÇÕ´Ï´Ù.
+	// IDM_ABOUTBOXëŠ” ì‹œìŠ¤í…œ ëª…ë ¹ ë²”ìœ„ì— ìˆì–´ì•¼ í•©ë‹ˆë‹¤.
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -167,13 +178,13 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 		}
 	}
 
-	// ÀÌ ´ëÈ­ »óÀÚÀÇ ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.  ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ ÁÖ Ã¢ÀÌ ´ëÈ­ »óÀÚ°¡ ¾Æ´Ò °æ¿ì¿¡´Â
-	//  ÇÁ·¹ÀÓ¿öÅ©°¡ ÀÌ ÀÛ¾÷À» ÀÚµ¿À¸·Î ¼öÇàÇÕ´Ï´Ù.
-	SetIcon(m_hIcon, TRUE);			// Å« ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.
-	SetIcon(m_hIcon, FALSE);		// ÀÛÀº ¾ÆÀÌÄÜÀ» ¼³Á¤ÇÕ´Ï´Ù.
+	// ì´ ëŒ€í™” ìƒìì˜ ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.  ì‘ìš© í”„ë¡œê·¸ë¨ì˜ ì£¼ ì°½ì´ ëŒ€í™” ìƒìê°€ ì•„ë‹ ê²½ìš°ì—ëŠ”
+	//  í”„ë ˆì„ì›Œí¬ê°€ ì´ ì‘ì—…ì„ ìë™ìœ¼ë¡œ ìˆ˜í–‰í•©ë‹ˆë‹¤.
+	SetIcon(m_hIcon, TRUE);			// í° ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.
+	SetIcon(m_hIcon, FALSE);		// ì‘ì€ ì•„ì´ì½˜ì„ ì„¤ì •í•©ë‹ˆë‹¤.
 
-	// TODO: ¿©±â¿¡ Ãß°¡ ÃÊ±âÈ­ ÀÛ¾÷À» Ãß°¡ÇÕ´Ï´Ù.
-	MoveWindow(100, 100, m_mainRect.right * 2 + 180, m_mainRect.bottom + 225);
+	// TODO: ì—¬ê¸°ì— ì¶”ê°€ ì´ˆê¸°í™” ì‘ì—…ì„ ì¶”ê°€í•©ë‹ˆë‹¤.
+	MoveWindow(100, 100, m_mainRect.right * 2 + 180, m_mainRect.bottom + 350);
 	m_pDC = GetDC();
 	m_bmBlock.LoadBitmap(IDB_BLOCK);
 	m_BlockDC.CreateCompatibleDC(m_pDC);
@@ -182,12 +193,25 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	m_BackDC.CreateCompatibleDC(m_pDC);
 	m_BackDC.SelectObject(&m_bmBack);
 
+	char hostName[32];
+	struct in_addr myIpAddr;
+	HOSTENT* pHostEnt = NULL;
+	gethostname(hostName, sizeof(hostName));
+	pHostEnt = gethostbyname(hostName);
+	myIpAddr.S_un.S_addr = *((u_long*)(pHostEnt->h_addr_list[0]));
+	m_strIpAddress = inet_ntoa(myIpAddr);
+	UpdateData(FALSE);
+	m_ctrlSVStartBt.EnableWindow(TRUE);
+	m_ctrlSVStopBt.EnableWindow(FALSE);
+	//m_ctrlForcedBt.EnableWindow(FALSE);
+	m_ctrlSendBt.EnableWindow(FALSE);
+
 	srand((unsigned)time(NULL));
 	m_ctrlStartBt.EnableWindow(TRUE);
 	m_ctrlStopBt.EnableWindow(FALSE);
 	memset((void*)m_Table, -1, sizeof(m_Table));
 	memset((void*)m_Table2, -1, sizeof(m_Table2));
-	return TRUE;  // Æ÷Ä¿½º¸¦ ÄÁÆ®·Ñ¿¡ ¼³Á¤ÇÏÁö ¾ÊÀ¸¸é TRUE¸¦ ¹İÈ¯ÇÕ´Ï´Ù.
+	return TRUE;  // í¬ì»¤ìŠ¤ë¥¼ ì»¨íŠ¸ë¡¤ì— ì„¤ì •í•˜ì§€ ì•Šìœ¼ë©´ TRUEë¥¼ ë°˜í™˜í•©ë‹ˆë‹¤.
 }
 
 void CSjTetris1Dlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -203,19 +227,19 @@ void CSjTetris1Dlg::OnSysCommand(UINT nID, LPARAM lParam)
 	}
 }
 
-// ´ëÈ­ »óÀÚ¿¡ ÃÖ¼ÒÈ­ ´ÜÃß¸¦ Ãß°¡ÇÒ °æ¿ì ¾ÆÀÌÄÜÀ» ±×¸®·Á¸é
-//  ¾Æ·¡ ÄÚµå°¡ ÇÊ¿äÇÕ´Ï´Ù.  ¹®¼­/ºä ¸ğµ¨À» »ç¿ëÇÏ´Â MFC ÀÀ¿ë ÇÁ·Î±×·¥ÀÇ °æ¿ì¿¡´Â
-//  ÇÁ·¹ÀÓ¿öÅ©¿¡¼­ ÀÌ ÀÛ¾÷À» ÀÚµ¿À¸·Î ¼öÇàÇÕ´Ï´Ù.
+// ëŒ€í™” ìƒìì— ìµœì†Œí™” ë‹¨ì¶”ë¥¼ ì¶”ê°€í•  ê²½ìš° ì•„ì´ì½˜ì„ ê·¸ë¦¬ë ¤ë©´
+//  ì•„ë˜ ì½”ë“œê°€ í•„ìš”í•©ë‹ˆë‹¤.  ë¬¸ì„œ/ë·° ëª¨ë¸ì„ ì‚¬ìš©í•˜ëŠ” MFC ì‘ìš© í”„ë¡œê·¸ë¨ì˜ ê²½ìš°ì—ëŠ”
+//  í”„ë ˆì„ì›Œí¬ì—ì„œ ì´ ì‘ì—…ì„ ìë™ìœ¼ë¡œ ìˆ˜í–‰í•©ë‹ˆë‹¤.
 
 void CSjTetris1Dlg::OnPaint()
 {
 	if (IsIconic())
 	{
-		CPaintDC dc(this); // ±×¸®±â¸¦ À§ÇÑ µğ¹ÙÀÌ½º ÄÁÅØ½ºÆ®ÀÔ´Ï´Ù.
+		CPaintDC dc(this); // ê·¸ë¦¬ê¸°ë¥¼ ìœ„í•œ ë””ë°”ì´ìŠ¤ ì»¨í…ìŠ¤íŠ¸ì…ë‹ˆë‹¤.
 
 		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
 
-		// Å¬¶óÀÌ¾ğÆ® »ç°¢Çü¿¡¼­ ¾ÆÀÌÄÜÀ» °¡¿îµ¥¿¡ ¸ÂÃä´Ï´Ù.
+		// í´ë¼ì´ì–¸íŠ¸ ì‚¬ê°í˜•ì—ì„œ ì•„ì´ì½˜ì„ ê°€ìš´ë°ì— ë§ì¶¥ë‹ˆë‹¤.
 		int cxIcon = GetSystemMetrics(SM_CXICON);
 		int cyIcon = GetSystemMetrics(SM_CYICON);
 		CRect rect;
@@ -223,18 +247,19 @@ void CSjTetris1Dlg::OnPaint()
 		int x = (rect.Width() - cxIcon + 1) / 2;
 		int y = (rect.Height() - cyIcon + 1) / 2;
 
-		// ¾ÆÀÌÄÜÀ» ±×¸³´Ï´Ù.
+		// ì•„ì´ì½˜ì„ ê·¸ë¦½ë‹ˆë‹¤.
 		dc.DrawIcon(x, y, m_hIcon);
 	}
 	else
 	{
 		DrawScr();
+		DisplayMsg(_T(""));
 		CDialogEx::OnPaint();
 	}
 }
 
-// »ç¿ëÀÚ°¡ ÃÖ¼ÒÈ­µÈ Ã¢À» ²ô´Â µ¿¾È¿¡ Ä¿¼­°¡ Ç¥½ÃµÇµµ·Ï ½Ã½ºÅÛ¿¡¼­
-//  ÀÌ ÇÔ¼ö¸¦ È£ÃâÇÕ´Ï´Ù.
+// ì‚¬ìš©ìê°€ ìµœì†Œí™”ëœ ì°½ì„ ë„ëŠ” ë™ì•ˆì— ì»¤ì„œê°€ í‘œì‹œë˜ë„ë¡ ì‹œìŠ¤í…œì—ì„œ
+//  ì´ í•¨ìˆ˜ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
 HCURSOR CSjTetris1Dlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
@@ -253,7 +278,7 @@ void CSjTetris1Dlg::DrawScr()
 		{
 			if (m_Table[row][col] == -1)
 			{
-				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, col * BLOCK_SIZE, row *BLOCK_SIZE, SRCCOPY);
+				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, col * BLOCK_SIZE, row * BLOCK_SIZE, SRCCOPY);
 			}
 			else
 			{
@@ -270,7 +295,7 @@ void CSjTetris1Dlg::DrawScr()
 
 void CSjTetris1Dlg::InitialGame()
 {
-	memset((void *)m_Table, -1, sizeof(m_Table));
+	memset((void*)m_Table, -1, sizeof(m_Table));
 	DrawScr();
 	m_nPattern = rand() % 7;
 	m_nRot = 0;
@@ -376,8 +401,16 @@ void CSjTetris1Dlg::SetTable()
 			row++;
 		}
 	}
-	memcpy((void*)m_Table2, (void*)m_Table, COL_CNT * ROW_CNT);
-	DrawScr2();
+	/*memcpy((void*)m_Table2, (void*)m_Table, COL_CNT * ROW_CNT);
+	DrawScr2();*/
+	if (m_nState == STATE_CONNECT)
+	{
+		memcpy((void*)gSend.szData, (void*)m_Table, COL_CNT * ROW_CNT);
+		gSend.cFlag = 'G';
+		if (m_Client.Send((void*)&gSend, DATA_SIZE == -1))
+			MessageBox(_T("ì „ì†¡ì‹¤íŒ¨"));
+	}
+	DisplayMsg(_T(""));
 	m_nX = COL_CNT / 2;
 	m_nY = 1;
 	m_nPattern = m_nNextPattern;
@@ -389,7 +422,7 @@ void CSjTetris1Dlg::SetTable()
 	if (!IsAround(m_nX, m_nY + 1))
 	{
 		KillTimer(1);
-		MessageBox(_T("À¸¾Ç"));
+		MessageBox(_T("ìœ¼ì•…"));
 		m_ctrlStartBt.EnableWindow(TRUE);
 		m_ctrlStopBt.EnableWindow(FALSE);
 		return;
@@ -440,34 +473,42 @@ void CSjTetris1Dlg::MoveLeft()
 
 void CSjTetris1Dlg::OnBnClickedButtonStart()
 {
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 	InitialGame();
 	m_ctrlStartBt.EnableWindow(FALSE);
 	m_ctrlStopBt.EnableWindow(TRUE);
 	m_ctrlStopBt.SetFocus();
+	DisplayMsg(_T("Game Start"));
+	if (m_nState == STATE_CONNECT)
+	{
+		gSend.cFlag = 'S';
+		if (m_Client.Send((void*)&gSend, DATA_SIZE) == -1)
+			MessageBox(_T("ì „ì†¡ì‹¤íŒ¨"));
+	}
 }
 
 
 void CSjTetris1Dlg::OnBnClickedButtonStop()
 {
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 	m_bStart = FALSE;
 	KillTimer(1);
 	m_ctrlStartBt.EnableWindow(TRUE);
 	m_ctrlStopBt.EnableWindow(FALSE);
+	DisplayMsg(_T("Game Stop"));
 }
 
 
 void CSjTetris1Dlg::OnBnClickedButtonExit()
 {
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
 	OnOK();
 }
 
 
 void CSjTetris1Dlg::OnTimer(UINT_PTR nIDEvent)
 {
-	// TODO: ¿©±â¿¡ ¸Ş½ÃÁö Ã³¸®±â ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº»°ªÀ» È£ÃâÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ë©”ì‹œì§€ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ê°’ì„ í˜¸ì¶œí•©ë‹ˆë‹¤.
 	BlockDown();
 	CDialogEx::OnTimer(nIDEvent);
 }
@@ -475,9 +516,14 @@ void CSjTetris1Dlg::OnTimer(UINT_PTR nIDEvent)
 
 BOOL CSjTetris1Dlg::PreTranslateMessage(MSG* pMsg)
 {
-	// TODO: ¿©±â¿¡ Æ¯¼öÈ­µÈ ÄÚµå¸¦ Ãß°¡ ¹×/¶Ç´Â ±âº» Å¬·¡½º¸¦ È£ÃâÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— íŠ¹ìˆ˜í™”ëœ ì½”ë“œë¥¼ ì¶”ê°€ ë°/ë˜ëŠ” ê¸°ë³¸ í´ë˜ìŠ¤ë¥¼ í˜¸ì¶œí•©ë‹ˆë‹¤.
 	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
 		return TRUE;
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN && m_nState == STATE_CONNECT)
+	{
+		OnClickedSendBt();
+		return TRUE;
+	}
 	if (pMsg->message == WM_KEYDOWN && m_bStart)
 	{
 		switch (pMsg->wParam)
@@ -505,7 +551,7 @@ BOOL CSjTetris1Dlg::PreTranslateMessage(MSG* pMsg)
 
 void CSjTetris1Dlg::NextBlock(bool bFlag)
 {
-	// TODO: ¿©±â¿¡ ±¸Çö ÄÚµå Ãß°¡.
+	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int i, x = 50, y = 10;
 	if (m_nNextPattern == 0)
 		x = 65;
@@ -530,7 +576,7 @@ void CSjTetris1Dlg::NextBlock(bool bFlag)
 
 void CSjTetris1Dlg::DrawScr2()
 {
-	// TODO: ¿©±â¿¡ ±¸Çö ÄÚµå Ãß°¡.
+	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
 	int row, col;
 	m_pDC->Rectangle(m_mainRect2);
 	for (row = 0; row < ROW_CNT; row++)
@@ -553,47 +599,316 @@ void CSjTetris1Dlg::DrawScr2()
 
 void CSjTetris1Dlg::OnClickedServerStartBt()
 {
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	UpdateData(TRUE);
+	m_ctrlSendBt.EnableWindow(FALSE);
+	m_ctrlSVStartBt.SetWindowText(_T("Server ì‹¤í–‰ì¤‘"));
+	if (!m_Server.ServerStart(this, m_nPortNo))
+	{
+		MessageBox(_T("Server Socket ë¬¸ì œ ë°œìƒ"));
+		m_ctrlSVStartBt.EnableWindow(TRUE);
+		m_ctrlSVStartBt.SetWindowText(_T("Server Start"));
+		return;
+	}
+	//m_ctrlForcedBt.EnableWindow(TRUE);
+	m_ctrlSendBt.EnableWindow(FALSE);
+	m_ctrlSVStopBt.EnableWindow(TRUE);
+	//m_strReceiveData += "Server ì‹¤í–‰ í›„ ëŒ€ê¸° ì¤‘ì…ë‹ˆë‹¤.\r\n";
+	DisplayMsg(_T("Server ì‹¤í–‰ í›„ ëŒ€ê¸° ì¤‘ì…ë‹ˆë‹¤."));
+	m_nState = STATE_LISTEN;
+	UpdateData(FALSE);
+	m_ctrlSendData.SetFocus();
 }
 
 
 void CSjTetris1Dlg::OnClickedServerStopBt()
 {
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	if (AfxMessageBox(_T("Serverë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤!!"), MB_YESNO) == IDYES)
+	{
+		m_ctrlSVStopBt.EnableWindow(FALSE);
+		m_ctrlSVStartBt.EnableWindow(TRUE);
+		m_ctrlSendBt.EnableWindow(FALSE);
+		m_ctrlSVStartBt.SetWindowText(_T("Server Start"));
+		m_Server.ShutDown();
+		m_Server.Close();
+		DisplayMsg(_T("Serverë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤."));
+		m_nState - STATE_INIT;
+		UpdateData(FALSE);
+	}
+
+	/*if (AfxMessageBox(_T("Serverë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤!!"), MB_YESNO) != IDYES)
+		return;
+
+	CSjClientSocket* pNode;
+	char szSendData[DATA_SIZE] = "QServerê°€ ì¢…ë£Œ ë©ë‹ˆë‹¤.";
+	POSITION frontPos, pos = m_List.GetHeadPosition();
+	while (pos != NULL)
+	{
+		frontPos = pos;
+		pNode = (CSjClientSocket*)m_List.GetNext(pos);
+		if (pNode->Send(szSendData, DATA_SIZE) == -1)
+			MessageBox(_T("ì „ì†¡ì‹¤íŒ¨"));
+		m_List.RemoveAt(frontPos);
+		pNode->Close();
+		delete pNode;
+	}
+	m_ctrlUserList.ResetContent();
+
+	m_ctrlForcedBt.EnableWindow(false);
+	m_ctrlSendBt.EnableWindow(false);
+	m_ctrlSVStopBt.EnableWindow(false);
+	m_ctrlSVStartBt.EnableWindow(true);
+	m_ctrlSVStartBt.SetWindowText(_T("Server Start"));
+	m_Server.ShutDown();
+	m_Server.Close();
+	m_strReceiveData += "Serverë¥¼ ì¢…ë£Œí•©ë‹ˆë‹¤.\r\n";
+	UpdateData(FALSE);*/
 }
 
 
 void CSjTetris1Dlg::OnClickedSendBt()
 {
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
+	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+	CString strMsg = _T("Server : ");
+	UpdateData(TRUE);
+	if (!m_strSendData.IsEmpty())
+	{
+		CStringA s2(m_strSendData);
+		const char* c = s2;
+		sprintf_s(gSend.szData, DATA_SIZE - 1, "%s", c);
+		gSend.cFlag = 'C';
+		strMsg += gSend.szData;
+		DisplayMsg(strMsg);
+		if (m_Client.Send((void*)&gSend, DATA_SIZE) == -1)
+			MessageBox(_T("ì „ì†¡ì‹¤íŒ¨"));
+		m_strSendData = "";
+		UpdateData(FALSE);
+	}
+	m_ctrlSendData.SetFocus();
+
+	/*char szSendData[DATA_SIZE] = "";
+	UpdateData(TRUE);
+	if (!m_strSendData.IsEmpty())
+	{
+		sprintf_s((szSendData + 1), DATA_SIZE - 1, "ê´€ë¦¬ì : %s\r\n", (LPSTR)(LPCTSTR)m_strSendData);
+		szSendData[0] = 'D';
+		BroadCast((void*)szSendData);
+		m_strReceiveData += szSendData + 1;
+		m_strSendData = "";
+		UpdateData(FALSE);
+	}
+	m_ctrlSendData.SetFocus();*/
 }
 
 
-void CSjTetris1Dlg::OnClickedForcedExitBt()
-{
-	// TODO: ¿©±â¿¡ ÄÁÆ®·Ñ ¾Ë¸² Ã³¸®±â ÄÚµå¸¦ Ãß°¡ÇÕ´Ï´Ù.
-}
+//void CSjTetris1Dlg::OnClickedForcedExitBt()
+//{
+//	// TODO: ì—¬ê¸°ì— ì»¨íŠ¸ë¡¤ ì•Œë¦¼ ì²˜ë¦¬ê¸° ì½”ë“œë¥¼ ì¶”ê°€í•©ë‹ˆë‹¤.
+//	char szName[10] = "";
+//	char szSendData[DATA_SIZE] = "";
+//
+//	UpdateData(TRUE);
+//	strcpy_s(szName, 10, CT2A(m_strUserList));
+//	sprintf_s(szSendData, DATA_SIZE, "F%s", szName);
+//	UserList(m_strUserList, 'D');
+//	BroadCast((void*)szSendData);
+//	m_strReceiveData += szSendData + 1;
+//	m_strReceiveData += "ë‹˜ì´ ê°•ì œ í‡´ì¥ ë˜ì—ˆìŠµë‹ˆë‹¤.\r\n";
+//	UpdateData(FALSE);
+//	m_ctrlReceiveData.LineScroll(m_ctrlReceiveData.GetLineCount(), 0);
+//
+//	CSjClientSocket* pNode;
+//	POSITION frontPos, pos = m_List.GetHeadPosition();
+//	while (pos != NULL)
+//	{
+//		frontPos = pos;
+//		pNode = (CSjClientSocket*)m_List.GetNext(pos);
+//		if (pNode->m_strName == m_strUserList)
+//		{
+//			m_List.RemoveAt(frontPos);
+//			pNode->Close();
+//			delete pNode;
+//			break;
+//		}
+//	}
+//}
 
 
-bool CSjTetris1Dlg::BroadCast(void * pStr)
+bool CSjTetris1Dlg::BroadCast(void* pStr)
 {
+	CSjClientSocket* pNode;
+	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
+	{
+		pNode = (CSjClientSocket*)m_List.GetNext(pos);
+		if (pNode->Send(pStr, DATA_SIZE) == -1)
+			MessageBox(_T("ì „ì†¡ì‹¤íŒ¨"));
+	}
 	return false;
 }
 
 
 LRESULT CSjTetris1Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 {
+	//char szSendData[DATA_SIZE] = "", szReceiveData[DATA_SIZE] = "";
+	//CSjClientSocket* pSocket = new CSjClientSocket;
+	//if (!m_Server.Accept(*pSocket))
+	//{
+	//	MessageBox(_T("Client ì—°ê²° ì‹¤íŒ¨"));
+	//	return -1;
+	//}
+	///*szSendData[0] = 'I';
+	//strcpy_s(szSendData, DATA_SIZE, "ISejong Chatting Serverì…ë‹ˆë‹¤.\r\n");*/
+	//sprintf_s(szSendData, DATA_SIZE, "ISejong Chatting Serverì…ë‹ˆë‹¤.\r\n");
+	//pSocket->Send((void*)szSendData, DATA_SIZE);
+	//pSocket->SetMainWindow(this);
+	//m_List.AddTail(pSocket);
+
+	if (!m_Server.Accept(m_Client))
+	{
+		MessageBox(_T("Client ì—°ê²° ì‹¤íŒ¨"));
+		return -1;
+	}
+	sprintf_s(gSend.szData, DATA_SIZE - 1, "2ì¸ìš© Tetris Serverì…ë‹ˆë‹¤.");
+	gSend.cFlag = 'C';
+	m_Client.Send((void*)&gSend, DATA_SIZE);
+	m_Client.SetMainWindow(this);
+	m_nState = STATE_CONNECT;
+	m_ctrlSendBt.EnableWindow(TRUE);
+
 	return LRESULT();
 }
 
 
 LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 {
+	//char szSendData[DATA_SIZE] = "", szReceiveData[DATA_SIZE] = "";
+	//CString strName;
+	//char szName[20];
+
+	//CSjClientSocket* pSocket = (CSjClientSocket*)IParam;
+	//pSocket->Receive((void*)szReceiveData, DATA_SIZE);
+
+	//switch (szReceiveData[0])
+	//{
+	//case 'N':
+	//	szSendData[0] = 'U';
+	//	for (int i = 0; i < m_ctrlUserList.GetCount(); i++)
+	//	{
+	//		m_ctrlUserList.GetText(i, strName);
+	//		sprintf_s(szSendData, DATA_SIZE, "U%s", (LPSTR)(LPCTSTR)strName);
+	//		pSocket->Send((void*)szSendData, DATA_SIZE);
+	//	}
+	//	pSocket->m_strName = szReceiveData + 1;
+	//	//szSendData[0] = 'C';
+	//	sprintf_s(szSendData, DATA_SIZE, "C%s", szReceiveData + 1);
+	//	BroadCast((void*)szSendData);
+	//	UserList(pSocket->m_strName, 'A');
+	//	m_strReceiveData += szReceiveData + 1;
+	//	m_strReceiveData += "ë‹˜ì´ ì ‘ì†í•˜ì…¨ìŠµë‹ˆë‹¤.\r\n";
+	//	break;
+	//default:
+	//	strcpy_s(szName, 20, CT2A(pSocket->m_strName));
+	//	sprintf_s(szSendData, "D%s : %s \r\n", szName, szReceiveData + 1);
+	//	BroadCast((void*)szSendData);
+	//	m_strReceiveData += szSendData + 1;
+	//}
+	//UpdateData(FALSE);
+	//m_ctrlReceiveData.LineScroll(m_ctrlReceiveData.GetLineCount(), 0);
+
+	CString strMsg = _T("Client : ");
+	m_Client.Receive((void*)&gReceive, DATA_SIZE);
+	switch (gReceive.cFlag)
+	{
+	case 'C':
+		strMsg += gReceive.szData;
+		DisplayMsg(strMsg);
+		break;
+	case 'G':
+		memcpy((void*)m_Table2, (void*)&gReceive.szData, COL_CNT * ROW_CNT);
+		DrawScr2();
+		DisplayMsg(_T(""));
+		break;
+	}
 	return LRESULT();
 }
 
 
 LRESULT CSjTetris1Dlg::OnCloseMsg(WPARAM wParam, LPARAM IParam)
 {
+	/*char szName[20] = "";
+	char szSendData[DATA_SIZE] = "";
+
+	CSjClientSocket* pSocket = (CSjClientSocket*)IParam;
+	strcpy_s(szName, 10, CT2A(pSocket->m_strName));
+	sprintf_s(szSendData, DATA_SIZE, "E%s", szName);
+
+	UserList(pSocket->m_strName, 'D');
+
+	BroadCast((void*)szSendData);
+	m_strReceiveData += szSendData + 1;
+	m_strReceiveData += "ë‹˜ì´ í‡´ì¥í•˜ì…¨ìŠµë‹ˆë‹¤.\r\n";
+	UpdateData(FALSE);
+	m_ctrlReceiveData.LineScroll(m_ctrlReceiveData.GetLineCount(), 0);
+
+	CSjClientSocket* pNode;
+	POSITION frontPos, pos = m_List.GetHeadPosition();
+	while (pos != NULL)
+	{
+		frontPos = pos;
+		pNode = (CSjClientSocket*)m_List.GetNext(pos);
+		if (pSocket == pNode)
+		{
+			m_List.RemoveAt(frontPos);
+			pSocket->Close();
+			delete pSocket;
+			break;
+		}
+	}*/
+	m_Client.ShutDown();
+	m_Client.Close();
+	m_nState = STATE_INIT;
+	DisplayMsg(_T("Clientê°€ ì¢…ë£Œë¨"));
 	return LRESULT();
+}
+
+//void CSjTetris1Dlg::UserList(CString strUser, char nFlag)
+//{
+//	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
+//	int n, loc;
+//	if (nFlag == 'D')
+//	{
+//		n = m_ctrlUserList.FindString(-1, strUser);
+//		m_ctrlUserList.DeleteString(n);
+//	}
+//	else if (nFlag == 'A')
+//	{
+//		m_ctrlUserList.AddString(strUser);
+//	}
+//	loc = m_ctrlUserList.GetCount();
+//	m_ctrlUserList.SetAnchorIndex(loc - 1);
+//	m_ctrlUserList.SetCurSel(loc - 1);
+//}
+
+
+void CSjTetris1Dlg::DisplayMsg(CString strMsg)
+{
+	// TODO: ì—¬ê¸°ì— êµ¬í˜„ ì½”ë“œ ì¶”ê°€.
+	int i, r = 0, g = 255, b = 0;
+	m_pDC->SetBkMode(TRANSPARENT);
+	DrawScr2();
+	if (!strMsg.IsEmpty())
+	{
+		for (i = 9 - 1; i > 0; i--)
+		{
+			m_arrMsg[i] = m_arrMsg[i - 1];
+		}
+		m_arrMsg[0] = strMsg;
+	}
+	for (i = 0; i < 10; i++)
+	{
+		m_pDC->SetTextColor(RGB(r, g, b));
+		g -= 20;
+		m_pDC->TextOut(m_mainRect2.left + 10, m_mainRect2.top + 5 + i * 20, m_arrMsg[i]);
+	}
 }

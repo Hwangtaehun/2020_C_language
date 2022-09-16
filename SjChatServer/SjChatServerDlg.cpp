@@ -254,7 +254,10 @@ void CSjChatServerDlg::OnClickedSendBt()
 	UpdateData(TRUE);
 	if (!m_strSendData.IsEmpty())
 	{
-		sprintf_s((szSendData + 1), DATA_SIZE - 1, "包府磊 : %s\r\n", (LPSTR)(LPCTSTR)m_strSendData);
+		//AdChar = CT2A(m_strSendData);
+		CStringA s2(m_strSendData);
+		const char* c = s2;
+		sprintf_s((szSendData + 1), DATA_SIZE - 1, "包府磊 : %s\r\n", c);
 		szSendData[0] = 'D';
 		BroadCast((void *)szSendData);
 		m_strReceiveData += szSendData + 1;
@@ -322,6 +325,7 @@ LRESULT CSjChatServerDlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 	char szSendData[DATA_SIZE] = "", szReceiveData[DATA_SIZE] = "";
 	CString strName;
 	char szName[20];
+	//char* AdChar;
 
 	CSjClientSocket *pSocket = (CSjClientSocket *)IParam;
 	pSocket->Receive((void *)szReceiveData, DATA_SIZE);
@@ -333,7 +337,10 @@ LRESULT CSjChatServerDlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 		for (int i = 0; i < m_ctrlUserList.GetCount(); i++)
 		{
 			m_ctrlUserList.GetText(i, strName);
-			sprintf_s(szSendData, DATA_SIZE, "U%s", (LPSTR)(LPCTSTR)strName);
+			//AdChar = CT2A(strName);
+			CStringA s2(strName);
+			const char* c = s2;
+			sprintf_s(szSendData, DATA_SIZE, "U%s", c);
 			pSocket->Send((void *)szSendData, DATA_SIZE);
 		}
 		pSocket->m_strName = szReceiveData + 1;
