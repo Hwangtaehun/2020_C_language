@@ -82,7 +82,7 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	, m_nPortNo(1234)
 	, m_strName(_T("관리자"))
 	, m_strSendData(_T(""))
-	, m_strReceiveData(_T(""))
+	//, m_strReceiveData(_T(""))
 	//, m_strUserList(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -128,8 +128,8 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_NAME, m_strName);
 	DDX_Text(pDX, IDC_SEND_DATA, m_strSendData);
 	DDX_Control(pDX, IDC_SEND_DATA, m_ctrlSendData);
-	DDX_Text(pDX, IDC_RECEIVE_DATA, m_strReceiveData);
-	DDX_Control(pDX, IDC_RECEIVE_DATA, m_ctrlReceiveData);
+	//DDX_Text(pDX, IDC_RECEIVE_DATA, m_strReceiveData);
+	//DDX_Control(pDX, IDC_RECEIVE_DATA, m_ctrlReceiveData);
 	//  DDX_Control(pDX, IDC_USER_LIST, m_ctrlUserList);
 	//  DDX_LBString(pDX, IDC_USER_LIST, m_strUserList);
 }
@@ -184,7 +184,7 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	MoveWindow(100, 100, m_mainRect.right * 2 + 180, m_mainRect.bottom + 350);
+	MoveWindow(100, 100, m_mainRect.right * 2 + 180, m_mainRect.bottom + 125);
 	m_pDC = GetDC();
 	m_bmBlock.LoadBitmap(IDB_BLOCK);
 	m_BlockDC.CreateCompatibleDC(m_pDC);

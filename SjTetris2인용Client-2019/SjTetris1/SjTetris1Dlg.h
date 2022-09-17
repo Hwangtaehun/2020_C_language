@@ -90,8 +90,8 @@ public:
 	CString m_strName;
 	CEdit m_ctrlSendData;
 	CString m_strSendData;
-	CEdit m_ctrlReceiveData;
-	CString m_strReceiveData;
+//	CEdit m_ctrlReceiveData;
+//	CString m_strReceiveData;
 //	CListBox m_ctrlUserList;
 	afx_msg void OnClickedDisconnectBt();
 	afx_msg void OnClickedConnectBt();

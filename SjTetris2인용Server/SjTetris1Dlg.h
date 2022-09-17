@@ -13,7 +13,12 @@
 #define START_X 10
 #define START_Y 10
 #define BLOCK_SIZE 32
-#define DATA_SIZE 100
+#define DATA_SIZE 201
+#define STATE_INIT 0
+#define STATE_LISTEN 1
+#define STATE_CONNECT 2
+#define STATE_GAME_START 3
+#define STATE_GAME_DIE 4
 
 // CSjTetris1Dlg 대화 상자
 class CSjTetris1Dlg : public CDialogEx
@@ -44,7 +49,7 @@ public:
 	CBitmap m_bmBack;
 	CDC m_BackDC;
 	CDC m_BlockDC;
-	CDC *m_pDC;
+	CDC* m_pDC;
 	char m_Table[ROW_CNT][COL_CNT];
 	CRect m_nextRect;
 	CRect m_mainRect;
@@ -83,21 +88,21 @@ public:
 	CButton m_ctrlSVStartBt;
 	CButton m_ctrlSVStopBt;
 	CButton m_ctrlSendBt;
-	CButton m_ctrlForcedBt;
+	//	CButton m_ctrlForcedBt;
 	CString m_strIpAddress;
 	CEdit m_ctrlIpAddress;
 	int m_nPortNo;
 	CString m_strName;
 	CString m_strSendData;
 	CEdit m_ctrlSendData;
-	CString m_strReceiveData;
-	CEdit m_ctrlReceiveData;
 	afx_msg void OnClickedServerStartBt();
 	afx_msg void OnClickedServerStopBt();
 	afx_msg void OnClickedSendBt();
-	afx_msg void OnClickedForcedExitBt();
-	bool BroadCast(void * pStr);
+	bool BroadCast(void* pStr);
 	afx_msg LRESULT OnAcceptMsg(WPARAM wParam, LPARAM IParam);
 	afx_msg LRESULT OnReceiveMsg(WPARAM wParam, LPARAM IParam);
 	afx_msg LRESULT OnCloseMsg(WPARAM wParam, LPARAM IParam);
+	int m_nState;
+	CString m_arrMsg[10];
+	void DisplayMsg(CString strMsg);
 };

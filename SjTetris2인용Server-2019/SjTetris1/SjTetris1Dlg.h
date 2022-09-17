@@ -97,8 +97,8 @@ public:
 	CString m_strName;
 	CString m_strSendData;
 	CEdit m_ctrlSendData;
-	CString m_strReceiveData;
-	CEdit m_ctrlReceiveData;
+//	CString m_strReceiveData;
+//	CEdit m_ctrlReceiveData;
 	afx_msg void OnClickedServerStartBt();
 	afx_msg void OnClickedServerStopBt();
 	afx_msg void OnClickedSendBt();

@@ -10,6 +10,10 @@
 #define START_X 10
 #define START_Y 10
 #define BLOCK_SIZE 32
+#define DATA_SIZE 201
+#define STATE_INIT 0
+#define STATE_LISTEN 1
+#define STATE_CONNECT 2
 
 // CSjTetris1Dlg 대화 상자
 class CSjTetris1Dlg : public CDialogEx
@@ -40,7 +44,7 @@ public:
 	CBitmap m_bmBack;
 	CDC m_BackDC;
 	CDC m_BlockDC;
-	CDC *m_pDC;
+	CDC* m_pDC;
 	char m_Table[ROW_CNT][COL_CNT];
 	CRect m_nextRect;
 	CRect m_mainRect;
@@ -73,4 +77,22 @@ public:
 	CRect m_mainRect2;
 	void DrawScr2();
 	char m_Table2[ROW_CNT][COL_CNT];
+	CSjClientSocket m_Socket;
+	CButton m_ctrlConnectBt;
+	CButton m_ctrlDisConnectBt;
+	CButton m_ctrlSendBt;
+	CEdit m_ctrlIpAddress;
+	CString m_strIpAddress;
+	int m_nPortNo;
+	CEdit m_ctrlName;
+	CString m_strName;
+	CEdit m_ctrlSendData;
+	CString m_strSendData;
+	afx_msg void OnClickedDisconnectBt();
+	afx_msg void OnClickedConnectBt();
+	afx_msg void OnClickedSendBt();
+	LRESULT OnReceiveMsg(WPARAM wParam, LPARAM IParam);
+	void DisplayMsg(CString strMsg);
+	CString m_arrMsg[10];
+	int m_nState;
 };
