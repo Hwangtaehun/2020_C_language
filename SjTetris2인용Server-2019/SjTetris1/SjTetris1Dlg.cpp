@@ -633,7 +633,7 @@ void CSjTetris1Dlg::OnClickedServerStopBt()
 		m_Server.ShutDown();
 		m_Server.Close();
 		DisplayMsg(_T("Server를 종료합니다."));
-		m_nState - STATE_INIT;
+		m_nState = STATE_INIT;
 		UpdateData(FALSE);
 	}
 
@@ -750,6 +750,19 @@ bool CSjTetris1Dlg::BroadCast(void* pStr)
 
 LRESULT CSjTetris1Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 {
+	if (!m_Server.Accept(m_Client))
+	{
+		MessageBox(_T("Client 연결 실패"));
+		return -1;
+	}
+	sprintf_s(gSend.szData, DATA_SIZE - 1, "2인용 Tetris Server입니다.");
+	gSend.cFlag = 'C';
+	m_Client.Send((void*)&gSend, DATA_SIZE);
+	m_Client.SetMainWindow(this);
+	m_nState = STATE_CONNECT;
+	m_ctrlSendBt.EnableWindow(TRUE);
+	return LRESULT();
+
 	//char szSendData[DATA_SIZE] = "", szReceiveData[DATA_SIZE] = "";
 	//CSjClientSocket* pSocket = new CSjClientSocket;
 	//if (!m_Server.Accept(*pSocket))
@@ -764,19 +777,6 @@ LRESULT CSjTetris1Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 	//pSocket->SetMainWindow(this);
 	//m_List.AddTail(pSocket);
 
-	if (!m_Server.Accept(m_Client))
-	{
-		MessageBox(_T("Client 연결 실패"));
-		return -1;
-	}
-	sprintf_s(gSend.szData, DATA_SIZE - 1, "2인용 Tetris Server입니다.");
-	gSend.cFlag = 'C';
-	m_Client.Send((void*)&gSend, DATA_SIZE);
-	m_Client.SetMainWindow(this);
-	m_nState = STATE_CONNECT;
-	m_ctrlSendBt.EnableWindow(TRUE);
-
-	return LRESULT();
 }
 
 

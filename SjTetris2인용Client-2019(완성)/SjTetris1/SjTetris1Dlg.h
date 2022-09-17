@@ -3,7 +3,6 @@
 //
 
 #pragma once
-#include "afxwin.h"
 #include "SjClientSocket.h"
 #define COL_CNT 10
 #define ROW_CNT 20
@@ -79,27 +78,20 @@ public:
 	CRect m_mainRect2;
 	void DrawScr2();
 	char m_Table2[ROW_CNT][COL_CNT];
+	LRESULT OnReceiveMsg(WPARAM wParam, LPARAM Iparam);
+	afx_msg void OnClickedConnectBt();
+	afx_msg void OnClickedDisconnectBt();
+	afx_msg void OnClickedSendBt();
+	void DisplayMsg(CString strMsg);
 	CSjClientSocket m_Client;
+	CString m_IpAddress;
+	CString m_strName;
+	int m_nPortNo;
+	CString m_arrMsg[10];
+	int m_nState;
+	CString m_strSendData;
+	CEdit m_ctrlSendData;
 	CButton m_ctrlConnectBt;
 	CButton m_ctrlDisConnectBt;
 	CButton m_ctrlSendBt;
-	//CEdit m_ctrlIpAddress;
-	CString m_strIpAddress;
-	int m_nPortNo;
-	CEdit m_ctrlName;
-	CString m_strName;
-	CEdit m_ctrlSendData;
-	CString m_strSendData;
-//	CEdit m_ctrlReceiveData;
-//	CString m_strReceiveData;
-//	CListBox m_ctrlUserList;
-	afx_msg void OnClickedDisconnectBt();
-	afx_msg void OnClickedConnectBt();
-	afx_msg LRESULT OnReceiveMsg(WPARAM wParam, LPARAM IParam);
-	afx_msg void OnClickedSendBt();
-//	void UserList(CString strUser, char nFlag);
-//	bool m_bConnect;
-	void DisplayMsg(CString strMsg);
-	CString m_arrMsg[10];
-	int m_nState;
 };

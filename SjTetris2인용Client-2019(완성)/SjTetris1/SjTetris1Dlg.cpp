@@ -34,7 +34,7 @@ POINT nextPattern[7][4] =
 	{{0, 1}, {-1, 1}, {1, 1}, {0, 0}}
 };
 
-struct CharData
+struct ChatData
 {
 	char cFlag;
 	char szData[200];
@@ -78,11 +78,10 @@ END_MESSAGE_MAP()
 CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_SJTETRIS1_DIALOG, pParent)
 	, m_nScore(0)
-	, m_strIpAddress(_T("localhost"))
-	, m_nPortNo(1234)
+	, m_IpAddress(_T(""))
 	, m_strName(_T(""))
+	, m_nPortNo(1234)
 	, m_strSendData(_T(""))
-	//, m_strReceiveData(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nX = COL_CNT / 2;
@@ -117,19 +116,14 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_START, m_ctrlStartBt);
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_ctrlStopBt);
 	DDX_Text(pDX, IDC_EDIT_SCORE, m_nScore);
+	DDX_Text(pDX, IDC_IP_ADDRESS, m_IpAddress);
+	DDX_Text(pDX, IDC_NAME, m_strName);
+	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
+	DDX_Text(pDX, IDC_SEND_DATA, m_strSendData);
+	DDX_Control(pDX, IDC_SEND_DATA, m_ctrlSendData);
 	DDX_Control(pDX, IDC_CONNECT_BT, m_ctrlConnectBt);
 	DDX_Control(pDX, IDC_DISCONNECT_BT, m_ctrlDisConnectBt);
 	DDX_Control(pDX, IDC_SEND_BT, m_ctrlSendBt);
-	//DDX_Control(pDX, IDC_IP_ADDRESS, m_ctrlIpAddress);
-	DDX_Text(pDX, IDC_IP_ADDRESS, m_strIpAddress);
-	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
-	DDX_Control(pDX, IDC_NAME, m_ctrlName);
-	DDX_Text(pDX, IDC_NAME, m_strName);
-	DDX_Control(pDX, IDC_SEND_DATA, m_ctrlSendData);
-	DDX_Text(pDX, IDC_SEND_DATA, m_strSendData);
-	//  DDX_Control(pDX, IDC_RECEIVE_DATA, m_ctrlReceiveData);
-	//  DDX_Text(pDX, IDC_RECEIVE_DATA, m_strReceiveData);
-	//  DDX_Control(pDX, IDC_USER_LIST, m_ctrlUserList);
 }
 
 BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
@@ -140,8 +134,8 @@ BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSjTetris1Dlg::OnBnClickedButtonStop)
 	ON_BN_CLICKED(IDC_BUTTON_EXIT, &CSjTetris1Dlg::OnBnClickedButtonExit)
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_DISCONNECT_BT, &CSjTetris1Dlg::OnClickedDisconnectBt)
 	ON_BN_CLICKED(IDC_CONNECT_BT, &CSjTetris1Dlg::OnClickedConnectBt)
+	ON_BN_CLICKED(IDC_DISCONNECT_BT, &CSjTetris1Dlg::OnClickedDisconnectBt)
 	ON_BN_CLICKED(IDC_SEND_BT, &CSjTetris1Dlg::OnClickedSendBt)
 	ON_MESSAGE(UM_RECEIVE, &CSjTetris1Dlg::OnReceiveMsg)
 END_MESSAGE_MAP()
@@ -188,23 +182,23 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	m_BackDC.CreateCompatibleDC(m_pDC);
 	m_BackDC.SelectObject(&m_bmBack);
 
+	srand((unsigned)time(NULL));
+	m_ctrlStartBt.EnableWindow(TRUE);
+	m_ctrlStopBt.EnableWindow(FALSE);
+	memset((void*)m_Table, -1, sizeof(m_Table));
+	memset((void*)m_Table2, -1, sizeof(m_Table2));
+
 	char hostName[32];
 	struct in_addr myIpAddr;
 	HOSTENT* pHostEnt = NULL;
 	gethostname(hostName, sizeof(hostName));
 	pHostEnt = gethostbyname(hostName);
 	myIpAddr.S_un.S_addr = *((u_long*)(pHostEnt->h_addr_list[0]));
-	m_strIpAddress = inet_ntoa(myIpAddr);
+	m_IpAddress = inet_ntoa(myIpAddr);
 	UpdateData(FALSE);
-
-	srand((unsigned)time(NULL));
-	m_ctrlStartBt.EnableWindow(TRUE);
-	m_ctrlStopBt.EnableWindow(FALSE);
-	m_ctrlSendBt.EnableWindow(FALSE);
 	m_ctrlConnectBt.EnableWindow(TRUE);
 	m_ctrlDisConnectBt.EnableWindow(FALSE);
-	memset((void*)m_Table, -1, sizeof(m_Table));
-	memset((void*)m_Table2, -1, sizeof(m_Table2));
+	m_ctrlSendBt.EnableWindow(FALSE);
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -397,7 +391,7 @@ void CSjTetris1Dlg::SetTable()
 	}
 	/*memcpy((void*)m_Table2, (void*)m_Table, COL_CNT * ROW_CNT);
 	DrawScr2();*/
-	if (m_nState ==  STATE_CONNECT)
+	if (m_nState == STATE_CONNECT)
 	{
 		memcpy((void*)gSend.szData, (void*)m_Table, COL_CNT * ROW_CNT);
 		gSend.cFlag = 'G';
@@ -583,23 +577,28 @@ void CSjTetris1Dlg::DrawScr2()
 	}
 }
 
-void CSjTetris1Dlg::OnClickedDisconnectBt()
+LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM Iparam)
 {
-	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (AfxMessageBox(_T("Sever와의 연결을 끊을까유 !!"), MB_YESNO) == IDYES)
+	// TODO: 여기에 구현 코드 추가.
+	char szReceiveData[DATA_SIZE] = "";
+	CString strMsg = _T("Server : ");
+	m_Client.Receive((void*)&gReceive, DATA_SIZE);
+	switch (gReceive.cFlag)
 	{
-		m_ctrlConnectBt.EnableWindow(TRUE);
-		m_ctrlConnectBt.SetWindowText(_T("Server연결"));
-		m_ctrlSendBt.EnableWindow(FALSE);
-		m_ctrlDisConnectBt.EnableWindow(FALSE);
-		m_nState = STATE_INIT;
-		//m_ctrlSendData.SetFocus();
-		m_Client.Close();
-		//m_bConnect = FALSE;
-		//m_ctrlUserList.ResetContent();
-		//m_strReceiveData = "";
-		UpdateData(FALSE);
+	case 'C':
+		strMsg += gReceive.szData;
+		DisplayMsg(strMsg);
+		break;
+	case 'G':
+		memcpy((void*)m_Table2, (void*)&gReceive.szData, COL_CNT * ROW_CNT);
+		DrawScr2();
+		DisplayMsg(_T(""));
+		break;
+	case 'S':
+		OnBnClickedButtonStart();
+		break;
 	}
+	return LRESULT();
 }
 
 
@@ -609,9 +608,9 @@ void CSjTetris1Dlg::OnClickedConnectBt()
 	UpdateData(TRUE);
 	m_Client.Create();
 	m_Client.SetMainWindow(this);
-	if (!m_Client.Connect(m_strIpAddress, m_nPortNo))
+	if (!m_Client.Connect(m_IpAddress, m_nPortNo))
 	{
-		MessageBox(_T("Sever에 접속하지 못했네유 !!"));
+		MessageBox(_T("Server에 접속하지 못했네유 !!"));
 		m_Client.Close();
 		return;
 	}
@@ -628,93 +627,21 @@ void CSjTetris1Dlg::OnClickedConnectBt()
 	m_ctrlSendBt.EnableWindow(TRUE);
 	m_ctrlDisConnectBt.EnableWindow(TRUE);
 	m_ctrlSendData.SetFocus();
-
-	//UpdateData(TRUE);
-	//if (m_strName.IsEmpty())
-	//{
-	//	MessageBox(_T("대화명을 입력하세요."));
-	//	return;
-	//}
-	//m_Socket.Create();
-	//m_Socket.SetMainWindow(this);
-	//if (!m_Socket.Connect(m_strIpAddress, m_nPortNo))
-	//{
-	//	MessageBox(_T("Sever에 접속하지 못했네유 !!"));
-	//	m_Socket.Close();
-	//	return;
-	//}
-	//char szSendData[DATA_SIZE] = "";
-	//char szName[20];
-	//strcpy_s(szName, 20, CT2A(m_strName));
-	////szSendData[0] = 'N';
-	//sprintf_s(szSendData, "N%s", szName);
-	//m_Socket.Send(szSendData, DATA_SIZE);
-
-	//m_ctrlConnectBt.EnableWindow(FALSE);
-	//m_ctrlConnectBt.SetWindowText(_T("Server연결중"));
-	//m_ctrlSendBt.EnableWindow(TRUE);
-	//m_ctrlDisConnectBt.EnableWindow(TRUE);
-	//m_ctrlSendData.SetFocus();
-	//m_bConnect = TRUE;
 }
 
 
-LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
+void CSjTetris1Dlg::OnClickedDisconnectBt()
 {
-	// TODO: 여기에 구현 코드 추가.
-	char szReceiveData[DATA_SIZE] = "";
-	CString strMsg = _T("Server : ");
-	m_Client.Receive((void*)&gReceive, DATA_SIZE);
-	TRACE("szData: %s, cFlag: %s\n", gReceive.szData, gReceive.cFlag);
-	switch (gReceive.cFlag)
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (AfxMessageBox(_T("Server와의 연결을 끊을까유 !!"), MB_YESNO) == IDYES)
 	{
-	case 'C':
-		strMsg += gReceive.szData;
-		TRACE("strMsg: %s\n", strMsg);
-		DisplayMsg(strMsg);
-		break;
-	case 'G':
-		memcpy((void*)m_Table2, (void*)&gReceive.szData, COL_CNT * ROW_CNT);
-		DrawScr2();
-		DisplayMsg(_T(""));
-		break;
-	case 'S':
-		OnBnClickedButtonStart();
-		break;
+		m_ctrlConnectBt.EnableWindow(TRUE);
+		m_ctrlConnectBt.SetWindowText(_T("Server 연결"));
+		m_ctrlSendBt.EnableWindow(FALSE);
+		m_ctrlDisConnectBt.EnableWindow(FALSE);
+		m_nState = STATE_INIT;
+		m_Client.Close();
 	}
-	return LRESULT();
-	/*char szReceiveData[DATA_SIZE] = "";
-	CString strName;
-	m_Socket.Receive((void*)szReceiveData, DATA_SIZE);
-	strName = szReceiveData + 1;
-	switch (szReceiveData[0])
-	{
-	case 'I':
-		m_strReceiveData += "Server에 접속됨\r\n";
-		m_ctrlUserList.AddString(_T("관리자"));
-		break;
-	case 'U':
-		UserList(strName, 'A');
-		break;
-	case 'C':
-		strcat_s(szReceiveData, DATA_SIZE, "님이 접속하셨습니다.\r\n");
-		UserList(strName, 'A');
-		break;
-	case 'E':
-		sprintf_s(szReceiveData, "E%s님이 퇴장하셨습니다.\r\n", szReceiveData + 1);
-		UserList(strName, 'D');
-		break;
-	case 'F':
-		sprintf_s(szReceiveData, "F%s님이 강제 퇴장하셨습니다.\r\n", szReceiveData + 1);
-		UserList(strName, 'D');
-		break;
-	case 'Q':
-		m_ctrlUserList.ResetContent();
-		break;
-	}
-	m_strReceiveData += szReceiveData + 1;
-	UpdateData(FALSE);
-	m_ctrlReceiveData.LineScroll(m_ctrlReceiveData.GetLineCount(), 0);*/
 }
 
 
@@ -731,46 +658,13 @@ void CSjTetris1Dlg::OnClickedSendBt()
 		gSend.cFlag = 'C';
 		strMsg += gSend.szData;
 		DisplayMsg(strMsg);
-		if(m_Client.Send((void *)&gSend, DATA_SIZE) == -1)
+		if (m_Client.Send((void*)&gSend, DATA_SIZE) == -1)
 			MessageBox(_T("전송실패"));
 		m_strSendData = "";
 		UpdateData(FALSE);
 	}
 	m_ctrlSendData.SetFocus();
-
-	//char szSendData[DATA_SIZE] = "";
-	//UpdateData(TRUE);
-	//if (!m_strSendData.IsEmpty())
-	//{
-	//	// sprintf_s((szSendData + 1), DATA_SIZE - 1, "관리자 : %s\r\n", CT2A(m_strSendData));
-	//	strcpy_s(szSendData + 1, DATA_SIZE - 1, CT2A(m_strSendData));
-	//	szSendData[0] = 'D';
-	//	if (m_Socket.Send((void*)szSendData, DATA_SIZE) == -1)
-	//		MessageBox(_T("전송실패"));
-	//	m_strSendData = "";
-	//	UpdateData(FALSE);
-	//}
-	//m_ctrlSendData.SetFocus();
 }
-
-
-//void CSjTetris1Dlg::UserList(CString strUser, char nFlag)
-//{
-//	// TODO: 여기에 구현 코드 추가.
-//	int n, loc;
-//	if (nFlag == 'D')
-//	{
-//		n = m_ctrlUserList.FindString(-1, strUser);
-//		m_ctrlUserList.DeleteString(n);
-//	}
-//	else if (nFlag == 'A')
-//	{
-//		m_ctrlUserList.AddString(strUser);
-//	}
-//	loc = m_ctrlUserList.GetCount();
-//	m_ctrlUserList.SetAnchorIndex(loc - 1);
-//	m_ctrlUserList.SetCurSel(loc - 1);
-//}
 
 
 void CSjTetris1Dlg::DisplayMsg(CString strMsg)
