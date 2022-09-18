@@ -82,6 +82,7 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	, m_strName(_T(""))
 	, m_nPortNo(1234)
 	, m_strSendData(_T(""))
+	, m_strReceiveData(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nX = COL_CNT / 2;
@@ -124,6 +125,8 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CONNECT_BT, m_ctrlConnectBt);
 	DDX_Control(pDX, IDC_DISCONNECT_BT, m_ctrlDisConnectBt);
 	DDX_Control(pDX, IDC_SEND_BT, m_ctrlSendBt);
+	DDX_Control(pDX, IDC_RECEIVE_DATA, m_ctrlReceiveData);
+	DDX_Text(pDX, IDC_RECEIVE_DATA, m_strReceiveData);
 }
 
 BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
@@ -173,7 +176,7 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	MoveWindow(100, 100, m_mainRect.right * 2 + 180, m_mainRect.bottom + 125);
+	MoveWindow(100, 100, m_mainRect.right * 2 + 180, m_mainRect.bottom + 180);
 	m_pDC = GetDC();
 	m_bmBlock.LoadBitmap(IDB_BLOCK);
 	m_BlockDC.CreateCompatibleDC(m_pDC);
@@ -241,7 +244,7 @@ void CSjTetris1Dlg::OnPaint()
 	else
 	{
 		DrawScr();
-		DisplayMsg(_T(""));
+		//DisplayMsg(_T(""));
 		CDialogEx::OnPaint();
 	}
 }
@@ -465,7 +468,7 @@ void CSjTetris1Dlg::OnBnClickedButtonStart()
 	m_ctrlStartBt.EnableWindow(FALSE);
 	m_ctrlStopBt.EnableWindow(TRUE);
 	m_ctrlStopBt.SetFocus();
-	DisplayMsg(_T("Game Start"));
+	m_strReceiveData += "Game Start";
 }
 
 
@@ -476,7 +479,7 @@ void CSjTetris1Dlg::OnBnClickedButtonStop()
 	KillTimer(1);
 	m_ctrlStartBt.EnableWindow(TRUE);
 	m_ctrlStopBt.EnableWindow(FALSE);
-	DisplayMsg(_T("Game Stop"));
+	m_strReceiveData += "Game Stop";
 }
 
 
@@ -587,17 +590,18 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM Iparam)
 	{
 	case 'C':
 		strMsg += gReceive.szData;
-		DisplayMsg(strMsg);
+		m_strReceiveData += strMsg;
 		break;
 	case 'G':
 		memcpy((void*)m_Table2, (void*)&gReceive.szData, COL_CNT * ROW_CNT);
 		DrawScr2();
-		DisplayMsg(_T(""));
+		//DisplayMsg(_T(""));
 		break;
 	case 'S':
 		OnBnClickedButtonStart();
 		break;
 	}
+	m_ctrlReceiveData.LineScroll(m_ctrlReceiveData.GetLineCount(), 0);
 	return LRESULT();
 }
 
@@ -657,7 +661,7 @@ void CSjTetris1Dlg::OnClickedSendBt()
 		sprintf_s(gSend.szData, DATA_SIZE - 1, "%s", c);
 		gSend.cFlag = 'C';
 		strMsg += gSend.szData;
-		DisplayMsg(strMsg);
+		m_strReceiveData += strMsg;
 		if (m_Client.Send((void*)&gSend, DATA_SIZE) == -1)
 			MessageBox(_T("전송실패"));
 		m_strSendData = "";
@@ -667,24 +671,24 @@ void CSjTetris1Dlg::OnClickedSendBt()
 }
 
 
-void CSjTetris1Dlg::DisplayMsg(CString strMsg)
-{
-	// TODO: 여기에 구현 코드 추가.
-	int i, r = 0, g = 255, b = 0;
-	m_pDC->SetBkMode(TRANSPARENT);
-	DrawScr2();
-	if (!strMsg.IsEmpty())
-	{
-		for (i = 9 - 1; i > 0; i--)
-		{
-			m_arrMsg[i] = m_arrMsg[i - 1];
-		}
-		m_arrMsg[0] = strMsg;
-	}
-	for (i = 0; i < 10; i++)
-	{
-		m_pDC->SetTextColor(RGB(r, g, b));
-		g -= 20;
-		m_pDC->TextOut(m_mainRect2.left + 10, m_mainRect2.top + 5 + i * 20, m_arrMsg[i]);
-	}
-}
+//void CSjTetris1Dlg::DisplayMsg(CString strMsg)
+//{
+//	// TODO: 여기에 구현 코드 추가.
+//	int i, r = 0, g = 255, b = 0;
+//	m_pDC->SetBkMode(TRANSPARENT);
+//	DrawScr2();
+//	if (!strMsg.IsEmpty())
+//	{
+//		for (i = 9 - 1; i > 0; i--)
+//		{
+//			m_arrMsg[i] = m_arrMsg[i - 1];
+//		}
+//		m_arrMsg[0] = strMsg;
+//	}
+//	for (i = 0; i < 10; i++)
+//	{
+//		m_pDC->SetTextColor(RGB(r, g, b));
+//		g -= 20;
+//		m_pDC->TextOut(m_mainRect2.left + 10, m_mainRect2.top + 5 + i * 20, m_arrMsg[i]);
+//	}
+//}

@@ -82,7 +82,7 @@ public:
 	afx_msg void OnClickedConnectBt();
 	afx_msg void OnClickedDisconnectBt();
 	afx_msg void OnClickedSendBt();
-	void DisplayMsg(CString strMsg);
+//	void DisplayMsg(CString strMsg);
 	CSjClientSocket m_Client;
 	CString m_IpAddress;
 	CString m_strName;
@@ -94,4 +94,6 @@ public:
 	CButton m_ctrlConnectBt;
 	CButton m_ctrlDisConnectBt;
 	CButton m_ctrlSendBt;
+	CEdit m_ctrlReceiveData;
+	CString m_strReceiveData;
 };

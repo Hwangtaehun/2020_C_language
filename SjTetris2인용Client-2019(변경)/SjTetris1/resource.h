@@ -15,6 +15,7 @@
 #define IDC_BUTTON_STOP                 1001
 #define IDC_BUTTON_EXIT                 1002
 #define IDC_EDIT_SCORE                  1003
+#define IDC_RECEIVE_DATA                1005
 #define IDC_SEND_DATA                   1006
 #define IDC_SEND_BT                     1007
 #define IDC_CONNECT_BT                  1008
