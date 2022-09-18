@@ -78,7 +78,7 @@ END_MESSAGE_MAP()
 CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(IDD_SJTETRIS1_DIALOG, pParent)
 	, m_nScore(0)
-	, m_strIpAddress(_T("localhost"))
+	, m_strIpAddress(_T(""))
 	, m_nPortNo(1234)
 	, m_strName(_T(""))
 	, m_strSendData(_T(""))
@@ -397,7 +397,7 @@ void CSjTetris1Dlg::SetTable()
 	}
 	/*memcpy((void*)m_Table2, (void*)m_Table, COL_CNT * ROW_CNT);
 	DrawScr2();*/
-	if (m_nState ==  STATE_CONNECT)
+	if (m_nState == STATE_CONNECT)
 	{
 		memcpy((void*)gSend.szData, (void*)m_Table, COL_CNT * ROW_CNT);
 		gSend.cFlag = 'G';
@@ -598,7 +598,7 @@ void CSjTetris1Dlg::OnClickedDisconnectBt()
 		//m_bConnect = FALSE;
 		//m_ctrlUserList.ResetContent();
 		//m_strReceiveData = "";
-		UpdateData(FALSE);
+		//UpdateData(FALSE);
 	}
 }
 
@@ -665,12 +665,10 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 	char szReceiveData[DATA_SIZE] = "";
 	CString strMsg = _T("Server : ");
 	m_Client.Receive((void*)&gReceive, DATA_SIZE);
-	TRACE("szData: %s, cFlag: %s\n", gReceive.szData, gReceive.cFlag);
 	switch (gReceive.cFlag)
 	{
 	case 'C':
 		strMsg += gReceive.szData;
-		TRACE("strMsg: %s\n", strMsg);
 		DisplayMsg(strMsg);
 		break;
 	case 'G':
