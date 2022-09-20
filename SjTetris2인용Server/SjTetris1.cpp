@@ -50,7 +50,11 @@ BOOL CSjTetris1App::InitInstance()
 	InitCommonControlsEx(&InitCtrls);
 
 	CWinApp::InitInstance();
-
+	if (!AfxSocketInit())
+	{
+		AfxMessageBox(_T("Socket 초기화 오류"));
+		return FALSE;
+	}
 
 	AfxEnableControlContainer();
 

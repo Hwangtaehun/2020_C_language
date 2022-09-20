@@ -5,15 +5,21 @@
 #pragma once
 #include "afxwin.h"
 #include "SjClientSocket.h"
+#include "SjServerSocket.h"
+#include "afxcoll.h"
+
 #define COL_CNT 10
 #define ROW_CNT 20
 #define START_X 10
 #define START_Y 10
 #define BLOCK_SIZE 32
-#define DATA_SIZE 201
+#define USER_CNT 6
 #define STATE_INIT 0
-#define STATE_LISTEN 1
+#define STATE_WAIT 1
 #define STATE_CONNECT 2
+#define STATE_GAME_START 3
+#define STATE_GAME_DIE 4
+#define DATA_SIZE 201
 
 // CSjTetris1Dlg 대화 상자
 class CSjTetris1Dlg : public CDialogEx
@@ -44,10 +50,11 @@ public:
 	CBitmap m_bmBack;
 	CDC m_BackDC;
 	CDC m_BlockDC;
-	CDC* m_pDC;
-	char m_Table[ROW_CNT][COL_CNT];
+	CDC *m_pDC;
+	char m_Table[USER_CNT][ROW_CNT][COL_CNT];
 	CRect m_nextRect;
 	CRect m_mainRect;
+	CRect m_mainRect2;
 	BOOL m_bStart;
 	int m_nPattern;
 	int m_nBitType;
@@ -74,23 +81,33 @@ public:
 	int m_nScore;
 	int m_nNextPattern;
 	void NextBlock(bool bFlag);
-	CRect m_mainRect2;
 	void DrawScr2();
 	char m_Table2[ROW_CNT][COL_CNT];
-	LRESULT OnReceiveMsg(WPARAM wParam, LPARAM Iparam);
-	afx_msg void OnClickedConnectBt();
-	afx_msg void OnClickedDisconnectBt();
-	afx_msg void OnClickedSendBt();
-	void DisplayMsg(CString strMsg);
+	void DrawScr3(int i, int x, int y);
+	int m_nScore2;
+	int m_nScore3;
+	int m_nScore4;
+	int m_nScore5;
+	int m_nScore6;
+	CSjServerSocket m_Server;
 	CSjClientSocket m_Client;
-	CString m_IpAddress;
-	CString m_strName;
-	int m_nPortNo;
-	CString m_arrMsg[10];
-	int m_nState;
-	CString m_strSendData;
-	CEdit m_ctrlSendData;
 	CButton m_ctrlConnectBt;
 	CButton m_ctrlDisConnectBt;
 	CButton m_ctrlSendBt;
+	CString m_strName;
+	int m_nPortNo;
+	CString m_strSendData;
+	CEdit m_ctrlSendData;
+	CString m_strIpAddress;
+	CEdit m_ctrlIpAddress;
+	int m_nState;
+	CString m_arrMsg[10];
+	afx_msg void OnClickedConnectBt();
+	afx_msg void OnClickedDisconnectBt();
+	afx_msg void OnClickedSendBt();
+	LRESULT OnAcceptMsg(WPARAM wParam, LPARAM IParam);
+	LRESULT OnReceiveMsg(WPARAM wParam, LPARAM IParam);
+	LRESULT OnCloseMsg(WPARAM wParam, LPARAM IParam);
+	void DisplayMsg(CString strMsg);
+	void InitGuestData();
 };

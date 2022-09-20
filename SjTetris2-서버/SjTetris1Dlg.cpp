@@ -33,11 +33,13 @@ POINT nextPattern[7][4] =
 	{{0, 1}, {-1, 1}, {1, 1}, {0, 0}}
 };
 
-struct ChatData
+struct GUSET_DATA
 {
+	CString strName;
+	int nScore;
+	void *pClient;
 	char cFlag;
-	char szData[200];
-}gSend, gReceive;
+}m_Guest[USER_CNT];
 
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
@@ -77,10 +79,15 @@ END_MESSAGE_MAP()
 CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSjTetris1Dlg::IDD, pParent)
 	, m_nScore(0)
-	, m_strIpAddress(_T(""))
+	, m_nScore2(0)
+	, m_nScore3(0)
+	, m_nScore4(0)
+	, m_nScore5(0)
+	, m_nScore6(0)
+	, m_strName(_T(""))
 	, m_nPortNo(1234)
-	, m_strName(_T("관리자"))
 	, m_strSendData(_T(""))
+	, m_strIpAddress(_T(""))
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nX = COL_CNT / 2;
@@ -102,10 +109,11 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	m_nextRect.right = m_nextRect.left + 130;
 	m_nextRect.bottom = m_nextRect.top + 80;
 
-	m_mainRect2.left = m_nextRect.right + 20;
+	m_mainRect2.left = m_nextRect.right + 35;
 	m_mainRect2.top = START_Y;
-	m_mainRect2.right = m_mainRect2.left + BLOCK_SIZE * COL_CNT + 4;
-	m_mainRect2.bottom = START_Y + BLOCK_SIZE * ROW_CNT + 4;
+	m_mainRect2.right = m_mainRect2.left + BLOCK_SIZE * COL_CNT / 2 + 4;
+	m_mainRect2.bottom = START_Y + BLOCK_SIZE * ROW_CNT / 2 + 4;
+	m_nState = 0;
 }
 
 void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
@@ -114,15 +122,20 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_START, m_ctrlStartBt);
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_ctrlStopBt);
 	DDX_Text(pDX, IDC_EDIT_SCORE, m_nScore);
-	DDX_Control(pDX, IDC_SERVER_START_BT, m_ctrlSVStartBt);
-	DDX_Control(pDX, IDC_SERVER_STOP_BT, m_ctrlSVStopBt);
+	DDX_Text(pDX, IDC_EDIT_SCORE2, m_nScore2);
+	DDX_Text(pDX, IDC_EDIT_SCORE3, m_nScore3);
+	DDX_Text(pDX, IDC_EDIT_SCORE4, m_nScore4);
+	DDX_Text(pDX, IDC_EDIT_SCORE5, m_nScore5);
+	DDX_Text(pDX, IDC_EDIT_SCORE6, m_nScore6);
+	DDX_Control(pDX, IDC_CONNECT_BT, m_ctrlConnectBt);
+	DDX_Control(pDX, IDC_DISCONNECT_BT, m_ctrlDisConnectBt);
 	DDX_Control(pDX, IDC_SEND_BT, m_ctrlSendBt);
-	DDX_Text(pDX, IDC_IP_ADDRESS, m_strIpAddress);
-	DDX_Control(pDX, IDC_IP_ADDRESS, m_ctrlIpAddress);
-	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
 	DDX_Text(pDX, IDC_NAME, m_strName);
+	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
 	DDX_Text(pDX, IDC_SEND_DATA, m_strSendData);
 	DDX_Control(pDX, IDC_SEND_DATA, m_ctrlSendData);
+	DDX_Text(pDX, IDC_IP_ADDRESS, m_strIpAddress);
+	DDX_Control(pDX, IDC_IP_ADDRESS, m_ctrlIpAddress);
 }
 
 BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
@@ -133,12 +146,9 @@ BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_STOP, &CSjTetris1Dlg::OnBnClickedButtonStop)
 	ON_BN_CLICKED(IDC_BUTTON_EXIT, &CSjTetris1Dlg::OnBnClickedButtonExit)
 	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_SERVER_START_BT, &CSjTetris1Dlg::OnClickedServerStartBt)
-	ON_BN_CLICKED(IDC_SERVER_STOP_BT, &CSjTetris1Dlg::OnClickedServerStopBt)
+	ON_BN_CLICKED(IDC_CONNECT_BT, &CSjTetris1Dlg::OnClickedConnectBt)
+	ON_BN_CLICKED(IDC_DISCONNECT_BT, &CSjTetris1Dlg::OnClickedDisconnectBt)
 	ON_BN_CLICKED(IDC_SEND_BT, &CSjTetris1Dlg::OnClickedSendBt)
-	ON_MESSAGE(UM_ACCEPT, &CSjTetris1Dlg::OnAcceptMsg)
-	ON_MESSAGE(UM_RECEIVE, &CSjTetris1Dlg::OnReceiveMsg)
-	ON_MESSAGE(UM_SOCKET_CLOSE, &CSjTetris1Dlg::OnCloseMsg)
 END_MESSAGE_MAP()
 
 
@@ -174,7 +184,7 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	MoveWindow(100, 100, m_mainRect.right * 2 + 180, m_mainRect.bottom + 80);
+	MoveWindow(100, 100, m_mainRect.right * 2 + 300, m_mainRect.bottom + 140);
 	m_pDC = GetDC();
 	m_bmBlock.LoadBitmap(IDB_BLOCK);
 	m_BlockDC.CreateCompatibleDC(m_pDC);
@@ -191,8 +201,8 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	myIpAddr.S_un.S_addr = *((u_long*)(pHostEnt->h_addr_list[0]));
 	m_strIpAddress = inet_ntoa(myIpAddr);
 	UpdateData(FALSE);
-	m_ctrlSVStartBt.EnableWindow(TRUE);
-	m_ctrlSVStopBt.EnableWindow(FALSE);
+	m_ctrlConnectBt.EnableWindow(TRUE);
+	m_ctrlDisConnectBt.EnableWindow(FALSE);
 	m_ctrlSendBt.EnableWindow(FALSE);
 
 	srand((unsigned)time(NULL));
@@ -265,14 +275,14 @@ void CSjTetris1Dlg::DrawScr()
 	{
 		for (col = 0; col < COL_CNT; col++)
 		{
-			if (m_Table[row][col] == -1)
+			if (m_Table[0][row][col] == -1)
 			{
-				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, col * BLOCK_SIZE, row * BLOCK_SIZE, SRCCOPY);
+				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, col * BLOCK_SIZE, row *BLOCK_SIZE, SRCCOPY);
 			}
 			else
 			{
 				m_pDC->BitBlt(START_X + 2 + col * BLOCK_SIZE, START_Y + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BlockDC,
-					m_Table[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, SRCCOPY);
+					m_Table[0][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, SRCCOPY);
 			}
 		}
 	}
@@ -284,7 +294,7 @@ void CSjTetris1Dlg::DrawScr()
 
 void CSjTetris1Dlg::InitialGame()
 {
-	memset((void*)m_Table, -1, sizeof(m_Table));
+	memset((void *)m_Table, -1, sizeof(m_Table));
 	DrawScr();
 	m_nPattern = rand() % 7;
 	m_nRot = 0;
@@ -344,9 +354,12 @@ BOOL CSjTetris1Dlg::IsAround(int nX, int nY)
 		{
 			return FALSE;
 		}
-		if (m_Table[row][col] != -1)
+		for (int n = 0; n < 6; n++)
 		{
-			return FALSE;
+			if (m_Table[n][row][col] != -1)
+			{
+				return FALSE;
+			}
 		}
 	}
 	return TRUE;
@@ -358,14 +371,14 @@ void CSjTetris1Dlg::SetTable()
 	int i, row, col, sw;
 	for (i = 0; i < 4; i++)
 	{
-		m_Table[m_nY + Pattern[m_nPattern][i + m_nRot * 4].y][m_nX + Pattern[m_nPattern][i + m_nRot * 4].x] = m_nPattern;
+		m_Table[0][m_nY + Pattern[m_nPattern][i + m_nRot * 4].y][m_nX + Pattern[m_nPattern][i + m_nRot * 4].x] = m_nPattern;
 	}
 	for (row = ROW_CNT - 1; row >= 0; row--)
 	{
 		sw = 0;
 		for (col = 0; col < COL_CNT; col++)
 		{
-			if (m_Table[row][col] == -1)
+			if (m_Table[0][row][col] == -1)
 				sw = -1;
 		}
 		if (sw == 0)
@@ -374,7 +387,7 @@ void CSjTetris1Dlg::SetTable()
 			{
 				for (col = 0; col < COL_CNT; col++)
 				{
-					m_Table[i][col] = m_Table[i - 1][col];
+					m_Table[0][i][col] = m_Table[0][i - 1][col];
 				}
 			}
 			for (col = 0; col < COL_CNT; col++)
@@ -390,20 +403,28 @@ void CSjTetris1Dlg::SetTable()
 			row++;
 		}
 	}
-	if (m_nState == STATE_CONNECT)
+	//for (int i = 1; i < 6; i++)
+	//{
+	//	for (row = 0; row < ROW_CNT; row++)
+	//	{
+	//		for (col = 0; col < COL_CNT; col++)
+	//		{
+	//			m_Table[i][row][col] = m_Table[0][row][col];
+	//		}
+	//	}
+	//}
+	for (int i = 1; i < 6; i++)
 	{
-		memcpy((void*)gSend.szData, (void*)m_Table, COL_CNT * ROW_CNT);
-		gSend.cFlag = 'G';
-		if (m_Client.Send((void*)&gSend, DATA_SIZE) == -1)
-			MessageBox(_T("전송실패"));
+		memcpy((void*)m_Table[i], (void*)m_Table[0], COL_CNT * ROW_CNT);
 	}
-	DisplayMsg(_T(""));
+	DrawScr2();
 	m_nX = COL_CNT / 2;
 	m_nY = 1;
 	m_nPattern = m_nNextPattern;
 	NextBlock(FALSE);
 	m_nNextPattern = rand() % 7;
 	NextBlock(TRUE);
+	//m_nPattern = rand() % 7;
 	m_nRot = 1;
 	if (!IsAround(m_nX, m_nY + 1))
 	{
@@ -464,13 +485,6 @@ void CSjTetris1Dlg::OnBnClickedButtonStart()
 	m_ctrlStartBt.EnableWindow(FALSE);
 	m_ctrlStopBt.EnableWindow(TRUE);
 	m_ctrlStopBt.SetFocus();
-	DisplayMsg(_T("Game Start"));
-	if (m_nState == STATE_CONNECT)
-	{
-		gSend.cFlag = 'S';
-		if (m_Client.Send((void*)&gSend, DATA_SIZE) == -1)
-			MessageBox(_T("전송실패"));
-	}
 }
 
 
@@ -481,7 +495,6 @@ void CSjTetris1Dlg::OnBnClickedButtonStop()
 	KillTimer(1);
 	m_ctrlStartBt.EnableWindow(TRUE);
 	m_ctrlStopBt.EnableWindow(FALSE);
-	DisplayMsg(_T("Game Stop"));
 }
 
 
@@ -505,11 +518,6 @@ BOOL CSjTetris1Dlg::PreTranslateMessage(MSG* pMsg)
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
 		return TRUE;
-	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN && m_nState == STATE_CONNECT)
-	{
-		OnClickedSendBt();
-		return TRUE;
-	}
 	if (pMsg->message == WM_KEYDOWN && m_bStart)
 	{
 		switch (pMsg->wParam)
@@ -563,154 +571,224 @@ void CSjTetris1Dlg::NextBlock(bool bFlag)
 void CSjTetris1Dlg::DrawScr2()
 {
 	// TODO: 여기에 구현 코드 추가.
-	int row, col;
-	m_pDC->Rectangle(m_mainRect2);
-	for (row = 0; row < ROW_CNT; row++)
+	CDC* pDC = GetDC();
+	int x = 0, y = 0;
+	for (int i = 1; i < 6; i++)
+	{
+		if (i < 3)
+		{
+			x = (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14);
+			y = 0;
+		}
+		else
+		{
+			x = (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14) - 175;
+			y = BLOCK_SIZE * ROW_CNT / 2 + 54;
+		}
+		pDC->Rectangle(m_mainRect2.left + x, m_mainRect2.top + y, m_mainRect2.right + x, m_mainRect2.bottom + y);
+		DrawScr3(i, x, y);
+	}
+
+	//int x = BLOCK_SIZE * COL_CNT / 2; // 2 * x = BLOCK_SIZE * ROW_CNT / 2
+	//CDC* pDC = GetDC();
+
+	//for (int i = 0; i < 5; i++)
+	//{
+	//	if (i < 2)
+	//	{
+	//		pDC->Rectangle((i + 2) * BLOCK_SIZE * COL_CNT / 2 + 195 + (i * 14), 10, (i + 3) * BLOCK_SIZE * COL_CNT / 2 + 199 + (i * 14), BLOCK_SIZE * ROW_CNT / 2 + 14);
+	//	}
+
+	//	else
+	//	{
+	//		pDC->Rectangle(i * x + 20 + (i - 2) * 14, 2 * x + 64, (i + 1) * x + 24 + (i - 2) * 14, 4 * x + 68);
+	//	}
+	//}
+	//DrawScr3();
+
+	/*int row, col;
+	for (int i = 1; i < 6; i++)
+	{
+		for (row = 0; row < ROW_CNT; row++)
+		{
+			for (col = 0; col < COL_CNT; col++)
+			{
+				if (m_Table[i][row][col] == -1)
+				{
+					m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+						col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect3.left + 2 + col * BLOCK_SIZE / 2, m_mainRect3.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+						col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect4.left + 2 + col * BLOCK_SIZE / 2, m_mainRect4.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+						col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect5.left + 2 + col * BLOCK_SIZE / 2, m_mainRect5.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+						col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect6.left + 2 + col * BLOCK_SIZE / 2, m_mainRect6.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+						col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				}
+				else
+				{
+					m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+						m_Table[1][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect3.left + 2 + col * BLOCK_SIZE / 2, m_mainRect3.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+						m_Table[2][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect4.left + 2 + col * BLOCK_SIZE / 2, m_mainRect4.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+						m_Table[3][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect5.left + 2 + col * BLOCK_SIZE / 2, m_mainRect5.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+						m_Table[4][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					m_pDC->StretchBlt(m_mainRect6.left + 2 + col * BLOCK_SIZE / 2, m_mainRect6.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+						m_Table[5][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				}
+			}
+		}
+	}*/
+	/*for (row = 0; row < ROW_CNT; row++)
 	{
 		for (col = 0; col < COL_CNT; col++)
 		{
 			if (m_Table2[row][col] == -1)
 			{
-				m_pDC->BitBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE, m_mainRect2.top + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BackDC, col * BLOCK_SIZE, row * BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+					col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect3.left + 2 + col * BLOCK_SIZE / 2, m_mainRect3.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+					col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect4.left + 2 + col * BLOCK_SIZE / 2, m_mainRect4.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+					col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect5.left + 2 + col * BLOCK_SIZE / 2, m_mainRect5.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+					col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect6.left + 2 + col * BLOCK_SIZE / 2, m_mainRect6.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+					col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
 			}
 			else
 			{
-				m_pDC->BitBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE, m_mainRect2.top + 2 + row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, &m_BlockDC,
-					m_Table2[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+					m_Table2[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect3.left + 2 + col * BLOCK_SIZE / 2, m_mainRect3.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+					m_Table2[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect4.left + 2 + col * BLOCK_SIZE / 2, m_mainRect4.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+					m_Table2[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect5.left + 2 + col * BLOCK_SIZE / 2, m_mainRect5.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+					m_Table2[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+				m_pDC->StretchBlt(m_mainRect6.left + 2 + col * BLOCK_SIZE / 2, m_mainRect6.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+					m_Table2[row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+			}
+		}
+	}*/
+}
+
+void CSjTetris1Dlg::DrawScr3(int i, int x, int y)
+{
+	// TODO: 여기에 구현 코드 추가.
+	int row, col;
+	for (row = 0; row < ROW_CNT; row++)
+	{
+		for (col = 0; col < COL_CNT; col++)
+		{
+			if (m_Table[i][row][col] == -1)
+			{
+				m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y,
+					BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+					col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+			}
+			else
+			{
+				m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + x, m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + y,
+					BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+					m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+
 			}
 		}
 	}
+
+	/*int row, col;
+	m_pDC->Rectangle(m_mainRect2);
+	for (int i = 1; i < 6; i++)
+	{
+		if (i < 3)
+		{
+			for (row = 0; row < ROW_CNT; row++)
+			{
+				for (col = 0; col < COL_CNT; col++)
+				{
+					if (m_Table[i][row][col] == -1)
+					{
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, 
+							BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+							col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					}
+					else
+					{
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 + (i - 1) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2, BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+							m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+
+					}
+				}
+			}
+		}
+		else
+		{
+			for (row = 0; row < ROW_CNT; row++)
+			{
+				for (col = 0; col < COL_CNT; col++)
+				{
+					if (m_Table[i][row][col] == -1)
+					{
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 - 175 + (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + BLOCK_SIZE * ROW_CNT / 2 + 54,
+							BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BackDC,
+							col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+					}
+					else
+					{
+						m_pDC->StretchBlt(m_mainRect2.left + 2 + col * BLOCK_SIZE / 2 - 175 + (i - 3) * (BLOCK_SIZE * COL_CNT / 2 + 14), m_mainRect2.top + 2 + row * BLOCK_SIZE / 2 + BLOCK_SIZE * ROW_CNT / 2 + 54,
+							BLOCK_SIZE / 2, BLOCK_SIZE / 2, &m_BlockDC,
+							m_Table[i][row][col] * BLOCK_SIZE, m_nBitType * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE, SRCCOPY);
+
+					}
+				}
+			}
+		}*/
+	//}
 }
 
 
-void CSjTetris1Dlg::OnClickedServerStartBt()
+void CSjTetris1Dlg::OnClickedConnectBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	UpdateData(TRUE);
-	m_ctrlSendBt.EnableWindow(FALSE);
-	m_ctrlSVStartBt.SetWindowText(_T("Server 실행중"));
-	if (!m_Server.ServerStart(this, m_nPortNo))
-	{
-		MessageBox(_T("Server Socket 문제 발생"));
-		m_ctrlSVStartBt.EnableWindow(TRUE);
-		m_ctrlSVStartBt.SetWindowText(_T("Server Start"));
-		return;
-	}
-	//m_ctrlForcedBt.EnableWindow(TRUE);
-	m_ctrlSendBt.EnableWindow(FALSE);
-	m_ctrlSVStopBt.EnableWindow(TRUE);
-	//m_strReceiveData += "Server 실행 후 대기 중입니다.\r\n";
-	DisplayMsg(_T("Server 실행 후 대기 중입니다."));
-	m_nState = STATE_LISTEN;
-	UpdateData(FALSE);
-	m_ctrlSendData.SetFocus();
 }
 
 
-void CSjTetris1Dlg::OnClickedServerStopBt()
+void CSjTetris1Dlg::OnClickedDisconnectBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	if (AfxMessageBox(_T("Server를 종료합니다!!"), MB_YESNO) == IDYES)
-	{
-		m_ctrlSVStopBt.EnableWindow(FALSE);
-		m_ctrlSVStartBt.EnableWindow(TRUE);
-		m_ctrlSendBt.EnableWindow(FALSE);
-		m_ctrlSVStartBt.SetWindowText(_T("Server Start"));
-		m_Server.ShutDown();
-		m_Server.Close();
-		DisplayMsg(_T("Server를 종료합니다."));
-		m_nState - STATE_INIT;
-		UpdateData(FALSE);
-	}
 }
 
 
 void CSjTetris1Dlg::OnClickedSendBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	CString strMsg = _T("Server : ");
-	UpdateData(TRUE);
-	if (!m_strSendData.IsEmpty())
-	{
-		CStringA s2(m_strSendData);
-		const char* c = s2;
-		sprintf_s(gSend.szData, DATA_SIZE - 1, "%s", c);
-		gSend.cFlag = 'C';
-		strMsg += gSend.szData;
-		DisplayMsg(strMsg);
-		if (m_Client.Send((void*)&gSend, DATA_SIZE) == -1)
-			MessageBox(_T("전송실패"));
-		m_strSendData = "";
-		UpdateData(FALSE);
-	}
-	m_ctrlSendData.SetFocus();
-}
-
-
-bool CSjTetris1Dlg::BroadCast(void* pStr)
-{
-	CSjClientSocket* pNode;
-	for (POSITION pos = m_List.GetHeadPosition(); pos != NULL; )
-	{
-		pNode = (CSjClientSocket*)m_List.GetNext(pos);
-		if (pNode->Send(pStr, DATA_SIZE) == -1)
-			MessageBox(_T("전송실패"));
-	}
-	return false;
 }
 
 
 LRESULT CSjTetris1Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 {
-	if (!m_Server.Accept(m_Client))
-	{
-		MessageBox(_T("Client 연결 실패"));
-		return -1;
-	}
-	sprintf_s(gSend.szData, DATA_SIZE - 1, "2인용 Tetris Server입니다.");
-	gSend.cFlag = 'C';
-	m_Client.Send((void*)&gSend, DATA_SIZE);
-	m_Client.SetMainWindow(this);
-	m_nState = STATE_CONNECT;
-	m_ctrlSendBt.EnableWindow(TRUE);
-
 	return LRESULT();
 }
 
 
 LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 {
-	CString strMsg = _T("Client : ");
-	m_Client.Receive((void*)&gReceive, DATA_SIZE);
-	switch (gReceive.cFlag)
-	{
-	case 'C':
-		strMsg += gReceive.szData;
-		DisplayMsg(strMsg);
-		break;
-	case 'G':
-		memcpy((void*)m_Table2, (void*)&gReceive.szData, COL_CNT * ROW_CNT);
-		DrawScr2();
-		DisplayMsg(_T(""));
-		break;
-	}
 	return LRESULT();
 }
 
 
 LRESULT CSjTetris1Dlg::OnCloseMsg(WPARAM wParam, LPARAM IParam)
 {
-	m_Client.ShutDown();
-	m_Client.Close();
-	m_nState = STATE_INIT;
-	DisplayMsg(_T("Client가 종료됨"));
 	return LRESULT();
 }
 
 
 void CSjTetris1Dlg::DisplayMsg(CString strMsg)
 {
-	// TODO: 여기에 구현 코드 추가.
 	int i, r = 0, g = 255, b = 0;
 	m_pDC->SetBkMode(TRANSPARENT);
 	DrawScr2();
@@ -728,4 +806,9 @@ void CSjTetris1Dlg::DisplayMsg(CString strMsg)
 		g -= 20;
 		m_pDC->TextOut(m_mainRect2.left + 10, m_mainRect2.top + 5 + i * 20, m_arrMsg[i]);
 	}
+}
+
+
+void CSjTetris1Dlg::InitGuestData()
+{
 }
