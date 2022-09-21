@@ -80,7 +80,7 @@ public:
 	CRect m_nextRect;
 	CRect m_mainRect;
 	//CRect m_mainRect2;
-//	BOOL m_bStart;
+	BOOL m_bStart;
 	int m_nPattern;
 	int m_nBitType;
 	int m_nRot;
@@ -134,4 +134,12 @@ public:
 	CButton m_ctrlRadioClient;
 	void DisplayAllGuest();
 	SEND_DATA m_sendData;
+	int m_nGameMode;
+	afx_msg void OnGameMode(UINT nID);
+	int m_nMyNo;
+	int m_nConnectCnt;
+	char m_Buf[BUFFER_SIZE];
+	int m_nScore;
+	int m_nStage;
+	int m_nTime;
 };

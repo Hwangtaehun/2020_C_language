@@ -79,10 +79,13 @@ END_MESSAGE_MAP()
 
 CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSjTetris1Dlg::IDD, pParent)
+	, m_nMyNo(0)
+	, m_nConnectCnt(0)
 	, m_strName(_T(""))
 	, m_nPortNo(1234)
 	, m_strSendData(_T(""))
 	, m_strIpAddress(_T(""))
+	, m_nGameMode(2)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_nX = COL_CNT / 2;
@@ -92,7 +95,10 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	//m_bStart = FALSE;
 	m_nBitType = 1;
 	m_nNextPattern = 0;
-	//m_nScore = 0;
+	m_nState = STATE_INIT;
+	m_nScore = 0;
+	m_nStage = 0;
+	m_nTime = 0;
 
 	m_mainRect.left = START_X;
 	m_mainRect.top = START_Y;
@@ -109,6 +115,11 @@ CSjTetris1Dlg::CSjTetris1Dlg(CWnd* pParent /*=NULL*/)
 	m_mainRect2.right = m_mainRect2.left + BLOCK_SIZE * COL_CNT / 2 + 4;
 	m_mainRect2.bottom = START_Y + BLOCK_SIZE * ROW_CNT / 2 + 4;*/
 	m_nState = 0;
+	m_nMyNo = 0;
+	m_nConnectCnt = 0;
+	m_nScore = 0;
+	m_nStage = 0;
+	m_nTime = 0;
 }
 
 void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
@@ -128,6 +139,7 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RADIOSERVER, m_ctrlRadioServer);
 	DDX_Control(pDX, IDC_RADIOSINGLE, m_ctrlRadioSingle);
 	DDX_Control(pDX, IDC_RADIOCLIENT, m_ctrlRadioClient);
+	DDX_Radio(pDX, IDC_RADIOSERVER, m_nGameMode);
 }
 
 BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
@@ -140,6 +152,10 @@ BEGIN_MESSAGE_MAP(CSjTetris1Dlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_CONNECT_BT, &CSjTetris1Dlg::OnClickedConnectBt)
 	ON_BN_CLICKED(IDC_DISCONNECT_BT, &CSjTetris1Dlg::OnClickedDisconnectBt)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_RADIOSERVER, IDC_RADIOSINGLE, OnGameMode)
+	ON_MESSAGE(UM_ACCEPT, &CSjTetris1Dlg::OnAcceptMsg)
+	ON_MESSAGE(UM_RECEIVE, &CSjTetris1Dlg::OnReceiveMsg)
+	ON_MESSAGE(UM_SOCKET_CLOSE, &CSjTetris1Dlg::OnCloseMsg)
 END_MESSAGE_MAP()
 
 
@@ -208,6 +224,8 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	memset((void*)m_Table, -1, sizeof(m_Table));
 	//memset((void*)m_Table2, -1, sizeof(m_Table2));
 	InitGuestData();
+	OnGameMode(NULL);
+	DisplayMsg(_T("6인용 NetWork Tetris 입니다."));
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -253,6 +271,11 @@ void CSjTetris1Dlg::OnPaint()
 		DrawScr2();
 		DisplayAllGuest();
 		DisplayMsg(_T(""));
+		NextBlock(FALSE);
+		if (m_nState == STATE_GAME_START)
+		{
+			NextBlock(TRUE);
+		}
 		CDialogEx::OnPaint();
 	}
 }
@@ -860,6 +883,7 @@ void CSjTetris1Dlg::DrawScr3(void* pt, int nClientNo, bool bFlag)
 void CSjTetris1Dlg::OnClickedConnectBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
 }
 
 
@@ -883,6 +907,7 @@ LRESULT CSjTetris1Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 
 LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 {
+
 	return LRESULT();
 }
 
@@ -897,10 +922,9 @@ void CSjTetris1Dlg::DisplayMsg(CString strMsg)
 {
 	int i, r = 0, g = 255, b = 0;
 	m_pDC->SetBkMode(TRANSPARENT);
-	DrawScr2();
 	if (!strMsg.IsEmpty())
 	{
-		for (i = 9 - 1; i > 0; i--)
+		for (i = MSG_CNT - 1; i > 0; i--)
 		{
 			m_arrMsg[i] = m_arrMsg[i - 1];
 		}
@@ -910,7 +934,7 @@ void CSjTetris1Dlg::DisplayMsg(CString strMsg)
 	{
 		m_pDC->SetTextColor(RGB(r, g, b));
 		g -= 20;
-		//m_pDC->TextOut(m_mainRect2.left + 10, m_mainRect2.top + 5 + i * 20, m_arrMsg[i]);
+		m_pDC->TextOut(HOST_X + 5, HOST_Y + i * 20, m_arrMsg[i]);
 	}
 }
 
@@ -920,11 +944,13 @@ void CSjTetris1Dlg::InitGuestData()
 	for (int i = 1; i < USER_CNT; i++)
 	{
 		m_Guest[i].strName = " 접 속 대 기 ";
-		m_Guest[i].nScore = 123 * i * (rand() % 100 + 10);
-		m_Guest[i].cFlag = 'i';
+		m_Guest[i].nScore = 0;
+		m_Guest[i].cFlag = 'I';
+		m_Guest[i].pClient = NULL;
 	}
 	m_Guest[0].strName = " 점 수   ";
-	m_Guest[0].nScore = 111;
+	m_Guest[0].nScore = 0;
+	m_nConnectCnt = 0;
 }
 
 
@@ -936,4 +962,10 @@ void CSjTetris1Dlg::DisplayAllGuest()
 	{
 		DrawScr3((void*)m_Table[i], i, TRUE);
 	}
+}
+
+
+void CSjTetris1Dlg::OnGameMode(UINT nID)
+{
+	// TODO: 여기에 구현 코드 추가.
 }
