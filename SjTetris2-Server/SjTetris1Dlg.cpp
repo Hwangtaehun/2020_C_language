@@ -33,15 +33,6 @@ POINT nextPattern[7][4] =
 	{{0, 1}, {-1, 1}, {1, 1}, {0, 0}}
 };
 
-struct GUSET_DATA
-{
-	CString strName;
-	int nScore;
-	//void *pClient;
-	CSjClientSocket* pClient;
-	char cFlag;
-}m_Guest[USER_CNT];
-
 // 응용 프로그램 정보에 사용되는 CAboutDlg 대화 상자입니다.
 
 class CAboutDlg : public CDialogEx
@@ -129,7 +120,7 @@ void CSjTetris1Dlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_STOP, m_ctrlStopBt);
 	DDX_Control(pDX, IDC_CONNECT_BT, m_ctrlConnectBt);
 	DDX_Control(pDX, IDC_DISCONNECT_BT, m_ctrlDisConnectBt);
-	//  DDX_Control(pDX, IDC_SEND_BT, m_ctrlSendBt);
+	DDX_Control(pDX, IDC_SEND_BT, m_ctrlSendBt);
 	DDX_Text(pDX, IDC_NAME, m_strName);
 	DDX_Text(pDX, IDC_PORTNO, m_nPortNo);
 	DDX_Text(pDX, IDC_SEND_DATA, m_strSendData);
@@ -493,11 +484,19 @@ void CSjTetris1Dlg::SetTable()
 		memcpy((void*)m_Table[i], (void*)m_Table[0], COL_CNT * ROW_CNT);
 	}
 	DrawScr2();*/
-	for (int i = 1; i < USER_CNT; i++)
+	/*for (int i = 1; i < USER_CNT; i++)
 	{
 		memcpy((void*)m_Table[i], (void*)m_Table[0], COL_CNT * ROW_CNT);
 	}
-	DisplayAllGuest();
+	DisplayAllGuest();*/
+	if (m_nState == STATE_CONNECT || m_nState == STATE_GAME_START)
+	{
+		memcpy((void*)m_sendData.Buf, (void*)m_Table[m_nMyNo], COL_CNT * ROW_CNT);
+		m_sendData.nFlag = 'T';
+		if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
+			MessageBox(_T("전송실패"));
+	}
+	DisplayMsg(_T(""));
 	m_nX = COL_CNT / 2;
 	m_nY = 1;
 	m_nPattern = m_nNextPattern;
@@ -567,6 +566,16 @@ void CSjTetris1Dlg::OnBnClickedButtonStart()
 	m_ctrlStartBt.EnableWindow(FALSE);
 	m_ctrlStopBt.EnableWindow(TRUE);
 	m_ctrlStopBt.SetFocus();
+	DisplayMsg(_T("Game Start"));
+	if (m_nStage == 0)
+	{
+		if (m_nState == STATE_CONNECT)
+		{
+			m_sendData.nFlag = 'S';
+			if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
+				MessageBox(_T("전송실패"));
+		}
+	}
 	m_nState = STATE_GAME_START;
 }
 
@@ -578,6 +587,7 @@ void CSjTetris1Dlg::OnBnClickedButtonStop()
 	KillTimer(1);
 	m_ctrlStartBt.EnableWindow(TRUE);
 	m_ctrlStopBt.EnableWindow(FALSE);
+	DisplayMsg(_T("Game Stop"));
 }
 
 
@@ -601,6 +611,11 @@ BOOL CSjTetris1Dlg::PreTranslateMessage(MSG* pMsg)
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_ESCAPE)
 		return TRUE;
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN && m_nState >= STATE_CONNECT)
+	{
+		OnClickedSendBt();
+		return TRUE;
+	}
 	if (pMsg->message == WM_KEYDOWN && m_nState == STATE_GAME_START)
 	{
 		switch (pMsg->wParam)
@@ -901,13 +916,27 @@ void CSjTetris1Dlg::OnClickedSendBt()
 
 LRESULT CSjTetris1Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 {
-	return LRESULT();
+	if (m_nStage == 0)
+	{
+		if (!m_Server.Accept(m_Client))
+		{
+			MessageBox(_T("Client 연결 실패"));
+			return -1;
+		}
+		sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "6인용 Tetris Server입니다");
+		m_sendData.nFlag = 'C';
+		m_sendData.nMyNo = ++m_nMyNo;
+		m_Client.Send((void*)&m_sendData, SEND_SIZE);
+		m_Client.SetMainWindow(this);
+		m_nState = STATE_CONNECT;
+		m_ctrlSendBt.EnableWindow(TRUE);
+		return LRESULT();
+	}
 }
 
 
 LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 {
-
 	return LRESULT();
 }
 
@@ -968,4 +997,22 @@ void CSjTetris1Dlg::DisplayAllGuest()
 void CSjTetris1Dlg::OnGameMode(UINT nID)
 {
 	// TODO: 여기에 구현 코드 추가.
+	UpdateData(TRUE);
+	switch (m_nGameMode)
+	{
+	case 0:
+		m_nMyNo = 0;
+		m_ctrlConnectBt.EnableWindow(TRUE);
+		m_ctrlDisConnectBt.EnableWindow(FALSE);
+		break;
+	case 1:
+		m_nMyNo = m_sendData.nMyNo;
+		m_ctrlConnectBt.EnableWindow(TRUE);
+		m_ctrlDisConnectBt.EnableWindow(FALSE);
+		break;
+	case 2:
+		m_ctrlConnectBt.EnableWindow(FALSE);
+		m_ctrlDisConnectBt.EnableWindow(FALSE);
+		break;
+	}
 }

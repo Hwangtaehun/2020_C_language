@@ -22,10 +22,10 @@
 #define HOST_YSIZE 640
 #define GUEST_XSIZE 140
 #define GUEST_YSIZE 280
-#define STATE_INIT 0
-#define STATE_WAIT 1
-#define STATE_CONNECT 2
-#define STATE_GAME_START 3
+#define STATE_INIT 0		
+#define STATE_WAIT 1		
+#define STATE_CONNECT 2		
+#define STATE_GAME_START 3	
 #define STATE_GAME_DIE 4
 #define SERVER_MODE 0
 #define CLIENT_MODE 1
@@ -40,6 +40,15 @@ struct SEND_DATA
 	int nScore;
 	char Buf[BUFFER_SIZE];
 	char nFlag;
+};
+
+struct GUEST_DATA
+{
+	CString strName;
+	int nScore;
+	//void *pClient;
+	CSjClientSocket* pClient;
+	char cFlag;
 };
 
 // CSjTetris1Dlg 대화 상자
@@ -80,7 +89,6 @@ public:
 	CRect m_nextRect;
 	CRect m_mainRect;
 	//CRect m_mainRect2;
-	BOOL m_bStart;
 	int m_nPattern;
 	int m_nBitType;
 	int m_nRot;
@@ -112,7 +120,7 @@ public:
 	CSjClientSocket m_Client;
 	CButton m_ctrlConnectBt;
 	CButton m_ctrlDisConnectBt;
-//	CButton m_ctrlSendBt;
+	CButton m_ctrlSendBt;
 	CString m_strName;
 	int m_nPortNo;
 	CString m_strSendData;
@@ -142,4 +150,6 @@ public:
 	int m_nScore;
 	int m_nStage;
 	int m_nTime;
+	//BOOL m_bStart;
+	GUEST_DATA m_Guest[USER_CNT];
 };
