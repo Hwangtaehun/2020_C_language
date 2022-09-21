@@ -14,12 +14,33 @@
 #define START_Y 10
 #define BLOCK_SIZE 32
 #define USER_CNT 6
+#define HOST_X 10
+#define HOST_Y 10
+#define GUEST_X 340
+#define GUEST_Y 10
+#define HOST_XSIZE 320
+#define HOST_YSIZE 640
+#define GUEST_XSIZE 140
+#define GUEST_YSIZE 280
 #define STATE_INIT 0
 #define STATE_WAIT 1
 #define STATE_CONNECT 2
 #define STATE_GAME_START 3
 #define STATE_GAME_DIE 4
-#define DATA_SIZE 201
+#define SERVER_MODE 0
+#define CLIENT_MODE 1
+#define SINGLE_MODE 2
+#define BUFFER_SIZE  200
+#define SEND_SIZE sizeof(struct SEND_DATA)
+#define MSG_CNT 10
+
+struct SEND_DATA
+{
+	int nMyNo;
+	int nScore;
+	char Buf[BUFFER_SIZE];
+	char nFlag;
+};
 
 // CSjTetris1Dlg 대화 상자
 class CSjTetris1Dlg : public CDialogEx
@@ -48,14 +69,18 @@ protected:
 public:
 	CBitmap m_bmBlock;
 	CBitmap m_bmBack;
+	CBitmap m_bmBack2;
+	CBitmap m_bmNumber;
+	CDC m_NumberDC;
 	CDC m_BackDC;
 	CDC m_BlockDC;
+	CDC m_BackDC2;
 	CDC *m_pDC;
 	char m_Table[USER_CNT][ROW_CNT][COL_CNT];
 	CRect m_nextRect;
 	CRect m_mainRect;
-	CRect m_mainRect2;
-	BOOL m_bStart;
+	//CRect m_mainRect2;
+//	BOOL m_bStart;
 	int m_nPattern;
 	int m_nBitType;
 	int m_nRot;
@@ -78,22 +103,16 @@ public:
 	afx_msg void OnBnClickedButtonExit();
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
-	int m_nScore;
 	int m_nNextPattern;
 	void NextBlock(bool bFlag);
 	void DrawScr2();
-	char m_Table2[ROW_CNT][COL_CNT];
-	void DrawScr3(int i, int x, int y);
-	int m_nScore2;
-	int m_nScore3;
-	int m_nScore4;
-	int m_nScore5;
-	int m_nScore6;
+//	char m_Table2[ROW_CNT][COL_CNT];
+	void DrawScr3(void *pt, int nClientNo, bool bFlag);
 	CSjServerSocket m_Server;
 	CSjClientSocket m_Client;
 	CButton m_ctrlConnectBt;
 	CButton m_ctrlDisConnectBt;
-	CButton m_ctrlSendBt;
+//	CButton m_ctrlSendBt;
 	CString m_strName;
 	int m_nPortNo;
 	CString m_strSendData;
@@ -105,9 +124,14 @@ public:
 	afx_msg void OnClickedConnectBt();
 	afx_msg void OnClickedDisconnectBt();
 	afx_msg void OnClickedSendBt();
-	LRESULT OnAcceptMsg(WPARAM wParam, LPARAM IParam);
-	LRESULT OnReceiveMsg(WPARAM wParam, LPARAM IParam);
-	LRESULT OnCloseMsg(WPARAM wParam, LPARAM IParam);
+	afx_msg LRESULT OnAcceptMsg(WPARAM wParam, LPARAM IParam);
+	afx_msg LRESULT OnReceiveMsg(WPARAM wParam, LPARAM IParam);
+	afx_msg LRESULT OnCloseMsg(WPARAM wParam, LPARAM IParam);
 	void DisplayMsg(CString strMsg);
 	void InitGuestData();
+	CButton m_ctrlRadioServer;
+	CButton m_ctrlRadioSingle;
+	CButton m_ctrlRadioClient;
+	void DisplayAllGuest();
+	SEND_DATA m_sendData;
 };
