@@ -150,6 +150,6 @@ public:
 	int m_nScore;
 	int m_nStage;
 	int m_nTime;
-	//BOOL m_bStart;
+	BOOL m_bStart;
 	GUEST_DATA m_Guest[USER_CNT];
 };
