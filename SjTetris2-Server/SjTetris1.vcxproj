@@ -130,8 +130,10 @@
     <Image Include="..\수업용bmp\폭포320.bmp" />
     <Image Include="res\bitmap1.bmp" />
     <Image Include="res\Block1.bmp" />
+    <Image Include="res\Number.bmp" />
     <Image Include="res\SjTetris1.ico" />
     <Image Include="res\꽃320.bmp" />
+    <Image Include="res\폭포320.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

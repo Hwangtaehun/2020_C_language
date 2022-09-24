@@ -86,5 +86,11 @@
     <Image Include="..\수업용bmp\폭포320.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="res\Number.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\폭포320.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

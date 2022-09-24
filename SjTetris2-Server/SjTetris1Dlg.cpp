@@ -489,19 +489,31 @@ void CSjTetris1Dlg::SetTable()
 		memcpy((void*)m_Table[i], (void*)m_Table[0], COL_CNT * ROW_CNT);
 	}
 	DisplayAllGuest();*/
-	if (m_nGameMode != 2)
+	if (m_nGameMode == 0)
 	{
 		if (m_nState == STATE_GAME_START)
 		{
-			memcpy((void*)m_sendData.Buf, (void*)m_Table[m_nMyNo], COL_CNT * ROW_CNT);
-			m_sendData.nMyNo = m_nMyNo;
+			memcpy((void*)m_sendData.Buf, (void*)m_Table[0], COL_CNT * ROW_CNT);
+			m_sendData.nMyNo = 0;
 			m_sendData.nScore = m_nScore;
 			m_sendData.nFlag = 'T';
-			for (int i = 0; i < USER_CNT; i++)
+			for (int i = 1; i < USER_CNT; i++)
 			{
 				if (m_Guest[i].pClient->Send((void*)&m_sendData, SEND_SIZE) == -1)
 					MessageBox(_T("전송실패"));
 			}
+		}
+	}
+	else if (m_nGameMode == 1)
+	{
+		if (m_nState == STATE_GAME_START)
+		{
+			memcpy((void*)m_sendData.Buf, (void*)m_Table[0], COL_CNT * ROW_CNT);
+			m_sendData.nMyNo = m_nMyNo;
+			m_sendData.nScore = m_nScore;
+			m_sendData.nFlag = 'T';
+			if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
+				MessageBox(_T("전송실패"));
 		}
 	}
 	DisplayMsg(_T(""));
@@ -588,14 +600,11 @@ void CSjTetris1Dlg::OnBnClickedButtonStart()
 	m_ctrlStopBt.EnableWindow(TRUE);
 	m_ctrlStopBt.SetFocus();
 	DisplayMsg(_T("Game Start"));
-	if (m_nStage == 0)
+	if (m_nState == STATE_CONNECT)
 	{
-		if (m_nState == STATE_CONNECT)
-		{
-			m_sendData.nFlag = 'S';
-			if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
-				MessageBox(_T("전송실패"));
-		}
+		m_sendData.nFlag = 'S';
+		if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
+			MessageBox(_T("전송실패"));
 	}
 	m_nState = STATE_GAME_START;
 }
@@ -608,6 +617,12 @@ void CSjTetris1Dlg::OnBnClickedButtonStop()
 	KillTimer(1);
 	m_ctrlStartBt.EnableWindow(TRUE);
 	m_ctrlStopBt.EnableWindow(FALSE);
+	if (m_nGameMode == 2)
+	{
+		m_ctrlRadioServer.EnableWindow(TRUE);
+		m_ctrlRadioClient.EnableWindow(TRUE);
+		m_ctrlRadioSingle.EnableWindow(TRUE);
+	}
 	DisplayMsg(_T("Game Stop"));
 }
 
@@ -981,7 +996,7 @@ void CSjTetris1Dlg::OnClickedDisconnectBt()
 			m_Server.Close();
 			for (int i = 1; i < USER_CNT - 1; i++)
 			{
-				if (m_Guest[i].pClient->m_bConnect)
+				if ((void*)(m_Guest[i].pClient)->m_bConnect)
 					m_Guest[i].pClient->Close();
 			}
 			DisplayMsg(_T("Server를 종료합니다."));
@@ -1271,6 +1286,7 @@ void CSjTetris1Dlg::DisplayMsg(CString strMsg)
 {
 	int i, r = 0, g = 255, b = 0;
 	m_pDC->SetBkMode(TRANSPARENT);
+	//DrawScr();
 	if (!strMsg.IsEmpty())
 	{
 		for (i = MSG_CNT - 1; i > 0; i--)
@@ -1328,16 +1344,16 @@ void CSjTetris1Dlg::OnGameMode(UINT nID)
 		m_nMyNo = 0;
 		m_ctrlConnectBt.EnableWindow(TRUE);
 		m_ctrlDisConnectBt.EnableWindow(FALSE);
-		m_ctrlStartBt.EnableWindow(FALSE);
-		m_ctrlStopBt.EnableWindow(FALSE);
+		/*m_ctrlStartBt.EnableWindow(FALSE);
+		m_ctrlStopBt.EnableWindow(FALSE);*/
 		m_strName= _T("관리자");
 		UpdateData(FALSE);
 		break;
 	case 1:
 		m_ctrlConnectBt.EnableWindow(TRUE);
 		m_ctrlDisConnectBt.EnableWindow(FALSE);
-		m_ctrlStartBt.EnableWindow(FALSE);
-		m_ctrlStopBt.EnableWindow(FALSE);
+		/*m_ctrlStartBt.EnableWindow(FALSE);
+		m_ctrlStopBt.EnableWindow(FALSE);*/
 		m_strName = _T("");
 		UpdateData(FALSE);
 		break;
