@@ -216,7 +216,7 @@ BOOL CSjTetris1Dlg::OnInitDialog()
 	//memset((void*)m_Table2, -1, sizeof(m_Table2));
 	InitGuestData();
 	OnGameMode(NULL);
-	DisplayMsg(_T("6인용 NetWork Tetris 입니다."));
+	//DisplayMsg(_T("6인용 NetWork Tetris 입니다."));
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
 
@@ -934,9 +934,17 @@ void CSjTetris1Dlg::DrawScr3(void* pt, int nClientNo, bool bFlag)
 void CSjTetris1Dlg::OnClickedConnectBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	for (int i = 0; i < USER_CNT; i++)
+	{
+		m_Guest[i].cFlag = 'I';
+		m_Guest[i].nScore = 0;
+		m_Guest[i].pClient = 0;
+		m_Guest[i].strName = "";
+	}
+
 	if (m_nGameMode == 0)
 	{
-		m_Guest->strName = "관리자";
+		m_Guest[0].strName = "관리자";
 		UpdateData(TRUE);
 		m_ctrlConnectBt.EnableWindow(FALSE);
 		m_ctrlConnectBt.SetWindowText(_T("Server 실행중"));
@@ -957,6 +965,11 @@ void CSjTetris1Dlg::OnClickedConnectBt()
 	else if(m_nGameMode == 1)
 	{
 		UpdateData(TRUE);
+		if (m_strName.IsEmpty())
+		{
+			MessageBox(_T("대화명을 입력하세요."));
+			return;
+		}
 		m_Client.Create();
 		m_Client.SetMainWindow(this);
 		if (!m_Client.Connect(m_strIpAddress, m_nPortNo))
@@ -965,13 +978,13 @@ void CSjTetris1Dlg::OnClickedConnectBt()
 			m_Client.Close();
 			return;
 		}
-		CStringA s2(m_strName);
-		const char* c = s2;
-		sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "%s입니다.", c);
+		/*CStringA s2(m_strName);
+		const char* c = s2;*/
+		/*sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "%s입니다.", CT2A(m_strName));
 		m_sendData.nFlag = 'C';
 		if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
 			MessageBox(_T("전송실패"));
-
+			*/
 		m_nState = STATE_CONNECT;
 		m_ctrlConnectBt.EnableWindow(FALSE);
 		m_ctrlConnectBt.SetWindowText(_T("Server연결중"));
@@ -996,7 +1009,7 @@ void CSjTetris1Dlg::OnClickedDisconnectBt()
 			m_Server.Close();
 			for (int i = 1; i < USER_CNT - 1; i++)
 			{
-				if ((void*)(m_Guest[i].pClient)->m_bConnect)
+				if (m_Guest[i].pClient->m_bConnect)
 					m_Guest[i].pClient->Close();
 			}
 			DisplayMsg(_T("Server를 종료합니다."));
@@ -1045,8 +1058,11 @@ void CSjTetris1Dlg::OnClickedSendBt()
 				}
 			}
 		}
-		if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
-			MessageBox(_T("전송실패"));
+		else if (m_nGameMode == 1)
+		{
+			if (m_Client.Send((void*)&m_sendData, SEND_SIZE) == -1)
+				MessageBox(_T("전송실패"));
+		}
 		m_strSendData = "";
 		UpdateData(FALSE);
 	}
@@ -1057,67 +1073,71 @@ void CSjTetris1Dlg::OnClickedSendBt()
 LRESULT CSjTetris1Dlg::OnAcceptMsg(WPARAM wParam, LPARAM IParam)
 {
 	CString buf2 = _T("");
-	if (m_nGameMode == 0)
+	char buf[BUFFER_SIZE] = "";
+	//m_nMyNo++;
+	CSjClientSocket *pClient = new CSjClientSocket();
+	pClient->SetMainWindow(this);
+	//m_Guest[0].pClient = pClient;
+	int n;
+
+	if (m_nGameMode != 0)
+		return 0;
+
+	if (!m_Server.Accept(*pClient))
 	{
-		char buf[BUFFER_SIZE] = "";
-		//m_nMyNo++;
-		CSjClientSocket *pClient = new CSjClientSocket();
-		pClient->SetMainWindow(this);
-		//m_Guest[0].pClient = pClient;
-		int n;
-		if (!m_Server.Accept(*pClient))
+		MessageBox(_T("Client 연결 실패"));
+		return -1;
+	}
+	if (m_nState == STATE_GAME_START)
+	{
+		sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "게임이 진행 중입니다.");
+		pClient->Send((void*)&m_sendData, SEND_SIZE);
+		pClient->Close();
+		delete pClient;
+		return 0;
+	}
+	for (n = 1; n < USER_CNT; n++)
+	{
+		if (m_Guest[n].cFlag == 'I')
+			break;
+	}
+	if (n < USER_CNT)
+	{
+		m_Guest[n].pClient = pClient;
+		m_Guest[n].pClient->m_bConnect = TRUE;
+		m_Guest[n].strName = m_sendData.Buf;
+		m_Guest[n].cFlag = m_sendData.nFlag;
+		sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "6인용 Tetris Server입니다");
+		m_sendData.nFlag = 'B';
+		m_sendData.nMyNo = n;
+		
+		if (pClient->Send((void*)&m_sendData, SEND_SIZE) == -1)
 		{
-			MessageBox(_T("Client 연결 실패"));
+			MessageBox(_T("환영 Message 전송 실패"));
+			m_Guest[n].cFlag = 'I';
+			m_Guest[n].pClient->m_bConnect = FALSE;
+			pClient->Close();
+			delete pClient;
 			return -1;
 		}
-		if (m_nState != STATE_WAIT)
-		{
-			sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "게임이 진행 중입니다.");
-			pClient->Send((void*)&m_sendData, SEND_SIZE);
-			pClient->Close();
-			delete pClient;
-		}
-		for (n = 0; n < USER_CNT - 1; n++)
-		{
-			if (m_Guest[n].cFlag == 'I')
-				break;
-		}
-		if (n < USER_CNT - 1)
-		{
-			m_Guest[n].pClient = pClient;
-			m_Guest[n].pClient->m_bConnect = TRUE;
-			m_Guest[n].strName = m_sendData.Buf;
-			m_Guest[n].cFlag = 'C';
-			sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "6인용 Tetris Server입니다");
-			m_sendData.nFlag = 'B';
-			m_sendData.nMyNo = n;
-			if (pClient->Send((void*)&m_sendData, SEND_SIZE) == -1) 
-			{
-				MessageBox(_T("환영 Message 전송 실패"));
-				m_Guest[n].cFlag = 'I';
-				m_Guest[n].pClient->m_bConnect = FALSE;
-				pClient->Close();
-				delete pClient;
-				return -1;
-			}
-			m_nState = STATE_CONNECT;
-			m_ctrlSendBt.EnableWindow(TRUE);
-			sprintf_s(buf, "%s님이 접속했습니다.\r\n", m_Guest[n].strName);
-			pClient->Send(buf, BUFFER_SIZE);
-			buf2 = buf;
-			DisplayMsg(buf2);
-			pClient->Close();
-			delete pClient;
-		}
-		else
-		{
-			m_Guest[n].pClient->m_bConnect = FALSE;
-			sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "접속 인원 초과 입니다.");
-			m_sendData.nFlag = 'C';
-			pClient->Send((void*)&m_sendData, SEND_SIZE);
-			pClient->Close();
-			delete pClient;
-		}
+		//MessageBox(_T("ddew"));
+		m_nState = STATE_CONNECT;
+		m_ctrlSendBt.EnableWindow(TRUE);
+		sprintf_s(buf, "%s님이 접속했습니다.\r\n", m_Guest[n].strName);
+		pClient->Send(buf, BUFFER_SIZE);
+		buf2 = buf;
+		DisplayMsg(buf2);
+		//pClient->Close();
+		delete pClient;
+	}
+	else
+	{
+		m_Guest[n].pClient->m_bConnect = FALSE;
+		sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, "접속 인원 초과 입니다.");
+		m_sendData.nFlag = 'C';
+		pClient->Send((void*)&m_sendData, SEND_SIZE);
+		pClient->Close();
+		delete pClient;
 	}
 	return LRESULT();
 }
@@ -1127,9 +1147,13 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 {
 	CString strMsg = _T("");
 	int i = 0;
+	MessageBox(_T("OnReceiveMsg"));
+	CSjClientSocket *pClient = (CSjClientSocket*)IParam;
+	pClient->Receive((void*)&m_sendData, SEND_SIZE);
+	//MessageBox(CA2T(m_sendData.Buf));
 	if (m_nGameMode == 0)
 	{
-		for (i = 1; i < USER_CNT; i++)
+	/*	for (i = 1; i < USER_CNT; i++)
 		{
 			if (m_Guest[i].cFlag == 'C')
 			{
@@ -1156,7 +1180,7 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 					m_sendData.nScore = 0;
 					DisplayMsg(strMsg);
 					sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, (CT2A)strMsg);
-					break;
+					break;*/
 				/*case 'X':
 					strMsg += m_Guest[i].strName;
 					strMsg += "님이 게임을 퇴장했습니다.";
@@ -1164,7 +1188,7 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 					DisplayMsg(strMsg);
 					sprintf_s(m_sendData.Buf, BUFFER_SIZE - 1, (CT2A)strMsg);
 					break;*/
-				}
+			/*	}
 			}
 		}
 		for (i = 1; i < USER_CNT; i++)
@@ -1174,13 +1198,14 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 				if (m_Guest[i].pClient->Send((void*)&m_sendData, SEND_SIZE) == -1)
 					MessageBox(_T("전송실패"));
 			}
-		}
+		}*/
 	}
 	else if (m_nGameMode == 1)
 	{
-		CString strMsg = _T("");
-		m_Client.Receive((void*)&m_sendData, SEND_SIZE);
-		switch (m_sendData.nFlag)
+		//CString strMsg = _T("");
+		//m_Client.Receive((void*)&m_sendData, SEND_SIZE);
+		MessageBox(CA2T(m_sendData.Buf));
+/*		switch (m_sendData.nFlag)
 		{
 		case 'B':
 			m_nMyNo = m_sendData.nMyNo;
@@ -1239,7 +1264,7 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 			DisplayMsg(strMsg);
 			DisplayAllGuest();
 			break;
-		}
+		}*/
 	}
 	return LRESULT();
 }
@@ -1247,7 +1272,7 @@ LRESULT CSjTetris1Dlg::OnReceiveMsg(WPARAM wParam, LPARAM IParam)
 
 LRESULT CSjTetris1Dlg::OnCloseMsg(WPARAM wParam, LPARAM IParam)
 {
-	if (m_nGameMode == 0)
+	/*if (m_nGameMode == 0)
 	{
 		int No = 0;
 		CString strMsg = _T("");
@@ -1277,7 +1302,7 @@ LRESULT CSjTetris1Dlg::OnCloseMsg(WPARAM wParam, LPARAM IParam)
 					MessageBox(_T("전송실패"));
 			}
 		}
-	}
+	}*/
 	return LRESULT();
 }
 
@@ -1286,7 +1311,8 @@ void CSjTetris1Dlg::DisplayMsg(CString strMsg)
 {
 	int i, r = 0, g = 255, b = 0;
 	m_pDC->SetBkMode(TRANSPARENT);
-	//DrawScr();
+	DrawScr();
+	DrawScr2();
 	if (!strMsg.IsEmpty())
 	{
 		for (i = MSG_CNT - 1; i > 0; i--)
