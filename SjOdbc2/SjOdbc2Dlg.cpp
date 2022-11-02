@@ -253,7 +253,7 @@ void CSjOdbc2Dlg::ListDisplay()
 	m_ScoreTable.MoveFirst();
 	while (!m_ScoreTable.IsEOF())
 	{
-		Buf.Format(_T("%-5s%-8s %5d %5d %5d"), m_ScoreTable.m_strCode, m_ScoreTable.m_strName, m_ScoreTable.m_nKor, m_ScoreTable.m_nEng, m_ScoreTable.m_nMat);
+		Buf.Format(_T("%-5s%-8s %5d %5d %5d %5d %6.2lf %5d"), m_ScoreTable.m_strCode, m_ScoreTable.m_strName, m_ScoreTable.m_nKor, m_ScoreTable.m_nEng, m_ScoreTable.m_nMat, m_ScoreTable.m_nTotal, m_ScoreTable.m_dAverage, m_ScoreTable.m_nRank);
 		m_ctrlList.AddString(Buf);
 		m_ScoreTable.MoveNext();
 	}
@@ -268,6 +268,7 @@ void CSjOdbc2Dlg::OnClickedNameBt()
 	UpdateData(TRUE);
 	//m_ScoreTable.m_strFilter = "strName='왕건'";
 	//m_ScoreTable.m_strFilter.Format(_T("strName = '%s'"), m_strSearchData);
+	m_ScoreTable.m_strFilter.Format(_T("strName Like '%s%%'"), m_strSearchData);
 	m_ScoreTable.Requery();
 	if (m_ScoreTable.GetRecordCount() == 0)
 		MessageBox(_T("검색된 내용이 없어요"));
@@ -279,64 +280,168 @@ void CSjOdbc2Dlg::OnClickedNameBt()
 void CSjOdbc2Dlg::OnClickedKorBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	if (m_strSearchData.IsEmpty())
+	{
+		MessageBox(_T("검색 조건이 없어요"));
+		return;
+	}
+	//m_ScoreTable.m_strFilter = "nKor>=60"; /*확인*/
+	m_ScoreTable.m_strFilter.Format(_T("nKor>=%s"), m_strSearchData);
+	m_ScoreTable.Requery();
+	if (m_ScoreTable.GetRecordCount() == 0)
+		MessageBox(_T("검색된 내용이 없어요"));
+	else
+		ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnClickedEngBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int data;
+	UpdateData(TRUE);
+	if (m_strSearchData.IsEmpty())
+		m_ScoreTable.m_strFilter = "";
+	else
+	{
+		data = _ttoi(m_strSearchData);
+		m_ScoreTable.m_strFilter.Format(_T("nEng>=%d"), data);
+		// m_ScoreTable.m_strFilter.Format(_T("nEng>=%d AND nKor>=%d"), data, data); /*확인*/
+		// m_ScoreTable.m_strFilter.Format(_T("nEng>=%d OR nKor>=%d"), data, data); /*확인*/
+	}
+	m_ScoreTable.Requery();
+	if (m_ScoreTable.GetRecordCount() == 0)
+		MessageBox(_T("검색된 내용이 없어요."));
+	else
+		ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnSelchangeList1()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	m_ScoreTable.m_strFilter.Format(_T("strCode=%s"), m_strList.Mid(0, 4));
+	m_ScoreTable.Requery();
+	MoveData();
 }
 
 
 void CSjOdbc2Dlg::OnClickedAddBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData();
+	m_ScoreTable.AddNew();
+
+	m_ScoreTable.m_strCode = m_strNumber;
+	m_ScoreTable.m_strName = m_strName;
+	m_ScoreTable.m_nKor = m_nKor;
+	m_ScoreTable.m_nEng = m_nEng;
+	m_ScoreTable.m_nMat = m_nMat;
+
+	m_ScoreTable.Update();
+	m_ScoreTable.m_strFilter = "";
+	m_ScoreTable.Requery();
+	ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnClickedModifyBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData(TRUE);
+	m_ScoreTable.Edit();
+	
+	m_ScoreTable.m_strCode = m_strNumber;
+	m_ScoreTable.m_strName = m_strName;
+	m_ScoreTable.m_nKor = m_nKor;
+	m_ScoreTable.m_nEng = m_nEng;
+	m_ScoreTable.m_nMat = m_nMat;
+
+	m_ScoreTable.Update();
+	m_ScoreTable.m_strFilter = "";
+	m_ScoreTable.Requery();
+	ListDisplay();
+
 }
 
 
 void CSjOdbc2Dlg::OnClickedDeleteBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_ScoreTable.Delete();
+	m_ScoreTable.m_strFilter = "";
+	m_ScoreTable.Requery();
+	ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnClickedTotalBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_ScoreTable.MoveFirst();
+	while (!m_ScoreTable.IsEOF())
+	{
+		m_ScoreTable.Edit();
+		m_ScoreTable.m_nTotal = m_ScoreTable.m_nKor + m_ScoreTable.m_nEng + m_ScoreTable.m_nMat;
+		m_ScoreTable.m_dAverage = m_ScoreTable.m_nTotal / 3.0;
+		m_ScoreTable.m_nRank = 0;
+		m_ScoreTable.Update();
+		m_ScoreTable.MoveNext();
+	}
+	m_ScoreTable.m_strFilter = "";
+	m_ScoreTable.Requery();
+	ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnClickedAscsortBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_ScoreTable.m_strSort = "strName";
+	m_ScoreTable.Requery();
+	ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnClickedDescsortBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_ScoreTable.m_strSort = "strName DESC";
+	m_ScoreTable.Requery();
+	ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnClickedRankBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	int nRank1 = 0, nRank2 = 0, nTotal = 0;
+	//m_ScoreTable.m_strSort = "nTotal ASC"; /*확인*/
+	m_ScoreTable.m_strSort = "nTotal DESC";
+	m_ScoreTable.Requery();
+	m_ScoreTable.MoveFirst();
+	while (!m_ScoreTable.IsEOF())
+	{
+		nRank1++;
+		if (nTotal != m_ScoreTable.m_nTotal)
+		{
+			nTotal = m_ScoreTable.m_nTotal;
+			nRank2 = nRank1;
+		}
+		m_ScoreTable.Edit();
+		m_ScoreTable.m_nRank = nRank2;
+		m_ScoreTable.Update();
+
+		m_ScoreTable.MoveNext();
+	}
+	ListDisplay();
 }
 
 
 void CSjOdbc2Dlg::OnClickedCloseBt()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	OnOK();
 }
