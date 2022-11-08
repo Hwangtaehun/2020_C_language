@@ -253,7 +253,8 @@ void CSjOdbc2Dlg::ListDisplay()
 	m_ScoreTable.MoveFirst();
 	while (!m_ScoreTable.IsEOF())
 	{
-		Buf.Format(_T("%-5s%-8s %5d %5d %5d %5d %6.2lf %5d"), m_ScoreTable.m_strCode, m_ScoreTable.m_strName, m_ScoreTable.m_nKor, m_ScoreTable.m_nEng, m_ScoreTable.m_nMat, m_ScoreTable.m_nTotal, m_ScoreTable.m_dAverage, m_ScoreTable.m_nRank);
+		Buf.Format(_T("%-5s %-8s %5d %5d %5d %5d %6.2lf %5d"), 
+		m_ScoreTable.m_strCode, m_ScoreTable.m_strName, m_ScoreTable.m_nKor, m_ScoreTable.m_nEng, m_ScoreTable.m_nMat, m_ScoreTable.m_nTotal, m_ScoreTable.m_dAverage, m_ScoreTable.m_nRank);
 		m_ctrlList.AddString(Buf);
 		m_ScoreTable.MoveNext();
 	}
@@ -322,7 +323,7 @@ void CSjOdbc2Dlg::OnSelchangeList1()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
-	m_ScoreTable.m_strFilter.Format(_T("strCode=%s"), m_strList.Mid(0, 4));
+	m_ScoreTable.m_strFilter.Format(_T("strCode='%s'"), m_strList.Mid(0, 4));
 	m_ScoreTable.Requery();
 	MoveData();
 }
